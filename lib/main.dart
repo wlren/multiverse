@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:multiverse/screens/LogInScreen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../auth/auth_repo.dart';
+import 'screens/LogInScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +17,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: "Spartan",
       ),
-      home: LogInScreen(),
+      home: RepositoryProvider(
+        create: (context) => AuthRepository(),
+        child: LogInScreen(),
+      ),
     );
   }
 }
