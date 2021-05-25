@@ -111,8 +111,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
-<<<<<<< Updated upstream
-=======
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -127,7 +125,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.22.0"
->>>>>>> Stashed changes
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -196,8 +193,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
-<<<<<<< Updated upstream
-=======
   path_drawing:
     dependency: transitive
     description:
@@ -282,7 +277,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.1"
->>>>>>> Stashed changes
   provider:
     dependency: transitive
     description:
@@ -373,10 +367,5 @@ packages:
     source: hosted
     version: "5.1.1"
 sdks:
-<<<<<<< Updated upstream
-  dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.16.0"
-=======
   dart: ">=2.13.0 <3.0.0"
   flutter: ">=1.24.0-7.0"
->>>>>>> Stashed changes
