@@ -19,10 +19,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
         cardTheme: CardTheme(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0))),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
+        ),
         textTheme: GoogleFonts.senTextTheme().copyWith(
-          subtitle1: const TextStyle(fontWeight: FontWeight.w400),
+          subtitle1: const TextStyle(
+            fontWeight: FontWeight.w400,
+          ),
         ),
       ),
       home: RepositoryProvider(

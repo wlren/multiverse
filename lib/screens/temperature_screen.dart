@@ -10,7 +10,9 @@ class TemperatureScreen extends StatefulWidget {
   static const double maxTemperature = 40.0;
   static const double unacceptableTemperature = 37.5;
   static const double temperatureDivisionWidth =
-  0.1; // Smallest division is 0.1 celsius
+      0.1; // Smallest division is 0.1 celsius
+
+  const TemperatureScreen({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,14 +44,14 @@ class TemperatureScreenState extends State<TemperatureScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.warning),
+                        const Icon(Icons.warning),
                         Container(width: 16.0),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Temperature Declaration',
                                 style: Theme.of(context).textTheme.headline6),
-                            Text('Not declared yet · 7 May (Afternoon)'),
+                            const Text('Not declared yet · 7 May (Afternoon)'),
                           ],
                         ),
                       ],
@@ -59,69 +61,68 @@ class TemperatureScreenState extends State<TemperatureScreen> {
               ];
             },
             body: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
               ),
               child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 16.0),
+                padding: const EdgeInsets.only(top: 16.0),
                 child: Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 56.0, right: 32.0),
                       child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(currentTimeString,
-                                    style: Theme.of(context).textTheme.subtitle1),
-                                Spacer(),
-                                DropdownButton(
-                                  value: _timeInterval,
-                                  items: [
-                                    DateFormat('aa')
-                                        .format(DateTime.utc(2020, 1, 1, 11)),
-                                    DateFormat('aa')
-                                        .format(DateTime.utc(2020, 1, 1, 13)),
-                                  ].map((String value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _timeInterval = newValue!;
-                                    });
-                                  },
-                                  underline: Container(),
+                        children: [
+                          Row(
+                            children: [
+                              Text(currentTimeString,
+                                  style: Theme.of(context).textTheme.subtitle1),
+                              const Spacer(),
+                              DropdownButton(
+                                value: _timeInterval,
+                                items: [
+                                  DateFormat('aa')
+                                      .format(DateTime.utc(2020, 1, 1, 11)),
+                                  DateFormat('aa')
+                                      .format(DateTime.utc(2020, 1, 1, 13)),
+                                ].map((String value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _timeInterval = newValue!;
+                                  });
+                                },
+                                underline: Container(),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: const [
+                              Text('I do not have COVID-19 symptoms.'),
+                              Spacer(),
+                              Checkbox(value: false, onChanged: null),
+                            ],
+                          ),
+                          Row(
+                            children: const [
+                              Flexible(
+                                flex: 3,
+                                child: Text(
+                                  'Nobody in the same household has fever,'
+                                  'and/or is showing the above stated symptoms.',
+                                  softWrap: true,
                                 ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('I do not have COVID-19 symptoms.'),
-                                Spacer(),
-                                Checkbox(value: false, onChanged: null),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Flexible(
-                                  flex: 3,
-                                  child: Text(
-                                    'Nobody in the same household has fever,'
-                                    'and/or is showing the above stated symptoms.',
-                                    softWrap: true,
-                                  ),
-                                ),
-                                Spacer(),
-                                Checkbox(value: false, onChanged: null),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              Spacer(),
+                              Checkbox(value: false, onChanged: null),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 32.0, right: 24.0),
@@ -147,15 +148,14 @@ class TemperatureScreenState extends State<TemperatureScreen> {
                         style: Theme.of(context).textTheme.headline4),
                     ElevatedButtonTheme(
                       data: ElevatedButtonThemeData(
-                        style: ElevatedButton.styleFrom(
-                          primary: _isAcceptableTemperature(_temperature)
-                              ? TemperatureScreen.acceptableTemperatureColor
-                              : TemperatureScreen.unacceptableTemperatureColor,
-                        )
-                      ),
+                          style: ElevatedButton.styleFrom(
+                        primary: _isAcceptableTemperature(_temperature)
+                            ? TemperatureScreen.acceptableTemperatureColor
+                            : TemperatureScreen.unacceptableTemperatureColor,
+                      )),
                       child: ElevatedButton.icon(
-                        icon: Icon(Icons.done),
-                        label: Text('Declare'),
+                        icon: const Icon(Icons.done),
+                        label: const Text('Declare'),
                         onPressed: () => _declareTemperature(_temperature),
                       ),
                     )
@@ -168,7 +168,8 @@ class TemperatureScreenState extends State<TemperatureScreen> {
   }
 
   void _declareTemperature(double temperature) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('nice')));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('nice')));
   }
 
   static String _formatTemperature(double temperature) {

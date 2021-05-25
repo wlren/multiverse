@@ -28,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield state.copyWith(formStatus: SubmissionSuccess());
       } on Exception catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
-        yield state.copyWith(formStatus: InitialFormStatus());
+        yield state.copyWith(formStatus: const InitialFormStatus());
       }
     }
   }

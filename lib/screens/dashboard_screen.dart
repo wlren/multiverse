@@ -110,7 +110,7 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
       ),
-      expanded: TemperatureScreen(),
+      expanded: const TemperatureScreen(),
     );
   }
 
@@ -211,7 +211,7 @@ class DashboardScreen extends StatelessWidget {
                   // TODO: Update with actual bus stops
                   return ListTile(
                     contentPadding:
-                    const EdgeInsets.only(left: 40.0, right: 16.0),
+                        const EdgeInsets.only(left: 40.0, right: 16.0),
                     title: Text('Bus stop $position'),
                     subtitle: const Text('Some supplementary info'),
                   );
@@ -253,7 +253,7 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
       closedShape:
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       closedElevation: 0,
     );
   }
