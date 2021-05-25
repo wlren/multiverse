@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TemperatureScreen extends StatefulWidget {
-  static final Color acceptableTemperatureColor = Colors.green;
+  static final Color acceptableTemperatureColor = Colors.green.shade300;
   static final Color unacceptableTemperatureColor = Colors.orange.shade300;
   static const double minTemperature = 35.0;
   static const double maxTemperature = 40.0;

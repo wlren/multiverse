@@ -7,21 +7,58 @@ import 'package:intl/intl.dart';
 
 import 'buses_screen.dart';
 import 'dining_screen.dart';
+import 'green_pass_screen.dart';
 import 'nus_card_screen.dart';
 import 'temperature_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   DashboardScreen({Key? key}) : super(key: key);
 
+  @override
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
   final String logoName = 'assets/logo.svg';
   final DateFormat dateFormat = DateFormat('dd MMM (aa)');
   final ScrollController _scrollController = ScrollController();
   late final String dateString = dateFormat.format(DateTime.now());
   final String userName = 'John Smith';
 
+  bool _isTemperatureDeclared = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      print(_scrollController.position);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Material(
+        elevation: 16.0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: const Text('Debugging options'),
+            ),
+            CheckboxListTile(
+                title: const Text('Is Temperature Declared (debug purposes)'),
+                value: _isTemperatureDeclared,
+                onChanged: (bool? isDeclared) {
+                  setState(() {
+                    _isTemperatureDeclared = isDeclared!;
+                  });
+                }),
+          ],
+        ),
+      ),
       body: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -65,21 +102,27 @@ class DashboardScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24.0),
-                Text('Hello, $userName!',
-                    style: Theme.of(context).textTheme.headline5),
-                const SizedBox(height: 48.0),
-                _buildTemperatureCard(context),
-                const SizedBox(height: 16.0),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(child: _buildDiningCard(context)),
-                    const SizedBox(width: 16.0),
-                    Expanded(child: _buildNUSDetailsCard(context)),
+                    Text('Hello, $userName!',
+                        style: Theme.of(context).textTheme.headline5),
+                    _buildTemperatureButton(),
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                _buildBusStopsCard(context),
-                _buildNewsList(context),
+                _buildGreenPassCard(),
+                const SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Flexible(child: _buildDiningCard()),
+                    const SizedBox(width: 8.0),
+                    Expanded(child: _buildNUSDetailsCard()),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                _buildBusStopsCard(),
+                _buildNewsList(),
               ],
             ),
           ),
@@ -88,33 +131,91 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTemperatureCard(BuildContext context) {
+  Widget _buildTemperatureButton() {
+    return OpenContainer(
+      closedElevation: 0,
+      closedShape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      closedColor: Theme.of(context).canvasColor,
+      closedBuilder: (_, openContainer) {
+        return OutlinedButton.icon(
+          onPressed: openContainer,
+          icon: Stack(
+            children: [
+              Icon(Icons.thermostat,
+                  color: _isTemperatureDeclared
+                      ? Theme.of(context).hintColor
+                      : Theme.of(context).colorScheme.error),
+              Transform.translate(
+                offset: const Offset(12, 12),
+                child: Icon(
+                    _isTemperatureDeclared ? Icons.check_circle : Icons.cancel,
+                    size: 16,
+                    color: _isTemperatureDeclared
+                        ? Colors.green
+                        : Theme.of(context).colorScheme.error),
+              )
+            ],
+          ),
+          label: Text(
+            _isTemperatureDeclared ? 'Declared' : 'Not declared',
+            style: TextStyle(
+                color: _isTemperatureDeclared
+                    ? Theme.of(context).hintColor
+                    : Theme.of(context).colorScheme.error),
+          ),
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)),
+          ),
+        );
+      },
+      openBuilder: (_, closeContainer) => TemperatureScreen(),
+    );
+  }
+
+  Widget _buildGreenPassCard() {
     return _buildCard(
-      collapsedColor: TemperatureScreen.unacceptableTemperatureColor,
+      disabled: !_isTemperatureDeclared,
+      collapsedColor: _isTemperatureDeclared
+          ? Colors.green.shade300
+          : Theme.of(context).colorScheme.onSurface.withOpacity(
+              0.12), // Disabled background color chosen according to default ElevatedButton style.
       collapsed: Container(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.warning),
+            Icon(Icons.gpp_good,
+                color: _isTemperatureDeclared
+                    ? null
+                    : Theme.of(context).disabledColor),
             const SizedBox(width: 16.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Temperature declaration',
-                    style: Theme.of(context).textTheme.headline6),
-                Text('Not declared yet',
-                    style: Theme.of(context).textTheme.subtitle2),
+                Text('View Green Pass',
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
+                          color: _isTemperatureDeclared
+                              ? null
+                              : Theme.of(context).disabledColor,
+                        )),
+                Text('Declare temperature first',
+                    style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                          color: _isTemperatureDeclared
+                              ? null
+                              : Theme.of(context).disabledColor,
+                        )),
               ],
             ),
           ],
         ),
       ),
-      expanded: const TemperatureScreen(),
+      expanded: const GreenPassScreen(),
     );
   }
 
-  Widget _buildDiningCard(BuildContext context) {
+  Widget _buildDiningCard() {
     return _buildCard(
       collapsedColor: const Color(0xFF424242),
       collapsed: Container(
@@ -146,7 +247,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNUSDetailsCard(BuildContext context) {
+  Widget _buildNUSDetailsCard() {
     return _buildCard(
       collapsedColor: Colors.deepOrange.shade700,
       collapsed: Container(
@@ -178,7 +279,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBusStopsCard(BuildContext context) {
+  Widget _buildBusStopsCard() {
     return _buildCard(
       collapsedColor: const Color(0xFFF5DBCE),
       collapsed: Container(
@@ -232,6 +333,7 @@ class DashboardScreen extends StatelessWidget {
     required Widget collapsed,
     required Widget expanded,
     required Color collapsedColor,
+    bool disabled = false,
   }) {
     // From Flutter animations library that animates a container from to and
     // from its open and closed states.
@@ -240,7 +342,7 @@ class DashboardScreen extends StatelessWidget {
     // The expanded (open) widget is the full page.
     return OpenContainer(
       closedColor: collapsedColor,
-      tappable: false,
+      tappable: false, // To prevent interference with InkWell; to draw ripples
       openBuilder: (_, closeContainer) => InkWell(
         onTap: closeContainer,
         child: expanded,
@@ -248,17 +350,17 @@ class DashboardScreen extends StatelessWidget {
       closedBuilder: (_, openContainer) => Material(
         color: collapsedColor,
         child: InkWell(
-          onTap: openContainer,
+          onTap: disabled ? null : openContainer,
           child: collapsed,
         ),
       ),
       closedShape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       closedElevation: 0,
     );
   }
 
-  Widget _buildNewsList(BuildContext context) {
+  Widget _buildNewsList() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
