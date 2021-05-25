@@ -8,6 +8,7 @@ import '../auth/form_submission_status.dart';
 import '../auth/login/login_bloc.dart';
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
+import 'dashboard_screen.dart';
 
 ///The initial screen which user would see upon launching app
 ///prompts user to log in and will authenticate using AWS Amplify
@@ -141,6 +142,12 @@ class LoginScreen extends StatelessWidget {
             create: (context) => LoginBloc(
               authRepo: context.read<AuthRepository>(),
             ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+            },
+            child: const Text('Skip to dashboard'),
           ),
         ],
       ),
