@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../auth/auth_repo.dart';
 import '../auth/form_submission_status.dart';
+import '../auth/login/login_bloc.dart';
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
-import '../auth/auth_repo.dart';
-import '../auth/login/login_bloc.dart';
 
 ///The initial screen which user would see upon launching app
 ///prompts user to log in and will authenticate using AWS Amplify
 ///Authentication services
-class LogInScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget {
+  LoginScreen({Key? key}) : super(key: key);
+
   //Allows form validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -18,7 +22,7 @@ class LogInScreen extends StatelessWidget {
   void _showSnackBarOnFail(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -29,7 +33,7 @@ class LogInScreen extends StatelessWidget {
   Widget _usernameField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           icon: Icon(Icons.person),
           hintText: 'NUSNet ID',
         ),
@@ -46,12 +50,12 @@ class LogInScreen extends StatelessWidget {
     });
   }
 
-  //Passwordfield widget
+  //Password field widget
   Widget _passwordField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
         obscureText: true,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           icon: Icon(Icons.security),
           hintText: 'Password',
         ),
@@ -70,7 +74,7 @@ class LogInScreen extends StatelessWidget {
   Widget _loginButton() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return state.formStatus is FormSubmitting
-          ? CircularProgressIndicator()
+          ? const CircularProgressIndicator()
           : ElevatedButton(
               onPressed: () {
                 //Validation check
@@ -78,7 +82,7 @@ class LogInScreen extends StatelessWidget {
                   context.read<LoginBloc>().add(LoginSubmitted());
                 }
               },
-              child: Text("Login"),
+              child: const Text("Login"),
             );
     });
   }
@@ -101,7 +105,7 @@ class LogInScreen extends StatelessWidget {
             children: [
               _usernameField(),
               _passwordField(),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               _loginButton(),
@@ -118,9 +122,20 @@ class LogInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset("assets/images/multiverseicon.png"),
+          Column(
+            children: [
+              SvgPicture.asset('assets/logo.svg'),
+              const SizedBox(height: 16.0),
+              Text('multiverse',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.spartan(
+                    textStyle: Theme.of(context).textTheme.headline5,
+                  )),
+            ],
+          ),
+          const SizedBox(height: 48.0),
           BlocProvider(
             child: _loginForm(),
             create: (context) => LoginBloc(

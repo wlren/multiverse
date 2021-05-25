@@ -9,18 +9,18 @@ class LoginState {
   bool get isValidUsername {
     return username.length == 8 &&
         int.tryParse(username.substring(1)) != null &&
-        username.substring(0, 1) == "e";
+        username.substring(0, 1) == 'e';
   }
 
   final String password;
-  bool get isValidPassword => password.length > 0;
+  bool get isValidPassword => password.isNotEmpty;
   final FormSubmissionStatus formStatus;
   /* VARIABLES end */
 
   // Constructor with default values
   LoginState({
-    this.username = "",
-    this.password = "",
+    this.username = '',
+    this.password = '',
     this.formStatus = const InitialFormStatus(),
   });
 

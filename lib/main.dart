@@ -1,111 +1,323 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
+import 'screens/buses_screen.dart';
+import 'screens/dining_screen.dart';
+import 'screens/nus_card_screen.dart';
+import 'screens/temperature_screen.dart';
 import '../auth/auth_repo.dart';
-import 'screens/LogInScreen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Multiverse',
+      title: 'multiverse',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: "Spartan",
+        primarySwatch: Colors.orange,
+        cardTheme: CardTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0))),
+        textTheme: GoogleFonts.senTextTheme().copyWith(
+          subtitle1: const TextStyle(fontWeight: FontWeight.w400),
+        ),
       ),
       home: RepositoryProvider(
         create: (context) => AuthRepository(),
-        child: LogInScreen(),
+        child: LoginScreen(),
       ),
+//      home: const MyHomePage(title: 'multiverse'),
+      debugShowCheckedModeBanner: false, // Hide debug flag
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
+  final String logoName = 'assets/logo.svg';
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  DateFormat dateFormat = DateFormat('dd MMM (aa)');
+  final ScrollController _scrollController = ScrollController();
+  late double screenHeight = MediaQuery.of(context).size.height;
+  late String dateString = dateFormat.format(DateTime.now());
+  String userName = 'John Smith';
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: true,
+              pinned: true,
+              backgroundColor: Theme.of(context).canvasColor,
+              backwardsCompatibility: false,
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+              ),
+              titleSpacing: 0,
+              title: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      widget.logoName,
+                      semanticsLabel: 'multiverse logo',
+                      width: 32.0,
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text('multiverse',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.spartan(
+                        textStyle: Theme.of(context).textTheme.headline5,
+                      )),
+                  ],
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+          ];
+        },
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 24.0),
+                Text('Hello, $userName!',
+                    style: Theme.of(context).textTheme.headline5),
+                const SizedBox(height: 48.0),
+                _buildTemperatureCard(),
+                const SizedBox(height: 16.0),
+                Row(
+                  children: [
+                    Flexible(child: _buildDiningCard()),
+                    const SizedBox(width: 16.0),
+                    Expanded(child: _buildNUSDetailsCard()),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                _buildBusStopsCard(),
+                _buildNewsList(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTemperatureCard() {
+    return _buildCard(
+      collapsedColor: TemperatureScreen.unacceptableTemperatureColor,
+      collapsed: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.warning),
+            const SizedBox(width: 16.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Temperature declaration',
+                    style: Theme.of(context).textTheme.headline6),
+                Text('Not declared yet',
+                    style: Theme.of(context).textTheme.subtitle2),
+              ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      expanded: TemperatureScreen(),
+    );
+  }
+
+  Widget _buildDiningCard() {
+    return _buildCard(
+      collapsedColor: const Color(0xFF424242),
+      collapsed: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.lunch_dining, color: Colors.white),
+            const SizedBox(width: 16.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Dinner',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(color: Colors.white)),
+                Text('10 credits',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(color: Colors.white)),
+              ],
+            ),
+          ],
+        ),
+      ),
+      expanded: const DiningScreen(),
+    );
+  }
+
+  Widget _buildNUSDetailsCard() {
+    return _buildCard(
+      collapsedColor: Colors.deepOrange.shade700,
+      collapsed: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.payment, color: Colors.white),
+            const SizedBox(width: 16.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('NUS Card',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(color: Colors.white)),
+                Text('View details',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(color: Colors.white)),
+              ],
+            ),
+          ],
+        ),
+      ),
+      expanded: const NUSCardScreen(),
+    );
+  }
+
+  Widget _buildBusStopsCard() {
+    return _buildCard(
+      collapsedColor: const Color(0xFFF5DBCE),
+      collapsed: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(Icons.directions_bus),
+                const SizedBox(width: 16.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Bus stops',
+                        style: Theme.of(context).textTheme.headline6),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+            MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, position) {
+                  // TODO: Update with actual bus stops
+                  return ListTile(
+                    contentPadding:
+                        const EdgeInsets.only(left: 40.0, right: 16.0),
+                    title: Text('Bus stop $position'),
+                    subtitle: const Text('Some supplementary info'),
+                  );
+                },
+                itemCount: 3,
+              ),
+            ),
+          ],
+        ),
+      ),
+      expanded: const BusesScreen(),
+    );
+  }
+
+  /// A wrapper for a generic card in the dashboard that can expand to show
+  /// a full page.
+  Widget _buildCard({
+    required Widget collapsed,
+    required Widget expanded,
+    required Color collapsedColor,
+  }) {
+    // From Flutter animations library that animates a container from to and
+    // from its open and closed states.
+
+    // The collapsed (closed) widget is the card on the dashboard.
+    // The expanded (open) widget is the full page.
+    return OpenContainer(
+      closedColor: collapsedColor,
+      tappable: false,
+      openBuilder: (_, closeContainer) => InkWell(
+        onTap: closeContainer,
+        child: expanded,
+      ),
+      closedBuilder: (_, openContainer) => Material(
+        color: collapsedColor,
+        child: InkWell(
+          onTap: openContainer,
+          child: collapsed,
+        ),
+      ),
+      closedShape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      closedElevation: 0,
+    );
+  }
+
+  Widget _buildNewsList() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Row(
+            children: [
+              const Icon(Icons.feed),
+              const SizedBox(width: 16.0),
+              Text('News', style: Theme.of(context).textTheme.headline6),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 1000,
+          child: Text('This is a really tall container made to test scrolling'),
+        ),
+      ],
     );
   }
 }
