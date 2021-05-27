@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-import '../auth/auth_repo.dart';
+import '../auth/auth_repository.dart';
 import '../auth/form_submission_status.dart';
 import '../auth/login/login_bloc.dart';
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
+import '../view_model/user_model.dart';
+import '../user_repository.dart';
 import 'dashboard_screen.dart';
 
 ///The initial screen which user would see upon launching app

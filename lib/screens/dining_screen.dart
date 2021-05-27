@@ -6,6 +6,7 @@ class DiningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      backgroundColor: Color(0xFF424242),
       body: Center(
         child: Text('Dining route'),
       ),

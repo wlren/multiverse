@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../auth_repo.dart';
+import '../auth_repository.dart';
 import '../form_submission_status.dart';
 import 'login_event.dart';
 import 'login_state.dart';

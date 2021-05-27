@@ -10,3 +10,4 @@ analyzer:
 linter:
   rules:
     - cancel_subscriptions
+    - directives_ordering
