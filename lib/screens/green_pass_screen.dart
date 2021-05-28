@@ -23,7 +23,8 @@ class GreenPassScreen extends StatelessWidget {
   }
 
   Color _getBackgroundColor(BuildContext context) {
-    return context.watch<GreenPassModel>().isPassGreen ?
-      Colors.green.shade300 : Colors.red.shade300;
+    return context.watch<GreenPassModel>().isPassGreen
+      ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade300 : Colors.green.shade500)
+      : (Theme.of(context).brightness == Brightness.light ? Colors.red.shade300 : Colors.red.shade500);
   }
 }

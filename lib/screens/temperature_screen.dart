@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:multiverse/user_repository.dart';
@@ -27,14 +28,35 @@ class TemperatureScreen extends StatefulWidget {
   }
 }
 
-class TemperatureScreenState extends State<TemperatureScreen> {
+class TemperatureScreenState extends State<TemperatureScreen> with TickerProviderStateMixin {
+  static const double leftPadding = 64.0;
   DateTime now  = DateTime.now();
   late String _timeInterval = DateFormat('aa').format(now);
   late String currentTimeString = DateFormat('EEEE, d MMM').format(now);
+  late final AnimationController _showFormAnimation = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+  );
 
   double _temperature = 36.0;
   bool _isSymptomless = false;
   bool _isHouseholdSymptomless = false;
+  bool __isRedeclaring = false;
+
+  bool get _isRedeclaring => __isRedeclaring;
+
+  set _isRedeclaring(bool value) {
+    _toAnimate = true;
+    __isRedeclaring = value;
+    if (!_isRedeclaring) {
+      // Hide form
+      _showFormAnimation.reverse();
+    } else {
+      _showFormAnimation.forward();
+    }
+  }
+
+  bool _toAnimate = false;
 
   bool get _isGoodToDeclare => _isSymptomless && _isHouseholdSymptomless && _isAcceptableTemperature(_temperature);
 
@@ -42,30 +64,40 @@ class TemperatureScreenState extends State<TemperatureScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => TemperatureModel(context.read<UserRepository>()),
-      builder: (context, _) => Scaffold(
+      builder: (context, _) {
+        // Set here instead of in AnimationController constructor so that
+        // the animation does not play when screen is initialized.
+        if (!_toAnimate) {
+          _showFormAnimation.value = context.read<TemperatureModel>().isTemperatureDeclared ? 0 : 1;
+        }
+        return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backwardsCompatibility: false,
+          backgroundColor: Colors.transparent,
+          title: const Text('Temperature Declaration'),
+          foregroundColor: Theme.of(context).textTheme.headline6!.color,
+          titleSpacing: 8.0,
+          elevation: 0,
+        ),
         body: Column(
           children: [
-            Container(
-              color: _getBodyColor(),
+            Material(
+              clipBehavior: Clip.none,
+              color: _getBackgroundColor(),
               child: Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).viewPadding.top,
+                    height: kToolbarHeight + MediaQuery.of(context).padding.top,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(left: leftPadding),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.warning),
-                        Container(width: 16.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Temperature Declaration',
-                                style: Theme.of(context).textTheme.headline6),
-                            const Text('Not declared yet'),
-                          ],
+                        Transform.translate(
+                          offset: const Offset(0, -16.0),
+                          child: Text(context.read<TemperatureModel>().isTemperatureDeclared ? 'Declared' : 'Not declared yet'),
                         ),
                       ],
                     ),
@@ -76,7 +108,7 @@ class TemperatureScreenState extends State<TemperatureScreen> {
             Expanded(
               child: SingleChildScrollView(
                   child: Container(
-                color: _getBodyColor(),
+                color: _getBackgroundColor(),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
@@ -87,121 +119,30 @@ class TemperatureScreenState extends State<TemperatureScreen> {
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Column(
                       children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 56.0, right: 32.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(currentTimeString,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  const Spacer(),
-                                  DropdownButton(
-                                    value: _timeInterval,
-                                    items: [
-                                      DateFormat('aa')
-                                          .format(DateTime.utc(2020, 1, 1, 11)),
-                                      DateFormat('aa')
-                                          .format(DateTime.utc(2020, 1, 1, 13)),
-                                    ].map((String value) {
-                                      return DropdownMenuItem(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _timeInterval = newValue!;
-                                      });
-                                    },
-                                    underline: Container(),
-                                  ),
-                                ],
+                        // Hide the temperature form once declared, unless
+                        // declaring
+                        AnimatedBuilder(
+                          animation: _showFormAnimation,
+                          builder: (context, child) {
+                            return Opacity(
+                              opacity: CurvedAnimation(
+                                  parent: _showFormAnimation,
+                                  curve: const Interval(0.75, 1.0),
+                              ).value,
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: CurvedAnimation(
+                                    parent:_showFormAnimation,
+                                    curve: const Interval(0.0, 0.75, curve: Curves.easeInOutCubic),
+                                ).value,
+                                child: child,
                               ),
-                              Row(
-                                children: [
-                                  const Text('I do not have COVID-19 symptoms.'),
-                                  const Spacer(),
-                                  Checkbox(value: _isSymptomless, onChanged: (value) {
-                                    setState(() {
-                                      _isSymptomless = value!;
-                                    });
-                                  }),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Flexible(
-                                    flex: 3,
-                                    child: Text(
-                                      'Nobody in the same household has fever, '
-                                      'and/or is showing the above stated symptoms.',
-                                      softWrap: true,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Checkbox(value: _isHouseholdSymptomless, onChanged: (value) {
-                                    setState(() {
-                                      _isHouseholdSymptomless = value!;
-                                    });
-                                  }),
-                                ],
-                              ),
-                            ],
-                          ),
+                            );
+                          },
+                          child: _buildTemperatureForm(context),
                         ),
                         const SizedBox(height: 24.0),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(left: 56.0, right: 48.0),
-                          child: Text('Temperature', style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          )),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 32.0, right: 24.0),
-                          child: Slider.adaptive(
-                            label: _formatTemperature(_temperature),
-                            value: _temperature,
-                            min: TemperatureScreen.minTemperature,
-                            max: TemperatureScreen.maxTemperature,
-                            activeColor: _isAcceptableTemperature(_temperature)
-                                ? TemperatureScreen.acceptableTemperatureColor
-                                : TemperatureScreen
-                                    .unacceptableTemperatureColor,
-                            onChanged: (temperature) {
-                              setState(() {
-                                _temperature = temperature;
-                              });
-                            },
-                          ),
-                        ),
-                        Text(_formatTemperature(_temperature),
-                            style: Theme.of(context).textTheme.headline4),
-                        const SizedBox(height: 24.0),
-                        ElevatedButtonTheme(
-                          data: ElevatedButtonThemeData(
-                              style: ElevatedButton.styleFrom(
-                            primary: _isGoodToDeclare
-                                ? TemperatureScreen.acceptableTemperatureColor
-                                : TemperatureScreen
-                                    .unacceptableTemperatureColor,
-                                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-                                textStyle: Theme.of(context).textTheme.headline6,
-                          )),
-                          child: ElevatedButton.icon(
-                            icon: _isGoodToDeclare ? const Icon(Icons.done) : const Icon(Icons.warning),
-                            label: const Text('Declare'),
-                            onPressed: () =>
-                                _tryDeclareTemperature(context, _temperature),
-                          ),
-                        ),
+                        _buildDeclareButton(context),
                         const SizedBox(height: 32.0),
                         _buildTemperatureList(context),
                       ],
@@ -212,7 +153,172 @@ class TemperatureScreenState extends State<TemperatureScreen> {
             ),
           ],
         ),
-      ),
+      );
+      },
+    );
+  }
+
+  Widget _buildDeclareButton(BuildContext context) {
+    bool isTemperatureDeclared = context.read<TemperatureModel>().isTemperatureDeclared;
+    if (isTemperatureDeclared && !_isRedeclaring) {
+      return OutlinedButtonTheme(
+        data: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+            textStyle: Theme.of(context).textTheme.headline6,
+          ),
+        ),
+        child: OutlinedButton.icon(
+          icon: const Icon(Icons.refresh),
+          label: Text(context.read<TemperatureModel>().isTemperatureDeclared ? 'Redeclare' : 'Declare'),
+          onPressed: () {
+            if (context.read<TemperatureModel>().isTemperatureDeclared) {
+              // Redeclaring temperature
+              if (_isRedeclaring) {
+                _tryDeclareTemperature(context, _temperature);
+              } else {
+                setState(() {
+                  _isRedeclaring = true;
+                });
+              }
+            } else {
+              _tryDeclareTemperature(context, _temperature);
+            }
+          },
+        ),
+      );
+    } else {
+      return ElevatedButtonTheme(
+        data: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: _isGoodToDeclare
+                ? TemperatureScreen.acceptableTemperatureColor
+                : TemperatureScreen
+                .unacceptableTemperatureColor,
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+            textStyle: Theme.of(context).textTheme.headline6,
+            onPrimary: Colors.black,
+          ),
+        ),
+        child: ElevatedButton.icon(
+          icon: _isGoodToDeclare ? const Icon(Icons.done) : const Icon(Icons.warning),
+          label: Text(context.read<TemperatureModel>().isTemperatureDeclared ? 'Redeclare' : 'Declare'),
+          onPressed: () {
+            if (context.read<TemperatureModel>().isTemperatureDeclared && !_isRedeclaring) {
+                setState(() {
+                  _isRedeclaring = true;
+                });
+            } else {
+              _tryDeclareTemperature(context, _temperature);
+            }
+          },
+        ),
+      );
+    }
+
+  }
+
+  Widget _buildTemperatureForm(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding:
+          const EdgeInsets.only(left: leftPadding, right: 32.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(currentTimeString,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const Spacer(),
+                  DropdownButton(
+                    value: _timeInterval,
+                    items: [
+                      DateFormat('aa')
+                          .format(DateTime.utc(2020, 1, 1, 11)),
+                      DateFormat('aa')
+                          .format(DateTime.utc(2020, 1, 1, 13)),
+                    ].map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _timeInterval = newValue!;
+                      });
+                    },
+                    underline: Container(),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text('I do not have COVID-19 symptoms.'),
+                  const Spacer(),
+                  Checkbox(value: _isSymptomless, onChanged: (value) {
+                    setState(() {
+                      _isSymptomless = value!;
+                    });
+                  }),
+                ],
+              ),
+              Row(
+                children: [
+                  const Flexible(
+                    flex: 3,
+                    child: Text(
+                      'Nobody in the same household has fever, '
+                          'and/or is showing the above stated symptoms.',
+                      softWrap: true,
+                    ),
+                  ),
+                  const Spacer(),
+                  Checkbox(value: _isHouseholdSymptomless, onChanged: (value) {
+                    setState(() {
+                      _isHouseholdSymptomless = value!;
+                    });
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: leftPadding, right: 48.0),
+          child: Text('Temperature', style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            fontWeight: FontWeight.bold,
+          )),
+        ),
+        Padding(
+          padding:
+          const EdgeInsets.only(left: leftPadding - 24.0, right: 24.0),
+          child: Slider.adaptive(
+            label: _formatTemperature(_temperature),
+            value: _temperature,
+            min: TemperatureScreen.minTemperature,
+            max: TemperatureScreen.maxTemperature,
+            activeColor: _isAcceptableTemperature(_temperature)
+                ? TemperatureScreen.acceptableTemperatureColor
+                : TemperatureScreen
+                .unacceptableTemperatureColor,
+            onChanged: (temperature) {
+              setState(() {
+                _temperature = temperature;
+              });
+            },
+          ),
+        ),
+        Text(_formatTemperature(_temperature),
+            style: Theme.of(context).textTheme.headline4),
+      ],
     );
   }
 
@@ -223,12 +329,12 @@ class TemperatureScreenState extends State<TemperatureScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 56.0, right: 24.0),
+          padding: const EdgeInsets.only(left: leftPadding, right: 24.0),
           child: Text('History', style: Theme.of(context).textTheme.headline6),
         ),
         const SizedBox(height: 16.0),
         Padding(
-          padding: const EdgeInsets.only(left: 56.0, right: 48.0),
+          padding: const EdgeInsets.only(left: leftPadding, right: 48.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(7, (day) => _buildDayTile(context, day)),
@@ -245,7 +351,7 @@ class TemperatureScreenState extends State<TemperatureScreen> {
               TemperatureRecord record =
                   temperatureModel.temperatureRecords[position];
               return ListTile(
-                contentPadding: const EdgeInsets.only(left: 56.0, right: 48.0),
+                contentPadding: const EdgeInsets.only(left: leftPadding, right: 48.0),
                 title: Text(_getRecordTitle(record)),
                 subtitle: Text(_getRecordSubtitle(record)),
                 trailing: Text(_getRecordTrailing(record),
@@ -266,9 +372,12 @@ class TemperatureScreenState extends State<TemperatureScreen> {
     String dayLetter = DateFormat.E().format(day)[0];
     bool isDeclared = context.read<TemperatureModel>().temperatureRecords.any((record) => record.time.isSameDate(day));
     bool isToday = dayIndex == now.weekday;
-    Color backgroundColor = isDeclared ? Colors.green.shade200
+    Color backgroundColor = isDeclared
+        ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade200 : Colors.green.shade800)
         : Theme.of(context).dividerColor;
-    Color borderColor = isToday ? Colors.green.shade500 : Colors.transparent;
+    Color borderColor = isToday
+        ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade700 : Colors.green.shade300)
+        : Colors.transparent;
 
     return Container(
       width: 32.0,
@@ -300,10 +409,10 @@ class TemperatureScreenState extends State<TemperatureScreen> {
     return _formatTemperature(record.temperature);
   }
 
-  Color _getBodyColor() {
+  Color _getBackgroundColor() {
     return context.watch<UserModel>().isTemperatureAcceptable
-        ? TemperatureScreen.acceptableTemperatureColor
-        : TemperatureScreen.unacceptableTemperatureColor;
+        ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade300 : Colors.green.shade900)
+        : (Theme.of(context).brightness == Brightness.light ? Colors.orange.shade300 : Colors.deepOrange.shade900);
   }
 
   void _declareTemperature(BuildContext context, double temperature) {
@@ -311,6 +420,9 @@ class TemperatureScreenState extends State<TemperatureScreen> {
     context.read<UserModel>().update();
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Temperature declared')));
+    setState(() {
+      _isRedeclaring = false;
+    });
   }
 
   void _tryDeclareTemperature(BuildContext context, double temperature) {
@@ -363,7 +475,6 @@ class TemperatureScreenState extends State<TemperatureScreen> {
     return temperature < TemperatureScreen.unacceptableTemperature;
   }
 }
-
 
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {

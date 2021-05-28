@@ -6,7 +6,9 @@ import 'package:multiverse/user_repository.dart';
 // temperature screen.
 class TemperatureModel extends ChangeNotifier {
   UserRepository userRepository;
+
   List<TemperatureRecord> temperatureRecords = [];
+  bool isTemperatureDeclared = false;
 
   TemperatureModel(this.userRepository) {
     update();
@@ -14,11 +16,12 @@ class TemperatureModel extends ChangeNotifier {
 
   void update() async {
     temperatureRecords = await userRepository.getTemperatureRecords();
+    isTemperatureDeclared = await userRepository.isTemperatureDeclared();
+    notifyListeners();
   }
 
   void declareTemperature(double temperature) async {
     await userRepository.declareTemperature(temperature);
-    temperatureRecords = await userRepository.getTemperatureRecords();
-    notifyListeners();
+    update();
   }
 }

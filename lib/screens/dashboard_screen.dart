@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:multiverse/view_model/dining_model.dart';
 import 'package:provider/provider.dart';
 
+import '../menu.dart';
 import '../view_model/user_model.dart';
-import '../user_repository.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
@@ -31,76 +32,77 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-          body: NestedScrollView(
-            controller: _scrollController,
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  floating: true,
-                  pinned: true,
-                  backwardsCompatibility: false,
-                  systemOverlayStyle: const SystemUiOverlayStyle(
-                    statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: Brightness.dark,
-                  ),
-                  titleSpacing: 0,
-                  title: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          logoName,
-                          semanticsLabel: 'multiverse logo',
-                          width: 32.0,
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text('multiverse',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.spartan(
-                              textStyle: Theme.of(context).textTheme.headline5,
-                            )),
-                      ],
-                    ),
-                  ),
-                ),
-              ];
-            },
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: true,
+              pinned: true,
+              backwardsCompatibility: false,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                systemNavigationBarColor: Colors.transparent,
+                systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
+              ),
+              titleSpacing: 0,
+              title: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 24.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Hello, $userName!',
-                            style: Theme.of(context).textTheme.headline5),
-                        _buildTemperatureButton(),
-                      ],
+                    SvgPicture.asset(
+                      logoName,
+                      semanticsLabel: 'multiverse logo',
+                      width: 32.0,
                     ),
-                    const SizedBox(height: 16.0),
-                    _buildGreenPassCard(),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        Flexible(child: _buildDiningCard()),
-                        const SizedBox(width: 8.0),
-                        Expanded(child: _buildNUSDetailsCard()),
-                      ],
+                    const SizedBox(width: 8.0),
+                    Text('multiverse',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.spartan(
+                        textStyle: Theme.of(context).textTheme.headline5,
+                      ),
                     ),
-                    const SizedBox(height: 8.0),
-                    _buildBusStopsCard(),
-                    _buildNewsList(),
                   ],
                 ),
               ),
             ),
+          ];
+        },
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 24.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Hello, $userName!',
+                        style: Theme.of(context).textTheme.headline5),
+                    _buildTemperatureButton(),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                _buildGreenPassCard(),
+                const SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Flexible(child: _buildDiningCard()),
+                    const SizedBox(width: 8.0),
+                    Expanded(child: _buildNUSDetailsCard()),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                _buildBusStopsCard(),
+                _buildNewsList(),
+              ],
+            ),
           ),
+        ),
+      ),
     );
   }
 
@@ -122,7 +124,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Transform.translate(
                 offset: const Offset(12, 12),
                 child: Icon(
-                    context.watch<UserModel>().isTemperatureAcceptable ? Icons.check_circle : Icons.cancel,
+                    context.watch<UserModel>().isTemperatureAcceptable
+                        ? Icons.check_circle
+                        : Icons.cancel,
                     size: 16,
                     color: context.watch<UserModel>().isTemperatureAcceptable
                         ? Colors.green
@@ -131,7 +135,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           label: Text(
-            context.watch<UserModel>().isTemperatureAcceptable ? 'Declared' : 'Not declared',
+            context.watch<UserModel>().isTemperatureAcceptable
+                ? 'Declared'
+                : 'Not declared',
             style: TextStyle(
                 color: context.watch<UserModel>().isTemperatureAcceptable
                     ? Theme.of(context).hintColor
@@ -151,9 +157,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return _buildCard(
       disabled: !context.watch<UserModel>().isTemperatureAcceptable,
       collapsedColor: context.watch<UserModel>().isTemperatureAcceptable
-          ? Colors.green.shade300
-          : Theme.of(context).colorScheme.onSurface.withOpacity(
-              0.12), // Disabled background color chosen according to default ElevatedButton style.
+          ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade300 : Colors.green.shade700)
+          : Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+      // Disabled background color chosen according to default ElevatedButton style.
       collapsed: Container(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -169,15 +175,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text('View Green Pass',
                     style: Theme.of(context).textTheme.headline6?.copyWith(
-                          color: context.watch<UserModel>().isTemperatureAcceptable
-                              ? null
-                              : Theme.of(context).disabledColor,
+                          color:
+                              context.watch<UserModel>().isTemperatureAcceptable
+                                  ? null
+                                  : Theme.of(context).disabledColor,
                         )),
-                Text('Declare temperature first',
+                Text(context.watch<UserModel>().isTemperatureAcceptable ? 'Temperature declared' : 'Declare temperature first',
                     style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                          color: context.watch<UserModel>().isTemperatureAcceptable
-                              ? null
-                              : Theme.of(context).disabledColor,
+                          color:
+                              context.watch<UserModel>().isTemperatureAcceptable
+                                  ? null
+                                  : Theme.of(context).disabledColor,
                         )),
               ],
             ),
@@ -190,8 +198,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildDiningCard() {
     return _buildCard(
-      expandedColor: const Color(0xFF424242),
-      collapsedColor: const Color(0xFF424242),
+      expandedColor: DiningScreen.bottomColor,
+      collapsedColor: DiningScreen.bottomColor,
       collapsed: Container(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -202,12 +210,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Dinner',
+                Text(
+                    context
+                            .read<DiningModel>()
+                            .currentMealType
+                            ?.toShortString() ??
+                        'Loading',
                     style: Theme.of(context)
                         .textTheme
                         .headline6
                         ?.copyWith(color: Colors.white)),
-                Text('10 credits',
+                Text('${context.read<DiningModel>().totalCreditCount} credits',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2
@@ -255,7 +268,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildBusStopsCard() {
     return _buildCard(
-      collapsedColor: const Color(0xFFF5DBCE),
+      collapsedColor: Theme.of(context).cardColor,
+      collapsedBorder: Border.all(
+        color: Theme.of(context).dividerColor,
+      ),
       collapsed: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -308,6 +324,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Widget expanded,
     required Color collapsedColor,
     Color? expandedColor,
+    Border? collapsedBorder,
     bool disabled = false,
   }) {
     // From Flutter animations library that animates a container from to and
@@ -318,16 +335,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return OpenContainer(
       closedColor: collapsedColor,
       openColor: expandedColor ?? Theme.of(context).canvasColor,
-      tappable: false, // To prevent interference with InkWell; to draw ripples
-      openBuilder: (_, closeContainer) => InkWell(
-        onTap: closeContainer,
-        child: expanded,
-      ),
+      tappable: false,
+      // To prevent interference with InkWell; to draw ripples
+      openBuilder: (_, closeContainer) => expanded,
       closedBuilder: (_, openContainer) => Material(
         color: collapsedColor,
         child: InkWell(
           onTap: disabled ? null : openContainer,
-          child: collapsed,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: collapsedBorder,
+            ),
+            child: collapsed,
+          ),
         ),
       ),
       closedShape:
