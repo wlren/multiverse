@@ -1,6 +1,9 @@
-import 'package:multiverse/menu.dart';
+//Local Files
+import '../classes/menu.dart';
 
+//Dining related repository which communicates with backend API to fetch dining-related data
 class DiningRepository {
+  //Temp local data since backend is not set up
   static final FullDayMenu sampleMenu = FullDayMenu(
     breakfast: Menu([
       Meal(
@@ -57,11 +60,14 @@ class DiningRepository {
   Future<MealType> getCurrentMealType() async {
     DateTime now = DateTime.now();
     bool isAfterSeven = now.hour >= 7;
-    bool isBeforeTenThirty = now.hour <= 9 || (now.hour == 10 && now.minute <= 30);
+    bool isBeforeTenThirty =
+        now.hour <= 9 || (now.hour == 10 && now.minute <= 30);
     bool isBreakfastTime = isAfterSeven && isBeforeTenThirty;
 
-    bool isAfterFiveThirty = now.hour >= 6 || (now.hour == 5 && now.minute >= 30);
-    bool isBeforeNineThirty = now.hour <= 8 || (now.hour == 9 && now.minute <= 30);
+    bool isAfterFiveThirty =
+        now.hour >= 6 || (now.hour == 5 && now.minute >= 30);
+    bool isBeforeNineThirty =
+        now.hour <= 8 || (now.hour == 9 && now.minute <= 30);
     bool isDinnerTime = isAfterFiveThirty && isBeforeNineThirty;
 
     // Breakfast served from Monday to Saturday
@@ -80,6 +86,7 @@ class DiningRepository {
   }
 
   Future<String> getMealLocation() async {
+    //TODO get from database
     return 'RVRC';
   }
 }

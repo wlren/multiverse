@@ -1,5 +1,8 @@
+//Packages
 import 'package:flutter/material.dart';
-import 'package:multiverse/user_repository.dart';
+
+//Local Files
+import '../repository/user_repository.dart';
 
 /// Responsible for communicating between UI and UserRepository.
 /// Provides synchronous versions of the async methods found in the corresponding

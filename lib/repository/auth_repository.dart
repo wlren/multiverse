@@ -1,4 +1,6 @@
-// For testing purposes
+//For testing purposes
+//Authentication related repository which communicates with backend API to fetch
+//authentication -related data
 class AuthRepository {
   Future<void> login() async {
     //print('attempting login');

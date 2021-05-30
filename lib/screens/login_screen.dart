@@ -1,16 +1,16 @@
+//Packages
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../auth/auth_repository.dart';
+//Local Files
 import '../auth/form_submission_status.dart';
 import '../auth/login/login_bloc.dart';
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
-import '../view_model/user_model.dart';
-import '../user_repository.dart';
+import '../repository/auth_repository.dart';
 import 'dashboard_screen.dart';
 
 ///The initial screen which user would see upon launching app
@@ -132,11 +132,13 @@ class LoginScreen extends StatelessWidget {
             children: [
               SvgPicture.asset('assets/logo.svg'),
               const SizedBox(height: 16.0),
-              Text('multiverse',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.spartan(
-                    textStyle: Theme.of(context).textTheme.headline5,
-                  )),
+              Text(
+                'multiverse',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.spartan(
+                  textStyle: Theme.of(context).textTheme.headline5,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 48.0),
@@ -146,9 +148,13 @@ class LoginScreen extends StatelessWidget {
               authRepo: context.read<AuthRepository>(),
             ),
           ),
+          //Temporary skip button
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DashboardScreen()));
             },
             child: const Text('Skip to dashboard'),
           ),

@@ -1,6 +1,8 @@
+//Packages
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//Local Files
 import '../view_model/green_pass_model.dart';
 import '../view_model/user_model.dart';
 
@@ -24,7 +26,11 @@ class GreenPassScreen extends StatelessWidget {
 
   Color _getBackgroundColor(BuildContext context) {
     return context.watch<GreenPassModel>().isPassGreen
-      ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade300 : Colors.green.shade500)
-      : (Theme.of(context).brightness == Brightness.light ? Colors.red.shade300 : Colors.red.shade500);
+        ? (Theme.of(context).brightness == Brightness.light
+            ? Colors.green.shade300
+            : Colors.green.shade500)
+        : (Theme.of(context).brightness == Brightness.light
+            ? Colors.red.shade300
+            : Colors.red.shade500);
   }
 }

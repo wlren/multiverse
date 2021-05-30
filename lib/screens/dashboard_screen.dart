@@ -1,3 +1,4 @@
+//Packages
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/view_model/dining_model.dart';
 import 'package:provider/provider.dart';
 
-import '../menu.dart';
+//Local Files
+import '../classes/menu.dart';
 import '../view_model/user_model.dart';
+import '/view_model/dining_model.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
@@ -43,7 +45,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               backwardsCompatibility: false,
               systemOverlayStyle: SystemUiOverlayStyle(
                 systemNavigationBarColor: Colors.transparent,
-                systemNavigationBarIconBrightness: Theme.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
+                systemNavigationBarIconBrightness:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Brightness.dark
+                        : Brightness.light,
               ),
               titleSpacing: 0,
               title: Padding(
@@ -57,7 +62,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: 32.0,
                     ),
                     const SizedBox(width: 8.0),
-                    Text('multiverse',
+                    Text(
+                      'multiverse',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.spartan(
                         textStyle: Theme.of(context).textTheme.headline5,
@@ -149,7 +155,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         );
       },
-      openBuilder: (_, closeContainer) => TemperatureScreen(),
+      openBuilder: (_, closeContainer) => const TemperatureScreen(),
     );
   }
 
@@ -157,7 +163,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return _buildCard(
       disabled: !context.watch<UserModel>().isTemperatureAcceptable,
       collapsedColor: context.watch<UserModel>().isTemperatureAcceptable
-          ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade300 : Colors.green.shade700)
+          ? (Theme.of(context).brightness == Brightness.light
+              ? Colors.green.shade300
+              : Colors.green.shade700)
           : Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
       // Disabled background color chosen according to default ElevatedButton style.
       collapsed: Container(
@@ -180,7 +188,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ? null
                                   : Theme.of(context).disabledColor,
                         )),
-                Text(context.watch<UserModel>().isTemperatureAcceptable ? 'Temperature declared' : 'Declare temperature first',
+                Text(
+                    context.watch<UserModel>().isTemperatureAcceptable
+                        ? 'Temperature declared'
+                        : 'Declare temperature first',
                     style: Theme.of(context).textTheme.subtitle2?.copyWith(
                           color:
                               context.watch<UserModel>().isTemperatureAcceptable

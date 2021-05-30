@@ -1,16 +1,15 @@
-import 'dart:math';
-
+//Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:multiverse/view_model/dining_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     as extend;
 
-import '../dining_repository.dart';
-import '../menu.dart';
+//Local Files
+import '../classes/menu.dart';
+import '../view_model/dining_model.dart';
 
 class DiningScreen extends StatefulWidget {
   const DiningScreen({Key? key}) : super(key: key);
@@ -33,7 +32,7 @@ class _DiningScreenState extends State<DiningScreen>
       data: Theme.of(context).copyWith(
         colorScheme: Theme.of(context).colorScheme.copyWith(
               background: DiningScreen.bottomColor,
-              surface: Color(0xFF424242),
+              surface: const Color(0xFF424242),
               onBackground: Colors.white,
               onSurface: Colors.white,
               onPrimary: Colors.white,
@@ -114,16 +113,14 @@ class _DiningScreenState extends State<DiningScreen>
                                       MealType.none) ...{
                                     Text(
                                       '${context.read<DiningModel>().currentMealType!.toShortString()} · ${context.read<DiningModel>().mealLocation}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4,
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
                                     ),
                                   } else ...{
                                     Text(
                                       'Meals closed',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4,
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
                                     ),
                                   },
                                   const SizedBox(height: 16.0),
@@ -147,7 +144,7 @@ class _DiningScreenState extends State<DiningScreen>
                             ),
                             Expanded(
                                 child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: DiningScreen.bottomColor,
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(16.0),
@@ -167,7 +164,7 @@ class _DiningScreenState extends State<DiningScreen>
               },
               body: Column(
                 children: [
-                  TabBar(
+                  const TabBar(
                     tabs: [
                       Tab(
                         text: 'Breakfast',
@@ -205,7 +202,7 @@ class _DiningScreenState extends State<DiningScreen>
 
   Widget _buildMenu(BuildContext context, Menu? menu) {
     if (menu == null) {
-      return Center(child: Text('No menu found'));
+      return const Center(child: Text('No menu found'));
     } else {
       return CustomScrollView(slivers: [
         for (Meal meal in menu.meals) ...{

@@ -1,5 +1,4 @@
 //Form submittion related status classes
-
 abstract class FormSubmissionStatus {
   const FormSubmissionStatus();
 }

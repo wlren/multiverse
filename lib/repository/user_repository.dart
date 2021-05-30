@@ -1,5 +1,7 @@
-import 'package:multiverse/temperature_record.dart';
+//Local Files
+import '../classes/temperature_record.dart';
 
+//User related repository which communicates with backend API to fetch user-related data
 class UserRepository {
   // Temporary variables to imitate server state
   static bool _isTemperatureDeclared = false;
@@ -21,7 +23,8 @@ class UserRepository {
   Future<void> declareTemperature(double temperature) async {
     // TODO: Access server to declare temperature
     _isTemperatureDeclared = true;
-    _temperatureRecords.add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
+    _temperatureRecords
+        .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
 
     // Sort temperature records by temperature. This should be done by a
     // sorted SQL call.
