@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multiverse/auth/auth_cubit.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -145,8 +146,8 @@ class LoginScreen extends StatelessWidget {
           BlocProvider(
             child: _loginForm(),
             create: (context) => LoginBloc(
-              authRepo: context.read<AuthRepository>(),
-            ),
+                authRepo: context.read<AuthRepository>(),
+                authCubit: context.read<AuthCubit>()),
           ),
           //Temporary skip button
           ElevatedButton(

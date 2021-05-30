@@ -1,6 +1,9 @@
 //Packages
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multiverse/app_navigator.dart';
+import 'package:multiverse/auth/auth_cubit.dart';
+import 'package:multiverse/session_cubit.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -36,13 +39,17 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
             create: (context) => DiningModel(context.read<DiningRepository>()),
           ),
+          BlocProvider(
+            create: (context) =>
+                SessionCubit(authRepository: context.read<AuthRepository>()),
+          )
         ],
         child: MaterialApp(
           title: 'Multiverse',
           theme: ThemeDataMultiverse.lightThemeData,
           darkTheme: ThemeDataMultiverse.darkThemeData,
           themeMode: ThemeMode.system,
-          home: LoginScreen(),
+          home: const AppNavigator(),
           debugShowCheckedModeBanner: false, // Hide debug flag
         ),
       ),

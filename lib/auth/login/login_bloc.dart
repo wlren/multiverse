@@ -1,17 +1,20 @@
 //Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multiverse/auth/auth_credentials.dart';
 
 //Local Files
 import '../../repository/auth_repository.dart';
 import '../form_submission_status.dart';
+import '/auth/auth_cubit.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
 //BloC Architecture for login
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository? authRepo;
+  final AuthCubit authCubit;
 
-  LoginBloc({this.authRepo}) : super(LoginState());
+  LoginBloc({this.authRepo, required this.authCubit}) : super(LoginState());
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -26,8 +29,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(formStatus: FormSubmitting());
 
       try {
-        await authRepo?.login();
+        final matricNo = await authRepo?.login(
+          username: state.username,
+          password: state.password,
+        );
         yield state.copyWith(formStatus: SubmissionSuccess());
+
+        authCubit.launchSession(
+            AuthCredentials(nusNetID: state.username, matricID: matricNo));
       } on Exception catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
         yield state.copyWith(formStatus: const InitialFormStatus());
