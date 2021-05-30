@@ -29,14 +29,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(formStatus: FormSubmitting());
 
       try {
-        final matricNo = await authRepo?.login(
+        final userID = await authRepo?.login(
           username: state.username,
           password: state.password,
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
 
         authCubit.launchSession(
-            AuthCredentials(nusNetID: state.username, matricID: matricNo));
+            AuthCredentials(nusNetID: state.username, userID: userID));
       } on Exception catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
         yield state.copyWith(formStatus: const InitialFormStatus());

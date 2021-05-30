@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multiverse/app_navigator.dart';
-import 'package:multiverse/auth/auth_cubit.dart';
 import 'package:multiverse/session_cubit.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +12,6 @@ import '../repository/user_repository.dart';
 import '../view_model/dining_model.dart';
 import '../view_model/user_model.dart';
 import 'repository/auth_repository.dart';
-import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());

@@ -9,10 +9,10 @@ class AuthRepository {
 
   Future<String> login(
       {required String username, required String password}) async {
-    print('attempting login');
-    final matricNo =
-        await Future.delayed(const Duration(seconds: 2), () => "Matric Number");
-    return matricNo;
+    //print('attempting login');
+    final userID =
+        await Future.delayed(const Duration(seconds: 2), () => "USER ID");
+    return userID;
     //throw Exception('failed log in');
   }
 

@@ -1,0 +1,7 @@
+type NUSStudent @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  email: String
+  matric_no: String
+  nusNetID: String!
+}
+ 

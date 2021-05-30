@@ -34,6 +34,12 @@ dependencies:
   timeago: ^3.0.2
   extended_nested_scroll_view: ^3.0.0
   flutter_sticky_header: ^0.6.0
+  amplify_flutter: ^0.1.5
+  amplify_auth_cognito: ^0.1.5
+  amplify_api: ^0.1.5
+  amplify_datastore: ^0.1.5
+
+
 
 dev_dependencies:
   flutter_lints: ^1.0.2
