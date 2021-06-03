@@ -12,7 +12,6 @@ import '../auth/login/login_bloc.dart';
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
 import '../repository/auth_repository.dart';
-import 'dashboard_screen.dart';
 
 ///The initial screen which user would see upon launching app
 ///prompts user to log in and will authenticate using AWS Amplify
@@ -149,15 +148,14 @@ class LoginScreen extends StatelessWidget {
                 authRepo: context.read<AuthRepository>(),
                 authCubit: context.read<AuthCubit>()),
           ),
-          //Temporary skip button
+          //Temporary skip button #DEPRECATED
           ElevatedButton(
             onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DashboardScreen()));
+              context
+                  .read<AuthRepository>()
+                  .login(username: 'e0000000', password: 'test');
             },
-            child: const Text('Skip to dashboard'),
+            child: const Text('Testing DO NOT CLICK'),
           ),
         ],
       ),

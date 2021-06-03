@@ -20,5 +20,13 @@
         }
       }
     }
+  },
+  "auth": {
+    "multiverse5df5932a": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
   }
 }

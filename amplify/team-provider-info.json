@@ -10,6 +10,11 @@
       "StackName": "amplify-multiverse-staging-173109",
       "StackId": "arn:aws:cloudformation:ap-southeast-1:767534068853:stack/amplify-multiverse-staging-173109/d2c3fb20-c16c-11eb-b123-0a673841cb10",
       "AmplifyAppId": "dbz09a67n6be2"
+    },
+    "categories": {
+      "auth": {
+        "multiverse5df5932a": {}
+      }
     }
   }
 }

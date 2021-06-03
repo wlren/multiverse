@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:multiverse/models/model_prodiver.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -19,7 +20,8 @@ import 'nus_card_screen.dart';
 import 'temperature_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  final NUSStudent user;
+  const DashboardScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -30,10 +32,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DateFormat dateFormat = DateFormat('dd MMM (aa)');
   final ScrollController _scrollController = ScrollController();
   late final String dateString = dateFormat.format(DateTime.now());
-  final String userName = 'John Smith';
 
   @override
   Widget build(BuildContext context) {
+    final String userName = widget.user.nusNetID;
     return Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
