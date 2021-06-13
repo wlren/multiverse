@@ -23,7 +23,7 @@ class DiningModel extends ChangeNotifier {
   String? mealLocation;
   MealType? currentMealType;
 
-  void update() async {
+  Future<void> update() async {
     menu = await diningRepository.getMenu(menuDate);
     breakfastCreditCount = await diningRepository.getBreakfastCreditCount();
     dinnerCreditCount = await diningRepository.getDinnerCreditCount();
@@ -32,7 +32,7 @@ class DiningModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setMenuDate(DateTime date) {
+  Future<void> setMenuDate(DateTime date) async {
     menuDate = date;
     update();
   }
