@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:multiverse/menu.dart';
+import 'package:multiverse/classes/menu.dart';
 import 'package:multiverse/screens/dashboard_screen.dart';
 import 'package:multiverse/screens/dining_screen.dart';
 import 'package:multiverse/screens/green_pass_screen.dart';

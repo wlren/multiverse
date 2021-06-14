@@ -1,6 +1,7 @@
-//State keeping for login status
+//Local Files
 import '../form_submission_status.dart';
 
+//State keeping for login status
 class LoginState {
   /* VARIABLES start */
   final String username;

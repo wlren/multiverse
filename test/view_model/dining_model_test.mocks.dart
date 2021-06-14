@@ -5,8 +5,8 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:multiverse/dining_repository.dart' as _i3;
-import 'package:multiverse/menu.dart' as _i2;
+import 'package:multiverse/repository/dining_repository.dart' as _i3;
+import 'package:multiverse/classes/menu.dart' as _i2;
 
 // ignore_for_file: comment_references
 // ignore_for_file: unnecessary_parenthesis

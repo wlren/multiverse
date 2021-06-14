@@ -1,7 +1,7 @@
 import 'package:mockito/annotations.dart';
-import 'package:multiverse/menu.dart';
+import 'package:multiverse/classes/menu.dart';
 import 'package:test/test.dart';
-import 'package:multiverse/dining_repository.dart';
+import 'package:multiverse/repository/dining_repository.dart';
 import 'package:multiverse/view_model/dining_model.dart';
 import 'package:mockito/mockito.dart';
 import 'dining_model_test.mocks.dart';
@@ -52,8 +52,10 @@ void main() {
   const mealLocation = 'mealLocation';
 
   when(repository.getCurrentMealType()).thenAnswer((_) async => mealType);
-  when(repository.getBreakfastCreditCount()).thenAnswer((_) async => breakfastCredits);
-  when(repository.getDinnerCreditCount()).thenAnswer((_) async => dinnerCredits);
+  when(repository.getBreakfastCreditCount())
+      .thenAnswer((_) async => breakfastCredits);
+  when(repository.getDinnerCreditCount())
+      .thenAnswer((_) async => dinnerCredits);
   when(repository.getMealLocation()).thenAnswer((_) async => mealLocation);
   when(repository.getMenu(any)).thenAnswer((_) async => sampleMenu);
 

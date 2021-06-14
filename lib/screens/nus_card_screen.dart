@@ -1,3 +1,4 @@
+//Packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -28,13 +29,13 @@ class NUSCardScreen extends StatelessWidget {
     final double photoSpacing = photoHeight * 0.15;
     final double nusLogoHeight = cardHeight * 0.3;
 
-    final Widget card = Theme(
+    final Widget _card = Theme(
         data: Theme.of(context).copyWith(
-            brightness: Brightness.light,
-            textTheme: Theme.of(context).textTheme.apply(
-              displayColor: Colors.black,
-              bodyColor: Colors.black,
-            ),
+          brightness: Brightness.light,
+          textTheme: Theme.of(context).textTheme.apply(
+                displayColor: Colors.black,
+                bodyColor: Colors.black,
+              ),
         ),
         child: AspectRatio(
           aspectRatio: 90 / 54, // 90mm by 54mm
@@ -157,7 +158,7 @@ class NUSCardScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              card,
+              _card,
               QrImage(
                 backgroundColor: Colors.white,
                 data:

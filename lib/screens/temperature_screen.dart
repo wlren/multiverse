@@ -1,15 +1,15 @@
-import 'dart:ui';
-
+//Packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/user_repository.dart';
-import 'package:multiverse/view_model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../temperature_record.dart';
+//Local Files
+import '../classes/temperature_record.dart';
+import '../repository/user_repository.dart';
 import '../view_model/temperature_model.dart';
+import '../view_model/user_model.dart';
 
 class TemperatureScreen extends StatefulWidget {
   static final Color acceptableTemperatureColor = Colors.green.shade300;
@@ -28,9 +28,10 @@ class TemperatureScreen extends StatefulWidget {
   }
 }
 
-class TemperatureScreenState extends State<TemperatureScreen> with TickerProviderStateMixin {
+class TemperatureScreenState extends State<TemperatureScreen>
+    with TickerProviderStateMixin {
   static const double leftPadding = 64.0;
-  DateTime now  = DateTime.now();
+  DateTime now = DateTime.now();
   late String _timeInterval = DateFormat('aa').format(now);
   late String currentTimeString = DateFormat('EEEE, d MMM').format(now);
   late final AnimationController _showFormAnimation = AnimationController(
@@ -58,7 +59,10 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
 
   bool _toAnimate = false;
 
-  bool get _isGoodToDeclare => _isSymptomless && _isHouseholdSymptomless && _isAcceptableTemperature(_temperature);
+  bool get _isGoodToDeclare =>
+      _isSymptomless &&
+      _isHouseholdSymptomless &&
+      _isAcceptableTemperature(_temperature);
 
   @override
   Widget build(BuildContext context) {
@@ -68,109 +72,120 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
         // Set here instead of in AnimationController constructor so that
         // the animation does not play when screen is initialized.
         if (!_toAnimate) {
-          _showFormAnimation.value = context.read<TemperatureModel>().isTemperatureDeclared ? 0 : 1;
+          _showFormAnimation.value =
+              context.read<TemperatureModel>().isTemperatureDeclared ? 0 : 1;
         }
         return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backwardsCompatibility: false,
-          backgroundColor: Colors.transparent,
-          title: const Text('Temperature Declaration'),
-          foregroundColor: Theme.of(context).textTheme.headline6!.color,
-          titleSpacing: 8.0,
-          elevation: 0,
-        ),
-        body: Column(
-          children: [
-            Material(
-              clipBehavior: Clip.none,
-              color: _getBackgroundColor(),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: kToolbarHeight + MediaQuery.of(context).padding.top,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: leftPadding),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Transform.translate(
-                          offset: const Offset(0, -16.0),
-                          child: Text(context.read<TemperatureModel>().isTemperatureDeclared ? 'Declared' : 'Not declared yet'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                  child: Container(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backwardsCompatibility: false,
+            backgroundColor: Colors.transparent,
+            title: const Text('Temperature Declaration'),
+            foregroundColor: Theme.of(context).textTheme.headline6!.color,
+            titleSpacing: 8.0,
+            elevation: 0,
+          ),
+          body: Column(
+            children: [
+              Material(
+                clipBehavior: Clip.none,
                 color: _getBackgroundColor(),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(16.0)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Column(
-                      children: [
-                        // Hide the temperature form once declared, unless
-                        // declaring
-                        AnimatedBuilder(
-                          animation: _showFormAnimation,
-                          builder: (context, child) {
-                            return Opacity(
-                              opacity: CurvedAnimation(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height:
+                          kToolbarHeight + MediaQuery.of(context).padding.top,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: leftPadding),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Transform.translate(
+                            offset: const Offset(0, -16.0),
+                            child: Text(context
+                                    .read<TemperatureModel>()
+                                    .isTemperatureDeclared
+                                ? 'Declared'
+                                : 'Not declared yet'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                    child: Container(
+                  color: _getBackgroundColor(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                      borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16.0)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Column(
+                        children: [
+                          // Hide the temperature form once declared, unless
+                          // declaring
+                          AnimatedBuilder(
+                            animation: _showFormAnimation,
+                            builder: (context, child) {
+                              return Opacity(
+                                opacity: CurvedAnimation(
                                   parent: _showFormAnimation,
                                   curve: const Interval(0.75, 1.0),
-                              ).value,
-                              child: Align(
-                                alignment: Alignment.topCenter,
-                                heightFactor: CurvedAnimation(
-                                    parent:_showFormAnimation,
-                                    curve: const Interval(0.0, 0.75, curve: Curves.easeInOutCubic),
                                 ).value,
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: _buildTemperatureForm(context),
-                        ),
-                        const SizedBox(height: 24.0),
-                        _buildDeclareButton(context),
-                        const SizedBox(height: 32.0),
-                        _buildTemperatureList(context),
-                      ],
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  heightFactor: CurvedAnimation(
+                                    parent: _showFormAnimation,
+                                    curve: const Interval(0.0, 0.75,
+                                        curve: Curves.easeInOutCubic),
+                                  ).value,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: _buildTemperatureForm(context),
+                          ),
+                          const SizedBox(height: 24.0),
+                          _buildDeclareButton(context),
+                          const SizedBox(height: 32.0),
+                          _buildTemperatureList(context),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )),
-            ),
-          ],
-        ),
-      );
+                )),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
 
   Widget _buildDeclareButton(BuildContext context) {
-    bool isTemperatureDeclared = context.read<TemperatureModel>().isTemperatureDeclared;
+    bool isTemperatureDeclared =
+        context.read<TemperatureModel>().isTemperatureDeclared;
     if (isTemperatureDeclared && !_isRedeclaring) {
       return OutlinedButtonTheme(
         data: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
             textStyle: Theme.of(context).textTheme.headline6,
           ),
         ),
         child: OutlinedButton.icon(
           icon: const Icon(Icons.refresh),
-          label: Text(context.read<TemperatureModel>().isTemperatureDeclared ? 'Redeclare' : 'Declare'),
+          label: Text(context.read<TemperatureModel>().isTemperatureDeclared
+              ? 'Redeclare'
+              : 'Declare'),
           onPressed: () {
             if (context.read<TemperatureModel>().isTemperatureDeclared) {
               // Redeclaring temperature
@@ -193,21 +208,26 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
           style: ElevatedButton.styleFrom(
             primary: _isGoodToDeclare
                 ? TemperatureScreen.acceptableTemperatureColor
-                : TemperatureScreen
-                .unacceptableTemperatureColor,
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                : TemperatureScreen.unacceptableTemperatureColor,
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
             textStyle: Theme.of(context).textTheme.headline6,
             onPrimary: Colors.black,
           ),
         ),
         child: ElevatedButton.icon(
-          icon: _isGoodToDeclare ? const Icon(Icons.done) : const Icon(Icons.warning),
-          label: Text(context.read<TemperatureModel>().isTemperatureDeclared ? 'Redeclare' : 'Declare'),
+          icon: _isGoodToDeclare
+              ? const Icon(Icons.done)
+              : const Icon(Icons.warning),
+          label: Text(context.read<TemperatureModel>().isTemperatureDeclared
+              ? 'Redeclare'
+              : 'Declare'),
           onPressed: () {
-            if (context.read<TemperatureModel>().isTemperatureDeclared && !_isRedeclaring) {
-                setState(() {
-                  _isRedeclaring = true;
-                });
+            if (context.read<TemperatureModel>().isTemperatureDeclared &&
+                !_isRedeclaring) {
+              setState(() {
+                _isRedeclaring = true;
+              });
             } else {
               _tryDeclareTemperature(context, _temperature);
             }
@@ -215,33 +235,27 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
         ),
       );
     }
-
   }
 
   Widget _buildTemperatureForm(BuildContext context) {
     return Column(
       children: [
         Padding(
-          padding:
-          const EdgeInsets.only(left: leftPadding, right: 32.0),
+          padding: const EdgeInsets.only(left: leftPadding, right: 32.0),
           child: Column(
             children: [
               Row(
                 children: [
                   Text(currentTimeString,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      )),
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          )),
                   const Spacer(),
                   DropdownButton(
                     value: _timeInterval,
                     items: [
-                      DateFormat('aa')
-                          .format(DateTime.utc(2020, 1, 1, 11)),
-                      DateFormat('aa')
-                          .format(DateTime.utc(2020, 1, 1, 13)),
+                      DateFormat('aa').format(DateTime.utc(2020, 1, 1, 11)),
+                      DateFormat('aa').format(DateTime.utc(2020, 1, 1, 13)),
                     ].map((String value) {
                       return DropdownMenuItem(
                         value: value,
@@ -261,11 +275,13 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
                 children: [
                   const Text('I do not have COVID-19 symptoms.'),
                   const Spacer(),
-                  Checkbox(value: _isSymptomless, onChanged: (value) {
-                    setState(() {
-                      _isSymptomless = value!;
-                    });
-                  }),
+                  Checkbox(
+                      value: _isSymptomless,
+                      onChanged: (value) {
+                        setState(() {
+                          _isSymptomless = value!;
+                        });
+                      }),
                 ],
               ),
               Row(
@@ -274,16 +290,18 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
                     flex: 3,
                     child: Text(
                       'Nobody in the same household has fever, '
-                          'and/or is showing the above stated symptoms.',
+                      'and/or is showing the above stated symptoms.',
                       softWrap: true,
                     ),
                   ),
                   const Spacer(),
-                  Checkbox(value: _isHouseholdSymptomless, onChanged: (value) {
-                    setState(() {
-                      _isHouseholdSymptomless = value!;
-                    });
-                  }),
+                  Checkbox(
+                      value: _isHouseholdSymptomless,
+                      onChanged: (value) {
+                        setState(() {
+                          _isHouseholdSymptomless = value!;
+                        });
+                      }),
                 ],
               ),
             ],
@@ -293,13 +311,13 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
         Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.only(left: leftPadding, right: 48.0),
-          child: Text('Temperature', style: Theme.of(context).textTheme.subtitle1?.copyWith(
-            fontWeight: FontWeight.bold,
-          )),
+          child: Text('Temperature',
+              style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )),
         ),
         Padding(
-          padding:
-          const EdgeInsets.only(left: leftPadding - 24.0, right: 24.0),
+          padding: const EdgeInsets.only(left: leftPadding - 24.0, right: 24.0),
           child: Slider.adaptive(
             label: _formatTemperature(_temperature),
             value: _temperature,
@@ -307,8 +325,7 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
             max: TemperatureScreen.maxTemperature,
             activeColor: _isAcceptableTemperature(_temperature)
                 ? TemperatureScreen.acceptableTemperatureColor
-                : TemperatureScreen
-                .unacceptableTemperatureColor,
+                : TemperatureScreen.unacceptableTemperatureColor,
             onChanged: (temperature) {
               setState(() {
                 _temperature = temperature;
@@ -351,7 +368,8 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
               TemperatureRecord record =
                   temperatureModel.temperatureRecords[position];
               return ListTile(
-                contentPadding: const EdgeInsets.only(left: leftPadding, right: 48.0),
+                contentPadding:
+                    const EdgeInsets.only(left: leftPadding, right: 48.0),
                 title: Text(_getRecordTitle(record)),
                 subtitle: Text(_getRecordSubtitle(record)),
                 trailing: Text(_getRecordTrailing(record),
@@ -370,26 +388,32 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
     DateTime sunday = now.subtract(Duration(days: now.weekday));
     DateTime day = sunday.add(Duration(days: dayIndex));
     String dayLetter = DateFormat.E().format(day)[0];
-    bool isDeclared = context.read<TemperatureModel>().temperatureRecords.any((record) => record.time.isSameDate(day));
+    bool isDeclared = context
+        .read<TemperatureModel>()
+        .temperatureRecords
+        .any((record) => record.time.isSameDate(day));
     bool isToday = dayIndex == now.weekday;
     Color backgroundColor = isDeclared
-        ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade200 : Colors.green.shade800)
+        ? (Theme.of(context).brightness == Brightness.light
+            ? Colors.green.shade200
+            : Colors.green.shade800)
         : Theme.of(context).dividerColor;
     Color borderColor = isToday
-        ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade700 : Colors.green.shade300)
+        ? (Theme.of(context).brightness == Brightness.light
+            ? Colors.green.shade700
+            : Colors.green.shade300)
         : Colors.transparent;
 
     return Container(
       width: 32.0,
       height: 32.0,
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(
-          width: 4.0,
-          color: borderColor,
-        )
-      ),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(
+            width: 4.0,
+            color: borderColor,
+          )),
       alignment: Alignment.center,
       child: Text(dayLetter),
     );
@@ -411,8 +435,12 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
 
   Color _getBackgroundColor() {
     return context.watch<UserModel>().isTemperatureAcceptable
-        ? (Theme.of(context).brightness == Brightness.light ? Colors.green.shade300 : Colors.green.shade900)
-        : (Theme.of(context).brightness == Brightness.light ? Colors.orange.shade300 : Colors.deepOrange.shade900);
+        ? (Theme.of(context).brightness == Brightness.light
+            ? Colors.green.shade300
+            : Colors.green.shade900)
+        : (Theme.of(context).brightness == Brightness.light
+            ? Colors.orange.shade300
+            : Colors.deepOrange.shade900);
   }
 
   void _declareTemperature(BuildContext context, double temperature) {
@@ -429,41 +457,46 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
     if (_isGoodToDeclare) {
       _declareTemperature(context, temperature);
     } else {
-      showDialog(context: context, builder: (_) {
-        return AlertDialog(
-          title: const Text('Are you sure?'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Do you wish to declare your temperature?', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16.0),
-              const Text('You have declared that:'),
-              if (!_isSymptomless)
-                const Text('• You have COVID-19 symptoms.'),
-              if (!_isHouseholdSymptomless)
-                const Text('• Somebody in the same household has fever, and/or is showing COVID-19 symptoms.'),
-              if (!_isAcceptableTemperature(_temperature))
-                Text('• Your temperature is ${_formatTemperature(_temperature)}, which is above the acceptable range.'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _declareTemperature(context, temperature);
-              },
-              child: const Text('Yes'),
-            ),
-          ],
-        );
-      });
+      showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: const Text('Are you sure?'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Do you wish to declare your temperature?',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16.0),
+                  const Text('You have declared that:'),
+                  if (!_isSymptomless)
+                    const Text('• You have COVID-19 symptoms.'),
+                  if (!_isHouseholdSymptomless)
+                    const Text(
+                        '• Somebody in the same household has fever, and/or is showing COVID-19 symptoms.'),
+                  if (!_isAcceptableTemperature(_temperature))
+                    Text(
+                        '• Your temperature is ${_formatTemperature(_temperature)}, which is above the acceptable range.'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _declareTemperature(context, temperature);
+                  },
+                  child: const Text('Yes'),
+                ),
+              ],
+            );
+          });
     }
   }
 
@@ -478,7 +511,6 @@ class TemperatureScreenState extends State<TemperatureScreen> with TickerProvide
 
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {
-    return year == other.year && month == other.month
-        && day == other.day;
+    return year == other.year && month == other.month && day == other.day;
   }
 }

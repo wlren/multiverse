@@ -1,6 +1,9 @@
+//Packages
 import 'package:flutter/material.dart';
-import 'package:multiverse/dining_repository.dart';
-import 'package:multiverse/menu.dart';
+
+//Local Files
+import '../classes/menu.dart';
+import '../repository/dining_repository.dart';
 
 class DiningModel extends ChangeNotifier {
   DiningModel(this.diningRepository) {
@@ -20,6 +23,7 @@ class DiningModel extends ChangeNotifier {
       return null;
     }
   }
+
   String? mealLocation;
   MealType? currentMealType;
 

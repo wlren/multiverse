@@ -1,4 +1,7 @@
+//Packages
 import 'package:flutter/material.dart';
+
+//Local files
 import 'package:multiverse/view_model/user_model.dart';
 
 // Contains methods/variables representing user interactions in the
@@ -8,8 +11,8 @@ class GreenPassModel extends ChangeNotifier {
 
   final UserModel userModel;
 
+  // TODO: Add other factors
   bool get isPassGreen {
-    // TODO: Add other factors
     return userModel.isTemperatureAcceptable;
   }
 }

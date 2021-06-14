@@ -1,6 +1,6 @@
 import 'package:mockito/annotations.dart';
-import 'package:multiverse/temperature_record.dart';
-import 'package:multiverse/user_repository.dart';
+import 'package:multiverse/classes/temperature_record.dart';
+import 'package:multiverse/repository/user_repository.dart';
 import 'package:multiverse/view_model/temperature_model.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -16,10 +16,13 @@ void main() {
       bool isTemperatureDeclared = false;
       bool isTemperatureAcceptable = false;
 
-      when(repository.isTemperatureDeclared()).thenAnswer((_) async => isTemperatureDeclared);
-      when(repository.isTemperatureAcceptable()).thenAnswer((_) async => isTemperatureAcceptable);
+      when(repository.isTemperatureDeclared())
+          .thenAnswer((_) async => isTemperatureDeclared);
+      when(repository.isTemperatureAcceptable())
+          .thenAnswer((_) async => isTemperatureAcceptable);
       when(repository.declareTemperature(any)).thenAnswer((_) async {});
-      when(repository.getTemperatureRecords()).thenAnswer((_) async => mockTemperatureRecords);
+      when(repository.getTemperatureRecords())
+          .thenAnswer((_) async => mockTemperatureRecords);
 
       final TemperatureModel temperatureModel = TemperatureModel(repository);
 
@@ -42,20 +45,26 @@ void main() {
       expect(temperatureModel.temperatureRecords, mockTemperatureRecords);
     });
 
-    test('declareTemperature should add a TemperatureRecord in repository', () async {
+    test('declareTemperature should add a TemperatureRecord in repository',
+        () async {
       final repository = MockUserRepository();
       final List<TemperatureRecord> mockTemperatureRecords = [];
       bool isTemperatureDeclared = false;
 
       // Set up mock interactions
-      when(repository.isTemperatureDeclared()).thenAnswer((_) async => isTemperatureDeclared);
+      when(repository.isTemperatureDeclared())
+          .thenAnswer((_) async => isTemperatureDeclared);
       when(repository.isTemperatureAcceptable()).thenAnswer((_) async => false);
-      when(repository.declareTemperature(any)).thenAnswer((realInvocation) async {
-        double declaredTemperature = realInvocation.positionalArguments.first as double;
-        mockTemperatureRecords.add(TemperatureRecord(time: DateTime.now(), temperature: declaredTemperature));
+      when(repository.declareTemperature(any))
+          .thenAnswer((realInvocation) async {
+        double declaredTemperature =
+            realInvocation.positionalArguments.first as double;
+        mockTemperatureRecords.add(TemperatureRecord(
+            time: DateTime.now(), temperature: declaredTemperature));
         isTemperatureDeclared = true;
       });
-      when(repository.getTemperatureRecords()).thenAnswer((_) async => mockTemperatureRecords);
+      when(repository.getTemperatureRecords())
+          .thenAnswer((_) async => mockTemperatureRecords);
 
       // Declare model and wait for it to be updated
       final temperatureModel = TemperatureModel(repository);
