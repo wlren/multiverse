@@ -46,7 +46,7 @@ class LoginScreen extends StatelessWidget {
         validator: (value) {
           return state.isValidUsername
               ? null
-              : "Please enter NUSNet ID (exxxxxxx)";
+              : 'Please enter NUSNet ID (exxxxxxx)';
         },
         onChanged: (value) => context.read<LoginBloc>().add(
               LoginUsernameChanged(username: value),
@@ -66,7 +66,7 @@ class LoginScreen extends StatelessWidget {
         ),
         //Validation check
         validator: (value) {
-          return state.isValidPassword ? null : "Please enter your password";
+          return state.isValidPassword ? null : 'Please enter your password';
         },
         onChanged: (value) => context
             .read<LoginBloc>()
@@ -87,7 +87,7 @@ class LoginScreen extends StatelessWidget {
                   context.read<LoginBloc>().add(LoginSubmitted());
                 }
               },
-              child: const Text("Login"),
+              child: const Text('Login'),
             );
     });
   }

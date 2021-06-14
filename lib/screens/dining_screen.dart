@@ -77,8 +77,9 @@ class _DiningScreenState extends State<DiningScreen>
                         animation: _scrollController,
                         builder: (BuildContext context, Widget? child) {
                           double collapsedPercentage =
-                              _scrollController.hasClients &&
-                                      _scrollController.positions.length == 1
+                              // This is a hack to make sure error is not thrown
+                              // ignore: invalid_use_of_protected_member
+                              _scrollController.positions.length == 1
                                   ? _scrollController.offset
                                           .clamp(0, _expandedHeight) /
                                       _expandedHeight

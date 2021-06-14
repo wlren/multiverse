@@ -9,5 +9,10 @@ analyzer:
 
 linter:
   rules:
+    - always_declare_return_types
+    - avoid_returning_null_for_future
+    - await_only_futures
+    - prefer_null_aware_operators
     - cancel_subscriptions
     - directives_ordering
+    - prefer_single_quotes
