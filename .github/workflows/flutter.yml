@@ -33,10 +33,10 @@ jobs:
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
       - name: Install flutter dependencies
-        run: flutter pub get
+        run: dart pub get
 
       - name: Build mockito files
-        run: flutter pub run builder_runner build
+        run: dart pub run builder_runner build
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
