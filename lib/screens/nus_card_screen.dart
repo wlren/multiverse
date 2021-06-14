@@ -151,20 +151,22 @@ class NUSCardScreen extends StatelessWidget {
         elevation: 0,
         backwardsCompatibility: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(horizontalPadding),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            card,
-            QrImage(
-              backgroundColor: Colors.white,
-              data:
-                  '$studentId;${DateTime.now().millisecondsSinceEpoch};NUSSTU',
-              version: QrVersions.auto,
-              size: 200.0,
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(horizontalPadding),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              card,
+              QrImage(
+                backgroundColor: Colors.white,
+                data:
+                    '$studentId;${DateTime.now().millisecondsSinceEpoch};NUSSTU',
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
+            ],
+          ),
         ),
       ),
     );

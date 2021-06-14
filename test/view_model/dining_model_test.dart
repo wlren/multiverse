@@ -55,9 +55,9 @@ void main() {
   when(repository.getBreakfastCreditCount()).thenAnswer((_) async => breakfastCredits);
   when(repository.getDinnerCreditCount()).thenAnswer((_) async => dinnerCredits);
   when(repository.getMealLocation()).thenAnswer((_) async => mealLocation);
-  when(repository.getMenu(captureAny)).thenAnswer((_) async => sampleMenu);
+  when(repository.getMenu(any)).thenAnswer((_) async => sampleMenu);
 
-  group('Dining model', () {
+  group('Dining model should update properly', () {
     test('menu date should be updated', () {
       final DiningModel diningModel = DiningModel(repository);
       DateTime now = DateTime(2021, 1, 1);

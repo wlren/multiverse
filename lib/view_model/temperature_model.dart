@@ -14,13 +14,13 @@ class TemperatureModel extends ChangeNotifier {
     update();
   }
 
-  void update() async {
+  Future<void> update() async {
     temperatureRecords = await userRepository.getTemperatureRecords();
     isTemperatureDeclared = await userRepository.isTemperatureDeclared();
     notifyListeners();
   }
 
-  void declareTemperature(double temperature) async {
+  Future<void> declareTemperature(double temperature) async {
     await userRepository.declareTemperature(temperature);
     update();
   }
