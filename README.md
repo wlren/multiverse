@@ -1,8 +1,8 @@
 # multiverse
 
-[![Coverage Status](https://coveralls.io/repos/github/wlren/multiverse/badge.svg?branch=main)](https://coveralls.io/github/wlren/multiverse?branch=main)
-
 ![multiverse banner](banner.png)
+
+[![Coverage Status](https://coveralls.io/repos/github/wlren/multiverse/badge.svg?branch=main)](https://coveralls.io/github/wlren/multiverse?branch=main)
 
 A mobile application powered by Flutter and AWS Amplify which provides a
 one-stop solution to all campus needs.
