@@ -11,10 +11,11 @@ import 'login_state.dart';
 
 //BloC Architecture for login
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepository? authRepo;
+  final AuthRepository authRepo;
   final AuthCubit authCubit;
 
-  LoginBloc({this.authRepo, required this.authCubit}) : super(LoginState());
+  LoginBloc({required this.authRepo, required this.authCubit})
+      : super(LoginState());
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -29,13 +30,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(formStatus: FormSubmitting());
 
       try {
-        final userID = await authRepo?.login(
+        final userID = await authRepo.login(
           email: state.email,
           password: state.password,
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
 
-        authCubit.launchSession(AuthCredentials(email: state.email));
+        authCubit
+            .launchSession(AuthCredentials(email: state.email, userID: userID));
       } on Exception catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
         yield state.copyWith(formStatus: const InitialFormStatus());

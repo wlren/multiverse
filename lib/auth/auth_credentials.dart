@@ -1,11 +1,11 @@
 class AuthCredentials {
-  final String? nusNetID;
+  final String userID;
   final String email;
   final String? password;
   String? matricID;
 
   AuthCredentials({
-    this.nusNetID,
+    required this.userID,
     required this.email,
     this.password,
     this.matricID,
