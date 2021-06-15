@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multiverse/app_navigator.dart';
 import 'package:multiverse/session_cubit.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 //Local Files
 import '../classes/theme_data.dart';
@@ -13,13 +14,20 @@ import '../view_model/dining_model.dart';
 import '../view_model/user_model.dart';
 import 'repository/auth_repository.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     // Providers inject dependencies into the app. Placed outside MaterialApp

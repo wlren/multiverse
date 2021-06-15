@@ -18,7 +18,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   void showSession(AuthCredentials credentials) {
     //temp
-    final user = credentials.matricID;
+    final user = credentials.userID;
     emit(Authenticated(user: user));
   }
 

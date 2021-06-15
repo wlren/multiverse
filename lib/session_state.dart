@@ -5,7 +5,7 @@ class UnknownSessionState extends SessionState {}
 class Unauthenticated extends SessionState {}
 
 class Authenticated extends SessionState {
-  final dynamic user;
+  final String user;
 
   Authenticated({required this.user});
 }
