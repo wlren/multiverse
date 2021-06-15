@@ -1,16 +1,36 @@
 # multiverse
 
-A new Flutter project.
+[![Coverage Status](https://coveralls.io/repos/github/wlren/multiverse/badge.svg?branch=main)](https://coveralls.io/github/wlren/multiverse?branch=main)
 
-## Getting Started
+![multiverse banner](banner.png)
 
-This project is a starting point for a Flutter application.
+A mobile application powered by Flutter and AWS Amplify which provides a
+one-stop solution to all campus needs.
 
-A few resources to get you started if this is your first Flutter project:
+## Motivation
+In NUS, there are mainly 3/4 apps that student and staff use:
+- uNivUS
+- NUS NextBus
+- NUS Dining
+- NUS Card (deprecated; now integrated with uNivUS)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+We have identified the following features that a user should have as top  
+priority:
+- Temperature/health declaration
+- Temperature declaration reminders
+- View past temperature declarations
+- Bus timings
+- Green pass
+- Scanning and using meal credits
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The following features are also important, but are not top priority:
+- School map
+- NUS Card QR Code
+- Crowd Insight
+- View exam results
+
+Students have to switch between these apps on a daily basis and it makes
+no sense to have them separated where students have to keep logging in
+to separate apps to go about their daily lives in Uni. Why is there not
+a good central app where it encapsulates all the features a student
+needs to go about their daily lives?
