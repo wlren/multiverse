@@ -34,22 +34,22 @@ class LoginScreen extends StatelessWidget {
 
   /* WIDGETS start*/
 
-  //NUS NetID username widget
-  Widget _usernameField() {
+  //NUS NetID email widget
+  Widget _emailField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
         decoration: const InputDecoration(
           icon: Icon(Icons.person),
-          hintText: 'NUSNet ID',
+          hintText: 'NUS email',
         ),
         //Validation check
         validator: (value) {
-          return state.isValidUsername
+          return state.isValidEmail
               ? null
-              : 'Please enter NUSNet ID (exxxxxxx)';
+              : 'Please enter NUS email exxxxxxx@u.nus.edu';
         },
         onChanged: (value) => context.read<LoginBloc>().add(
-              LoginUsernameChanged(username: value),
+              LoginUsernameChanged(email: value),
             ),
       );
     });
@@ -108,7 +108,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _usernameField(),
+              _emailField(),
               _passwordField(),
               const SizedBox(
                 height: 20,

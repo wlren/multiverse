@@ -8,11 +8,14 @@ class AuthRepository {
   }
 
   Future<String> login(
-      {required String username, required String password}) async {
-    final matricNo =
-        await Future.delayed(const Duration(seconds: 2), () => 'Matric Number');
-    return matricNo;
-    //throw Exception('failed log in');
+      {required String email, required String password}) async {
+    try {
+      final userID =
+          await Future.delayed(const Duration(seconds: 2), () => 'Token');
+      return userID;
+    } on Exception catch (e) {
+      throw Exception('failed log in');
+    }
   }
 
   Future<void> signOut() async {

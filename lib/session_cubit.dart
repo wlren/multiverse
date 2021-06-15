@@ -10,10 +10,12 @@ class SessionCubit extends Cubit<SessionState> {
   final AuthRepository authRepository;
 
   SessionCubit({required this.authRepository}) : super(UnknownSessionState()) {
+    //Disabled for saving cost
     attemptAutoLogin();
   }
 
   void showAuth() => emit(Unauthenticated());
+
   void showSession(AuthCredentials credentials) {
     //temp
     final user = credentials.matricID;
@@ -27,9 +29,9 @@ class SessionCubit extends Cubit<SessionState> {
 
   void attemptAutoLogin() async {
     try {
-      final matricNo = await authRepository.attemptAutoLogin();
+      final userId = await authRepository.attemptAutoLogin();
       //temp
-      final user = matricNo;
+      final user = userId;
       emit(Authenticated(user: user));
     } on Exception {
       emit(Unauthenticated());

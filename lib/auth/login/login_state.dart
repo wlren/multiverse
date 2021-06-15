@@ -4,13 +4,14 @@ import '../form_submission_status.dart';
 //State keeping for login status
 class LoginState {
   /* VARIABLES start */
-  final String username;
+  final String email;
 
-  //Check if username is exxxxxxxx
-  bool get isValidUsername {
-    return username.length == 8 &&
-        int.tryParse(username.substring(1)) != null &&
-        username.substring(0, 1) == 'e';
+  //Check if username is exxxxxxx@u.nus.edu
+  bool get isValidEmail {
+    return email.length == 18 &&
+        int.tryParse(email.substring(1, 8)) != null &&
+        email.substring(0, 1) == 'e' &&
+        email.substring(8) == '@u.nus.edu';
   }
 
   final String password;
@@ -20,19 +21,19 @@ class LoginState {
 
   // Constructor with default values
   LoginState({
-    this.username = '',
+    this.email = '',
     this.password = '',
     this.formStatus = const InitialFormStatus(),
   });
 
   //Updates either the password or username and recreates the state
   LoginState copyWith({
-    String? username,
+    String? email,
     String? password,
     FormSubmissionStatus? formStatus,
   }) {
     return LoginState(
-      username: username ?? this.username,
+      email: email ?? this.email,
       password: password ?? this.password,
       formStatus: formStatus ?? this.formStatus,
     );

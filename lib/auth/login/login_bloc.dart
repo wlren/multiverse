@@ -20,7 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     // Username updated
     if (event is LoginUsernameChanged) {
-      yield state.copyWith(username: event.username);
+      yield state.copyWith(email: event.email);
       // Password updated
     } else if (event is LoginPasswordChanged) {
       yield state.copyWith(password: event.password);
@@ -29,14 +29,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(formStatus: FormSubmitting());
 
       try {
-        final matricNo = await authRepo?.login(
-          username: state.username,
+        final userID = await authRepo?.login(
+          email: state.email,
           password: state.password,
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
 
-        authCubit.launchSession(
-            AuthCredentials(nusNetID: state.username, matricID: matricNo));
+        authCubit.launchSession(AuthCredentials(email: state.email));
       } on Exception catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
         yield state.copyWith(formStatus: const InitialFormStatus());
