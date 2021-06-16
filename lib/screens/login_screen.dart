@@ -1,4 +1,5 @@
 //Packages
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,7 +13,6 @@ import '../auth/login/login_bloc.dart';
 import '../auth/login/login_event.dart';
 import '../auth/login/login_state.dart';
 import '../repository/auth_repository.dart';
-import 'dashboard_screen.dart';
 
 ///The initial screen which user would see upon launching app
 ///prompts user to log in and will authenticate using AWS Amplify
@@ -35,38 +35,39 @@ class LoginScreen extends StatelessWidget {
   /* WIDGETS start*/
 
   //NUS NetID email widget
-  Widget _emailField() {
+  Widget __buildEmailField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
         decoration: const InputDecoration(
-          icon: Icon(Icons.person),
-          hintText: 'NUS email',
+          filled: true,
+          labelText: 'NUSNET Email',
+          suffixText: '@u.nus.edu',
         ),
         //Validation check
         validator: (value) {
-          return state.isValidEmail
+          return state.isEmailValid
               ? null
-              : 'Please enter NUS email exxxxxxx@u.nus.edu';
+              : 'exxxxxxx (7 digits)';
         },
         onChanged: (value) => context.read<LoginBloc>().add(
-              LoginUsernameChanged(email: value),
+              LoginUsernameChanged(email: value + '@u.nus.edu'),
             ),
       );
     });
   }
 
   //Password field widget
-  Widget _passwordField() {
+  Widget _buildPasswordField() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
         obscureText: true,
         decoration: const InputDecoration(
-          icon: Icon(Icons.security),
-          hintText: 'Password',
+          filled: true,
+          labelText: 'Password',
         ),
         //Validation check
         validator: (value) {
-          return state.isValidPassword ? null : 'Please enter your password';
+          return state.isPasswordValid ? null : 'Password cannot be empty';
         },
         onChanged: (value) => context
             .read<LoginBloc>()
@@ -76,7 +77,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   //Sends form information to AWS for authentication
-  Widget _loginButton() {
+  Widget _buildLoginButton() {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return state.formStatus is FormSubmitting
           ? const CircularProgressIndicator()
@@ -93,7 +94,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   //Encapsulated form for BloC architecture purposes
-  Widget _loginForm() {
+  Widget __buildLoginForm() {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         final formStatus = state.formStatus;
@@ -104,16 +105,15 @@ class LoginScreen extends StatelessWidget {
       child: Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _emailField(),
-              _passwordField(),
-              const SizedBox(
-                height: 20,
-              ),
-              _loginButton(),
+              __buildEmailField(),
+              const SizedBox(height: 16.0),
+              _buildPasswordField(),
+              const SizedBox(height: 16.0),
+              _buildLoginButton(),
             ],
           ),
         ),
@@ -126,40 +126,37 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              SvgPicture.asset('assets/logo.svg'),
-              const SizedBox(height: 16.0),
-              Text(
-                'multiverse',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.spartan(
-                  textStyle: Theme.of(context).textTheme.headline5,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 64.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    SvgPicture.asset('assets/logo.svg'),
+                    const SizedBox(height: 16.0),
+                    Text(
+                      'multiverse',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.spartan(
+                        textStyle: Theme.of(context).textTheme.headline5,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 48.0),
+                BlocProvider(
+                  child: __buildLoginForm(),
+                  create: (context) => LoginBloc(
+                      authRepo: context.read<AuthRepository>(),
+                      authCubit: context.read<AuthCubit>()),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 48.0),
-          BlocProvider(
-            child: _loginForm(),
-            create: (context) => LoginBloc(
-                authRepo: context.read<AuthRepository>(),
-                authCubit: context.read<AuthCubit>()),
-          ),
-          //Temporary skip button
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DashboardScreen()));
-            },
-            child: const Text('Skip to dashboard'),
-          ),
-        ],
+        ),
       ),
     );
   }

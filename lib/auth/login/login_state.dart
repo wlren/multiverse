@@ -7,15 +7,12 @@ class LoginState {
   final String email;
 
   //Check if username is exxxxxxx@u.nus.edu
-  bool get isValidEmail {
-    return email.length == 18 &&
-        int.tryParse(email.substring(1, 8)) != null &&
-        email.substring(0, 1) == 'e' &&
-        email.substring(8) == '@u.nus.edu';
+  bool get isEmailValid {
+    return RegExp(r'^e\d{7}@u.nus.edu$').hasMatch(email);
   }
 
   final String password;
-  bool get isValidPassword => password.isNotEmpty;
+  bool get isPasswordValid => password.isNotEmpty;
   final FormSubmissionStatus formStatus;
   /* VARIABLES end */
 
