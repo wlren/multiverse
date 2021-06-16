@@ -45,13 +45,11 @@ class LoginScreen extends StatelessWidget {
         ),
         //Validation check
         validator: (value) {
-          return state.isEmailValid
-              ? null
-              : 'exxxxxxx (7 digits)';
+          return state.isEmailValid ? null : 'exxxxxxx (7 digits)';
         },
         onChanged: (value) => context.read<LoginBloc>().add(
-              LoginUsernameChanged(email: value + '@u.nus.edu'),
-            ),
+          LoginUsernameChanged(email: value + '@u.nus.edu'),
+        ),
       );
     });
   }
@@ -66,7 +64,7 @@ class LoginScreen extends StatelessWidget {
           labelText: 'Password',
         ),
         //Validation check
-        validator: (value) {
+        validator: (_) {
           return state.isPasswordValid ? null : 'Password cannot be empty';
         },
         onChanged: (value) => context
@@ -99,7 +97,8 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         final formStatus = state.formStatus;
         if (formStatus is SubmissionFailed) {
-          _showSnackBarOnFail(context, formStatus.exception.toString());
+          _showSnackBarOnFail(
+              context, formStatus.loginException.message ?? 'Login failed');
         }
       },
       child: Form(

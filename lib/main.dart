@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multiverse/app_navigator.dart';
 import 'package:multiverse/session_cubit.dart';
+import 'package:multiverse/view_model/green_pass_model.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -44,6 +45,9 @@ class _MyAppState extends State<MyApp> {
               create: (context) => UserModel(context.read<UserRepository>())),
           ChangeNotifierProvider(
             create: (context) => DiningModel(context.read<DiningRepository>()),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => GreenPassModel(context.read<UserRepository>()),
           ),
           BlocProvider(
             create: (context) =>

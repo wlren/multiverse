@@ -1,9 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 //For testing purposes
 //Authentication related repository which communicates with backend API to fetch
 //authentication -related data
+
+abstract class LoginException implements Exception {
+  LoginException(this.message);
+
+  final String? message;
+}
+
+class InvalidEmailException implements LoginException {
+  InvalidEmailException(this._message);
+
+  final String? _message;
+
+  @override
+  String? get message => _message;
+}
+
+class InvalidPasswordException implements LoginException {
+  InvalidPasswordException(this._message);
+
+  final String? _message;
+
+  @override
+  String? get message => _message;
+}
+
 class AuthRepository {
   AuthRepository();
 
@@ -14,17 +38,27 @@ class AuthRepository {
     throw Exception('not signed in');
   }
 
-  Future<String?> login(
+  /// Returns the user's uid as provided by Firebase.
+  ///
+  /// Throws a [LoginException] if sign in fails.
+  Future<String> login(
       {required String email, required String password}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      return userCredential.user?.uid;
+      return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+      if (e.code == 'invalid-email') {
+        // Should not occur due to form validation
+        throw InvalidEmailException('Invalid email address');
+      } else if (e.code == 'user-disabled') {
+        throw InvalidEmailException('User account disabled');
+      } else if (e.code == 'user-not-found') {
+        throw InvalidEmailException('No user found');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        throw InvalidPasswordException('Password incorrect');
+      } else {
+        rethrow;
       }
     }
   }

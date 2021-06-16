@@ -36,13 +36,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
         yield state.copyWith(formStatus: SubmissionSuccess());
 
-        if (userID == null) throw Exception('No such user');
-
-        print(userID);
-
         authCubit
             .launchSession(AuthCredentials(email: state.email, userID: userID));
-      } on Exception catch (e) {
+      } on LoginException catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
         yield state.copyWith(formStatus: const InitialFormStatus());
       }
