@@ -1,38 +1,20 @@
 //Local Files
-import '../form_submission_status.dart';
+import '../../repository/auth_repository.dart';
 
-//State keeping for login status
-class LoginState {
-  /* VARIABLES start */
-  final String email;
+abstract class LoginFormState {
+  const LoginFormState();
+}
 
-  //Check if username is exxxxxxx@u.nus.edu
-  bool get isEmailValid {
-    return RegExp(r'^e\d{7}@u.nus.edu$').hasMatch(email);
-  }
+class InitialFormState extends LoginFormState {
+  const InitialFormState();
+}
 
-  final String password;
-  bool get isPasswordValid => password.isNotEmpty;
-  final FormSubmissionStatus formStatus;
-  /* VARIABLES end */
+class FormSubmitting extends LoginFormState {}
 
-  // Constructor with default values
-  LoginState({
-    this.email = '',
-    this.password = '',
-    this.formStatus = const InitialFormStatus(),
-  });
+class SubmissionSuccess extends LoginFormState {}
 
-  //Updates either the password or username and recreates the state
-  LoginState copyWith({
-    String? email,
-    String? password,
-    FormSubmissionStatus? formStatus,
-  }) {
-    return LoginState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      formStatus: formStatus ?? this.formStatus,
-    );
-  }
+class SubmissionFailed extends LoginFormState {
+  final LoginException loginException;
+
+  SubmissionFailed(this.loginException);
 }

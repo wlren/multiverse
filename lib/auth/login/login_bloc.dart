@@ -1,46 +1,38 @@
 //Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multiverse/auth/auth_credentials.dart';
 
 //Local Files
 import '../../repository/auth_repository.dart';
-import '../form_submission_status.dart';
+import '../auth_credentials.dart';
 import '/auth/auth_cubit.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
 //BloC Architecture for login
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class LoginBloc extends Bloc<LoginFormEvent, LoginFormState> {
   final AuthRepository authRepo;
   final AuthCubit authCubit;
 
   LoginBloc({required this.authRepo, required this.authCubit})
-      : super(LoginState());
+      : super(const InitialFormState());
 
   @override
-  Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    // Username updated
-    if (event is LoginUsernameChanged) {
-      yield state.copyWith(email: event.email);
-      // Password updated
-    } else if (event is LoginPasswordChanged) {
-      yield state.copyWith(password: event.password);
-      // Form submitted
-    } else if (event is LoginSubmitted) {
-      yield state.copyWith(formStatus: FormSubmitting());
+  Stream<LoginFormState> mapEventToState(LoginFormEvent event) async* {
+     if (event is LoginFormSubmitted) {
+       yield FormSubmitting();
 
       try {
         final userID = await authRepo.login(
-          email: state.email,
-          password: state.password,
+          email: event.email,
+          password: event.password,
         );
-        yield state.copyWith(formStatus: SubmissionSuccess());
+        yield SubmissionSuccess();
 
         authCubit
-            .launchSession(AuthCredentials(email: state.email, userID: userID));
+            .launchSession(AuthCredentials(email: event.email, userID: userID));
       } on LoginException catch (e) {
-        yield state.copyWith(formStatus: SubmissionFailed(e));
-        yield state.copyWith(formStatus: const InitialFormStatus());
+        yield SubmissionFailed(e);
+        yield const InitialFormState();
       }
     }
   }

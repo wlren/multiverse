@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/repository/user_repository.dart';
-import 'package:multiverse/view_model/green_pass_model.dart';
 import 'package:provider/provider.dart';
 
 //Local Files

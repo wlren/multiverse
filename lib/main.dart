@@ -1,11 +1,8 @@
 //Packages
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multiverse/app_navigator.dart';
-import 'package:multiverse/session_cubit.dart';
-import 'package:multiverse/view_model/green_pass_model.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 //Local Files
 import '../classes/theme_data.dart';
@@ -13,7 +10,10 @@ import '../repository/dining_repository.dart';
 import '../repository/user_repository.dart';
 import '../view_model/dining_model.dart';
 import '../view_model/user_model.dart';
+import 'app_navigator.dart';
 import 'repository/auth_repository.dart';
+import 'session_cubit.dart';
+import 'view_model/green_pass_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

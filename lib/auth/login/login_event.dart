@@ -1,16 +1,12 @@
 //Login related event classes
-abstract class LoginEvent {}
+abstract class LoginFormEvent {}
 
-class LoginUsernameChanged extends LoginEvent {
+class LoginFormSubmitted extends LoginFormEvent {
+  LoginFormSubmitted({
+    required this.email,
+    required this.password,
+  });
+
   final String email;
-
-  LoginUsernameChanged({required this.email});
-}
-
-class LoginPasswordChanged extends LoginEvent {
   final String password;
-
-  LoginPasswordChanged({required this.password});
 }
-
-class LoginSubmitted extends LoginEvent {}

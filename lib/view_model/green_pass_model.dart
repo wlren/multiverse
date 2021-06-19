@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 //Local files
-import 'package:multiverse/repository/user_repository.dart';
+import '../repository/user_repository.dart';
 
 // Contains methods/variables representing user interactions in the
 // green pass screen.
