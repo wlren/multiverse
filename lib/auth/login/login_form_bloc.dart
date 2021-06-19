@@ -5,15 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repository/auth_repository.dart';
 import '../auth_credentials.dart';
 import '/auth/auth_cubit.dart';
-import 'login_event.dart';
-import 'login_state.dart';
+import 'login_form_event.dart';
+import 'login_form_state.dart';
 
 //BloC Architecture for login
-class LoginBloc extends Bloc<LoginFormEvent, LoginFormState> {
+class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
   final AuthRepository authRepo;
   final AuthCubit authCubit;
 
-  LoginBloc({required this.authRepo, required this.authCubit})
+  LoginFormBloc({required this.authRepo, required this.authCubit})
       : super(const InitialFormState());
 
   @override

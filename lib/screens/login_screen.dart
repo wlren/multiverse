@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 
 //Local Files
 import '../auth/auth_cubit.dart';
-import '../auth/login/login_bloc.dart';
-import '../auth/login/login_event.dart';
-import '../auth/login/login_state.dart';
+import '../auth/login/login_form_bloc.dart';
+import '../auth/login/login_form_event.dart';
+import '../auth/login/login_form_state.dart';
 import '../repository/auth_repository.dart';
 import '../view_model/login_model.dart';
 
@@ -78,7 +78,7 @@ class LoginScreen extends StatelessWidget {
 
   //Sends form information to AWS for authentication
   Widget _buildLoginButton() {
-    return BlocBuilder<LoginBloc, LoginFormState>(builder: (context, state) {
+    return BlocBuilder<LoginFormBloc, LoginFormState>(builder: (context, state) {
       LoginModel loginModel = context.read<LoginModel>();
       return state is FormSubmitting
           ? const CircularProgressIndicator()
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
               onPressed: () {
                 //Validation check
                 if (_formKey.currentState!.validate()) {
-                  context.read<LoginBloc>().add(LoginFormSubmitted(
+                  context.read<LoginFormBloc>().add(LoginFormSubmitted(
                     email: loginModel.email,
                     password: loginModel.password,
                   ));
@@ -99,7 +99,7 @@ class LoginScreen extends StatelessWidget {
 
   //Encapsulated form for BloC architecture purposes
   Widget __buildLoginForm() {
-    return BlocListener<LoginBloc, LoginFormState>(
+    return BlocListener<LoginFormBloc, LoginFormState>(
       listener: (context, state) {
         final formStatus = state;
         if (formStatus is SubmissionFailed) {
@@ -158,7 +158,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 48.0),
                 BlocProvider(
                   child: __buildLoginForm(),
-                  create: (context) => LoginBloc(
+                  create: (context) => LoginFormBloc(
                       authRepo: context.read<AuthRepository>(),
                       authCubit: context.read<AuthCubit>()),
                 ),
