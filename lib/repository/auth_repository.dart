@@ -28,14 +28,32 @@ class InvalidPasswordException implements LoginException {
   String? get message => _message;
 }
 
+class FailAutoLogInException implements LoginException {
+  FailAutoLogInException(this._message);
+
+  final String? _message;
+
+  @override
+  String? get message => _message;
+}
+
 class AuthRepository {
   AuthRepository();
 
   final auth = FirebaseAuth.instance;
 
-  Future<String> attemptAutoLogin() async {
-    await Future.delayed(const Duration(seconds: 0));
-    throw Exception('not signed in');
+  /// Attempts automatic log in and retreival of user UID
+  ///
+  /// Throws a [LoginException] if auto-sign in fails
+  String attemptAutoLogin() {
+    //Make it cleaner
+    String userID;
+    if (auth.currentUser != null) {
+      userID = auth.currentUser!.uid;
+      return userID;
+    } else {
+      throw Exception('not signed in');
+    }
   }
 
   /// Returns the user's uid as provided by Firebase.
