@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 //Local Files
 import '../classes/menu.dart';
 import '../view_model/user_model.dart';
+import '/session_cubit.dart';
 import '/view_model/dining_model.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
@@ -83,10 +84,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24.0),
+                //Temp sign out button
+                TextButton(
+                    onPressed: () => signOut(context),
+                    child: const Text('Sign Out')),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Hello, $userName!',
+                    Text('Hello, ${context.read<SessionCubit>().userUID}!',
                         style: Theme.of(context).textTheme.headline5),
                     _buildTemperatureButton(),
                   ],
@@ -388,5 +393,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ],
     );
+  }
+
+  //temp
+  void signOut(BuildContext context) {
+    context.read<SessionCubit>().signOut();
   }
 }

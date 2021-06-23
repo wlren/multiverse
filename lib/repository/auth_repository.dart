@@ -52,7 +52,7 @@ class AuthRepository {
       userID = auth.currentUser!.uid;
       return userID;
     } else {
-      throw Exception('not signed in');
+      throw FailAutoLogInException('not signed in');
     }
   }
 

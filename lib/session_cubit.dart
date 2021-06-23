@@ -8,6 +8,7 @@ import 'session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   final AuthRepository authRepository;
+  late String userUID;
 
   SessionCubit({required this.authRepository}) : super(UnknownSessionState()) {
     attemptAutoLogin();
@@ -16,21 +17,21 @@ class SessionCubit extends Cubit<SessionState> {
   void showAuth() => emit(Unauthenticated());
 
   void showSession(AuthCredentials credentials) {
-    //temp
-    final userID = credentials.userID;
-    emit(Authenticated(userID: userID));
+    userUID = credentials.userID;
+    emit(Authenticated(userID: userUID));
   }
 
   void signOut() {
     authRepository.signOut();
+    print('signed out');
     emit(Unauthenticated());
   }
 
   void attemptAutoLogin() async {
     try {
-      String userId = authRepository.attemptAutoLogin();
-      print(userId);
-      emit(Authenticated(userID: userId));
+      userUID = authRepository.attemptAutoLogin();
+      print(userUID);
+      emit(Authenticated(userID: userUID));
     } on Exception {
       emit(Unauthenticated());
     }
