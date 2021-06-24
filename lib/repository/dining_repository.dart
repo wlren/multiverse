@@ -1,5 +1,5 @@
 //Local Files
-import '../classes/menu.dart';
+import '../model/dining/menu.dart';
 
 //Dining related repository which communicates with backend API to fetch dining-related data
 class DiningRepository {
@@ -7,7 +7,7 @@ class DiningRepository {
   static final FullDayMenu sampleMenu = FullDayMenu(
     breakfast: Menu([
       Meal(
-        'Western',
+        const Cuisine(0, 'Western'),
         [
           MealItem('Scrambled Egg'),
           MealItem('Honey Ham'),
@@ -15,7 +15,7 @@ class DiningRepository {
         ],
       ),
       Meal(
-        'Asian',
+        const Cuisine(1, 'Asian'),
         [
           MealItem('Fried Ipoh Hor Fun'),
           MealItem('Nonya Curry Vegetables'),
@@ -23,7 +23,7 @@ class DiningRepository {
         ],
       ),
       Meal(
-        'Vegetarian',
+        const Cuisine(2, 'Vegetarian'),
         [
           MealItem('Fried Ipoh Hor Fun'),
           MealItem('Nonya Curry Vegetables'),
@@ -31,7 +31,7 @@ class DiningRepository {
         ],
       ),
       Meal(
-        'Malay',
+        const Cuisine(3, 'Malay'),
         [
           MealItem('Local Fried Mee Hoon'),
           MealItem('Penang Curry Chicken'),
@@ -58,31 +58,32 @@ class DiningRepository {
   }
 
   Future<MealType> getCurrentMealType() async {
-    DateTime now = DateTime.now();
-    bool isAfterSeven = now.hour >= 7;
-    bool isBeforeTenThirty =
-        now.hour <= 9 || (now.hour == 10 && now.minute <= 30);
-    bool isBreakfastTime = isAfterSeven && isBeforeTenThirty;
-
-    bool isAfterFiveThirty =
-        now.hour >= 6 || (now.hour == 5 && now.minute >= 30);
-    bool isBeforeNineThirty =
-        now.hour <= 8 || (now.hour == 9 && now.minute <= 30);
-    bool isDinnerTime = isAfterFiveThirty && isBeforeNineThirty;
-
-    // Breakfast served from Monday to Saturday
-    bool dayHasBreakfast = now.day != DateTime.sunday;
-
-    // Dinner served from Sunday to Friday
-    bool dayHasDinner = now.day != DateTime.saturday;
-
-    if (dayHasBreakfast && isBreakfastTime) {
-      return MealType.breakfast;
-    } else if (dayHasDinner && isDinnerTime) {
-      return MealType.dinner;
-    } else {
-      return MealType.none;
-    }
+    return MealType.breakfast;
+    // DateTime now = DateTime.now();
+    // bool isAfterSeven = now.hour >= 7;
+    // bool isBeforeTenThirty =
+    //     now.hour <= 9 || (now.hour == 10 && now.minute <= 30);
+    // bool isBreakfastTime = isAfterSeven && isBeforeTenThirty;
+    //
+    // bool isAfterFiveThirty =
+    //     now.hour >= 6 || (now.hour == 5 && now.minute >= 30);
+    // bool isBeforeNineThirty =
+    //     now.hour <= 8 || (now.hour == 9 && now.minute <= 30);
+    // bool isDinnerTime = isAfterFiveThirty && isBeforeNineThirty;
+    //
+    // // Breakfast served from Monday to Saturday
+    // bool dayHasBreakfast = now.day != DateTime.sunday;
+    //
+    // // Dinner served from Sunday to Friday
+    // bool dayHasDinner = now.day != DateTime.saturday;
+    //
+    // if (dayHasBreakfast && isBreakfastTime) {
+    //   return MealType.breakfast;
+    // } else if (dayHasDinner && isDinnerTime) {
+    //   return MealType.dinner;
+    // } else {
+    //   return MealType.none;
+    // }
   }
 
   Future<String> getMealLocation() async {

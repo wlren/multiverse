@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 //Local Files
-import '../classes/menu.dart';
-import '../repository/dining_repository.dart';
+import 'menu.dart';
+import '../../repository/dining_repository.dart';
 
 class DiningModel extends ChangeNotifier {
   DiningModel(this.diningRepository) {
@@ -13,6 +13,7 @@ class DiningModel extends ChangeNotifier {
   final DiningRepository diningRepository;
 
   FullDayMenu menu = FullDayMenu();
+  Menu? get currentMenu => menu.getMenuOfType(currentMealType);
   DateTime menuDate = DateTime.now();
   int? breakfastCreditCount;
   int? dinnerCreditCount;
@@ -39,5 +40,15 @@ class DiningModel extends ChangeNotifier {
   Future<void> setMenuDate(DateTime date) async {
     menuDate = date;
     update();
+  }
+}
+
+extension on FullDayMenu {
+  Menu? getMenuOfType(MealType? mealType) {
+    if (mealType == MealType.breakfast) {
+      return breakfast;
+    } else if (mealType == MealType.dinner) {
+      return dinner;
+    }
   }
 }

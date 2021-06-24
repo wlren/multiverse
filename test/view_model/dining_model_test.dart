@@ -1,15 +1,15 @@
 import 'package:mockito/annotations.dart';
-import 'package:multiverse/classes/menu.dart';
+import 'package:multiverse/model/dining/menu.dart';
 import 'package:test/test.dart';
 import 'package:multiverse/repository/dining_repository.dart';
-import 'package:multiverse/view_model/dining_model.dart';
+import 'package:multiverse/model/dining/dining_model.dart';
 import 'package:mockito/mockito.dart';
 import 'dining_model_test.mocks.dart';
 
 final FullDayMenu sampleMenu = FullDayMenu(
   breakfast: Menu([
     Meal(
-      'Western',
+      const Cuisine(0, 'Western'),
       [
         MealItem('Scrambled Egg'),
         MealItem('Honey Ham'),
@@ -17,7 +17,7 @@ final FullDayMenu sampleMenu = FullDayMenu(
       ],
     ),
     Meal(
-      'Asian',
+      const Cuisine(1, 'Asian'),
       [
         MealItem('Fried Ipoh Hor Fun'),
         MealItem('Nonya Curry Vegetables'),
@@ -25,7 +25,7 @@ final FullDayMenu sampleMenu = FullDayMenu(
       ],
     ),
     Meal(
-      'Vegetarian',
+      const Cuisine(2, 'Vegetarian'),
       [
         MealItem('Fried Ipoh Hor Fun'),
         MealItem('Nonya Curry Vegetables'),
@@ -33,7 +33,7 @@ final FullDayMenu sampleMenu = FullDayMenu(
       ],
     ),
     Meal(
-      'Malay',
+      const Cuisine(3, 'Malay'),
       [
         MealItem('Local Fried Mee Hoon'),
         MealItem('Penang Curry Chicken'),

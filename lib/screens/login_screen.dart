@@ -7,12 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../auth/auth_cubit.dart';
-import '../auth/login/login_form_bloc.dart';
-import '../auth/login/login_form_event.dart';
-import '../auth/login/login_form_state.dart';
+import '../model/auth/auth_cubit.dart';
+import '../model/auth/login/login_form_bloc.dart';
+import '../model/auth/login/login_form_event.dart';
+import '../model/auth/login/login_form_state.dart';
+import '../model/login_model.dart';
 import '../repository/auth_repository.dart';
-import '../view_model/login_model.dart';
 
 ///The initial screen which user would see upon launching app
 ///prompts user to log in and will authenticate using AWS Amplify

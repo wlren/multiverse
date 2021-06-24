@@ -1,5 +1,5 @@
 //Local Files
-import '../classes/temperature_record.dart';
+import '../model/temperature/temperature_record.dart';
 
 //User related repository which communicates with backend API to fetch user-related data
 class UserRepository {

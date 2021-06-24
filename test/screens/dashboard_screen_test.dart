@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:multiverse/classes/menu.dart';
+import 'package:multiverse/model/dining/menu.dart';
 import 'package:multiverse/screens/dashboard_screen.dart';
 import 'package:multiverse/screens/dining_screen.dart';
 import 'package:multiverse/screens/green_pass_screen.dart';
 import 'package:multiverse/screens/nus_card_screen.dart';
-import 'package:multiverse/view_model/dining_model.dart';
-import 'package:multiverse/view_model/green_pass_model.dart';
-import 'package:multiverse/view_model/user_model.dart';
+import 'package:multiverse/model/dining/dining_model.dart';
+import 'package:multiverse/model/green_pass_model.dart';
+import 'package:multiverse/model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 

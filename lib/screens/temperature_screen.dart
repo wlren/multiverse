@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 //Local Files
-import '../classes/temperature_record.dart';
+import '../model/temperature/temperature_record.dart';
 import '../repository/user_repository.dart';
-import '../view_model/temperature_model.dart';
-import '../view_model/user_model.dart';
+import '../model/temperature/temperature_model.dart';
+import '../model/user_model.dart';
 
 class TemperatureScreen extends StatefulWidget {
   static final Color acceptableTemperatureColor = Colors.green.shade300;

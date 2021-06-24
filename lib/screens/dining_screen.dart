@@ -1,15 +1,16 @@
 //Packages
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
+    as extend;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
-    as extend;
 
 //Local Files
-import '../classes/menu.dart';
-import '../view_model/dining_model.dart';
+import '../model/dining/menu.dart';
+import '../model/dining/dining_model.dart';
+import 'dining_qr_screen.dart';
 
 class DiningScreen extends StatefulWidget {
   const DiningScreen({Key? key}) : super(key: key);
@@ -76,7 +77,7 @@ class _DiningScreenState extends State<DiningScreen>
                       title: AnimatedBuilder(
                         animation: _scrollController,
                         builder: (BuildContext context, Widget? child) {
-                          double collapsedPercentage =
+                          final collapsedPercentage =
                               // This is a hack to make sure error is not thrown
                               // ignore: invalid_use_of_protected_member
                               _scrollController.positions.length == 1
@@ -144,15 +145,16 @@ class _DiningScreenState extends State<DiningScreen>
                               ),
                             ),
                             Expanded(
-                                child: Container(
-                              decoration: const BoxDecoration(
-                                color: DiningScreen.bottomColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  color: DiningScreen.bottomColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16.0),
+                                    topRight: Radius.circular(16.0),
+                                  ),
                                 ),
                               ),
-                            ))
+                            ),
                           ],
                         ),
                       ),
@@ -194,11 +196,21 @@ class _DiningScreenState extends State<DiningScreen>
           floatingActionButton: FloatingActionButton.extended(
             label: const Text('Scan QR'),
             icon: const Icon(Icons.qr_code_scanner),
-            onPressed: () {},
+            onPressed: () => _onScanQrPressed(context),
           ),
         ),
       ),
     );
+  }
+
+  void _onScanQrPressed(BuildContext context) {
+    if (context.read<DiningModel>().currentMenu != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => DiningQrScreen()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('ups'),
+      ));
+    }
   }
 
   Widget _buildMenu(BuildContext context, Menu? menu) {
@@ -214,7 +226,7 @@ class _DiningScreenState extends State<DiningScreen>
               child: Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 32.0),
-                child: Text(meal.cuisineName,
+                child: Text(meal.cuisine.name,
                     style: Theme.of(context).textTheme.headline6),
               ),
             ),
@@ -245,7 +257,7 @@ class _DiningScreenState extends State<DiningScreen>
   }
 
   int _getInitialTabIndex(BuildContext context) {
-    DiningModel diningModel = context.read<DiningModel>();
+    final diningModel = context.read<DiningModel>();
     switch (diningModel.currentMealType) {
       case MealType.breakfast:
         return 0;

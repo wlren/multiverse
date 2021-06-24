@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 //Local Files
-import '../classes/temperature_record.dart';
-import '../repository/user_repository.dart';
+import 'temperature_record.dart';
+import '../../repository/user_repository.dart';
 
 // Contains methods/variables representing user interactions in the
 // temperature screen.

@@ -1,7 +1,7 @@
 import 'package:mockito/annotations.dart';
-import 'package:multiverse/classes/temperature_record.dart';
+import 'package:multiverse/model/temperature/temperature_record.dart';
 import 'package:multiverse/repository/user_repository.dart';
-import 'package:multiverse/view_model/temperature_model.dart';
+import 'package:multiverse/model/temperature/temperature_model.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

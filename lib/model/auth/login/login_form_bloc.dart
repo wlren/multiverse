@@ -2,9 +2,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 //Local Files
-import '../../repository/auth_repository.dart';
+import '../../../repository/auth_repository.dart';
 import '../auth_credentials.dart';
-import '/auth/auth_cubit.dart';
+import '../auth_cubit.dart';
 import 'login_form_event.dart';
 import 'login_form_state.dart';
 

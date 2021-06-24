@@ -5,15 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../classes/theme_data.dart';
+import 'theme_data.dart';
+import '../model/user_model.dart';
 import '../repository/dining_repository.dart';
 import '../repository/user_repository.dart';
-import '../view_model/dining_model.dart';
-import '../view_model/user_model.dart';
 import 'app_navigator.dart';
+import 'model/dining/dining_model.dart';
+import 'model/green_pass_model.dart';
 import 'repository/auth_repository.dart';
-import 'session_cubit.dart';
-import 'view_model/green_pass_model.dart';
+import 'model/auth/session_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

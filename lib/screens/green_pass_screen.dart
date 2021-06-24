@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../view_model/green_pass_model.dart';
+import '../model/green_pass_model.dart';
 
 class GreenPassScreen extends StatelessWidget {
   const GreenPassScreen({Key? key}) : super(key: key);

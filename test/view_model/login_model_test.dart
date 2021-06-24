@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:multiverse/view_model/login_model.dart';
+import 'package:multiverse/model/login_model.dart';
 
 void main() {
   group('Attribute setters work correctly, and call notifyListeners', () {

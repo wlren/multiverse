@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 //Local Files
-import '/auth/auth_cubit.dart';
 import '/screens/dashboard_screen.dart';
 import '/screens/loading_screen.dart';
 import '/screens/login_screen.dart';
-import '/session_cubit.dart';
-import '/session_state.dart';
+import 'model/auth/auth_cubit.dart';
+import 'model/auth/session_cubit.dart';
+import 'model/auth/session_state.dart';
 
 class AppNavigator extends StatelessWidget {
   const AppNavigator({Key? key}) : super(key: key);

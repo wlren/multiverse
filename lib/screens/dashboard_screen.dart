@@ -9,10 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../classes/menu.dart';
-import '../view_model/user_model.dart';
-import '/session_cubit.dart';
-import '/view_model/dining_model.dart';
+import '../model/dining/menu.dart';
+import '../model/user_model.dart';
+import '../model/auth/session_cubit.dart';
+import '../model/dining/dining_model.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
@@ -119,6 +119,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildTemperatureButton() {
     return OpenContainer(
+      useRootNavigator: true,
       closedElevation: 0,
       closedShape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
@@ -349,6 +350,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // The collapsed (closed) widget is the card on the dashboard.
     // The expanded (open) widget is the full page.
     return OpenContainer(
+      useRootNavigator: true,
       closedColor: collapsedColor,
       openColor: expandedColor ?? Theme.of(context).canvasColor,
       tappable: false,
