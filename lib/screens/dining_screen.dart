@@ -1,4 +1,5 @@
 //Packages
+import 'package:animations/animations.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     as extend;
 import 'package:flutter/material.dart';
@@ -193,22 +194,33 @@ class _DiningScreenState extends State<DiningScreen>
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: FloatingActionButton.extended(
-            label: const Text('Scan QR'),
-            icon: const Icon(Icons.qr_code_scanner),
-            onPressed: () => _onScanQrPressed(context),
+          floatingActionButton: OpenContainer(
+            tappable: false,
+            openColor: Colors.black,
+            openBuilder: (context, _) => const DiningQrScreen(),
+            closedColor: Theme.of(context).colorScheme.secondary,
+            closedShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            closedBuilder: (context, openContainer) => FloatingActionButton.extended(
+              label: const Text('Scan QR'),
+              elevation: 0,
+              icon: const Icon(Icons.qr_code_scanner),
+              onPressed: () => _onScanQrPressed(context, openContainer),
+            ),
           ),
         ),
       ),
     );
   }
 
-  void _onScanQrPressed(BuildContext context) {
+  void _onScanQrPressed(BuildContext context, Function openContainer) {
     if (context.read<DiningModel>().currentMenu != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => DiningQrScreen()));
+      openContainer();
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => DiningQrScreen()));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('ups'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Meals are currently unavailable'),
       ));
     }
   }

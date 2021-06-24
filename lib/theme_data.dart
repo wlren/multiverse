@@ -10,6 +10,7 @@ class ThemeDataMultiverse {
     accentColor: Colors.blueAccent,
     appBarTheme: AppBarTheme(
       backgroundColor: ThemeData.light().canvasColor,
+      foregroundColor: ThemeData.light().colorScheme.onSurface,
     ),
     cardTheme: CardTheme(
       shape: RoundedRectangleBorder(

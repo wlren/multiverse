@@ -75,7 +75,7 @@ void main() {
       expect(temperatureModel.temperatureRecords, []);
 
       // Declare temperature now
-      final temperatureToDeclare = 34.5;
+      const temperatureToDeclare = 34.5;
       temperatureModel.declareTemperature(temperatureToDeclare);
 
       // Wait for model to update

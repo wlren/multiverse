@@ -32,7 +32,7 @@ class AppNavigator extends StatelessWidget {
 
           //Show dashboard
           if (state is Authenticated)
-            const MaterialPage(child: DashboardScreen()),
+            const MaterialPage(name: '/', child: DashboardScreen()),
         ],
         onPopPage: (route, result) => route.didPop(result),
       );

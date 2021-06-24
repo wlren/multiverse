@@ -148,7 +148,6 @@ class NUSCardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('NUS Card'),
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
         elevation: 0,
         backwardsCompatibility: false,
       ),

@@ -59,6 +59,7 @@ class DiningRepository {
 
   Future<MealType> getCurrentMealType() async {
     return MealType.breakfast;
+    // TODO
     // DateTime now = DateTime.now();
     // bool isAfterSeven = now.hour >= 7;
     // bool isBeforeTenThirty =
@@ -89,5 +90,10 @@ class DiningRepository {
   Future<String> getMealLocation() async {
     //TODO get from database
     return 'RVRC';
+  }
+
+  /// Redeems meal at the database. Throws an exception if failure occurs.
+  Future<void> redeemMeal(Meal meal, int mealCount) async {
+    // TODO
   }
 }
