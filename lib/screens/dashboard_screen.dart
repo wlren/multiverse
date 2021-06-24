@@ -73,6 +73,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ],
                 ),
               ),
+              actions: [
+                //Temp sign out button
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 8.0),
+                  child: TextButton(
+                      onPressed: () => signOut(context),
+                      child: const Text('Sign Out')),
+                ),
+              ],
             ),
           ];
         },
@@ -84,10 +93,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24.0),
-                //Temp sign out button
-                TextButton(
-                    onPressed: () => signOut(context),
-                    child: const Text('Sign Out')),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
