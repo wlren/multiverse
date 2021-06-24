@@ -61,32 +61,32 @@ void main() {
 
   group('Dining model should update properly', () {
     test('menu date should be updated', () {
-      final DiningModel diningModel = DiningModel(repository);
-      DateTime now = DateTime(2021, 1, 1);
+      final diningModel = DiningModel(repository);
+      final now = DateTime(2021, 1, 1);
       diningModel.setMenuDate(now);
       expect(diningModel.menuDate, now);
     });
 
     test('breakfast credit count should be updated', () async {
-      final DiningModel diningModel = DiningModel(repository);
+      final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.breakfastCreditCount, breakfastCredits);
     });
 
     test('dinner credit count should be updated', () async {
-      final DiningModel diningModel = DiningModel(repository);
+      final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.dinnerCreditCount, dinnerCredits);
     });
 
     test('meal location should be updated', () async {
-      final DiningModel diningModel = DiningModel(repository);
+      final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.mealLocation, mealLocation);
     });
 
     test('current meal type should be updated', () async {
-      final DiningModel diningModel = DiningModel(repository);
+      final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.currentMealType, mealType);
     });

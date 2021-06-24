@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 //Local Files
-import '../model/temperature/temperature_record.dart';
-import '../repository/user_repository.dart';
 import '../model/temperature/temperature_model.dart';
+import '../model/temperature/temperature_record.dart';
 import '../model/user_model.dart';
+import '../repository/user_repository.dart';
 
 class TemperatureScreen extends StatefulWidget {
   static final Color acceptableTemperatureColor = Colors.green.shade300;
@@ -170,7 +170,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   Widget _buildDeclareButton(BuildContext context) {
-    bool isTemperatureDeclared =
+    final isTemperatureDeclared =
         context.read<TemperatureModel>().isTemperatureDeclared;
     if (isTemperatureDeclared && !_isRedeclaring) {
       return OutlinedButtonTheme(
@@ -251,18 +251,18 @@ class TemperatureScreenState extends State<TemperatureScreen>
                             fontWeight: FontWeight.bold,
                           )),
                   const Spacer(),
-                  DropdownButton(
+                  DropdownButton<String>(
                     value: _timeInterval,
                     items: [
                       DateFormat('aa').format(DateTime.utc(2020, 1, 1, 11)),
                       DateFormat('aa').format(DateTime.utc(2020, 1, 1, 13)),
-                    ].map((String value) {
+                    ].map((value) {
                       return DropdownMenuItem(
                         value: value,
                         child: Text(value),
                       );
                     }).toList(),
-                    onChanged: (String? newValue) {
+                    onChanged: (newValue) {
                       setState(() {
                         _timeInterval = newValue!;
                       });
@@ -340,7 +340,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   Widget _buildTemperatureList(BuildContext context) {
-    TemperatureModel temperatureModel = context.read<TemperatureModel>();
+    final temperatureModel = context.read<TemperatureModel>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -365,7 +365,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, position) {
-              TemperatureRecord record =
+              final record =
                   temperatureModel.temperatureRecords[position];
               return ListTile(
                 contentPadding:
@@ -385,20 +385,20 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   Widget _buildDayTile(BuildContext context, int dayIndex) {
-    DateTime sunday = now.subtract(Duration(days: now.weekday));
-    DateTime day = sunday.add(Duration(days: dayIndex));
-    String dayLetter = DateFormat.E().format(day)[0];
-    bool isDeclared = context
+    final sunday = now.subtract(Duration(days: now.weekday));
+    final day = sunday.add(Duration(days: dayIndex));
+    final dayLetter = DateFormat.E().format(day)[0];
+    final isDeclared = context
         .read<TemperatureModel>()
         .temperatureRecords
         .any((record) => record.time.isSameDate(day));
-    bool isToday = dayIndex == now.weekday;
-    Color backgroundColor = isDeclared
+    final isToday = dayIndex == now.weekday;
+    final backgroundColor = isDeclared
         ? (Theme.of(context).brightness == Brightness.light
             ? Colors.green.shade200
             : Colors.green.shade800)
         : Theme.of(context).dividerColor;
-    Color borderColor = isToday
+    final borderColor = isToday
         ? (Theme.of(context).brightness == Brightness.light
             ? Colors.green.shade700
             : Colors.green.shade300)
@@ -424,8 +424,8 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   static String _getRecordSubtitle(TemperatureRecord record) {
-    String timeOfDay = record.time.hour >= 12 ? 'Afternoon' : 'Morning';
-    String timeAgo = timeago.format(record.time);
+    final timeOfDay = record.time.hour >= 12 ? 'Afternoon' : 'Morning';
+    final timeAgo = timeago.format(record.time);
     return '$timeOfDay · $timeAgo';
   }
 

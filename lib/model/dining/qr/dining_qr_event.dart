@@ -1,5 +1,4 @@
 import 'dining_qr_data.dart';
-import 'invalid_qr_exception.dart';
 
 abstract class DiningQrEvent {}
 

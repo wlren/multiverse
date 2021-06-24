@@ -23,14 +23,12 @@ class SessionCubit extends Cubit<SessionState> {
 
   void signOut() {
     authRepository.signOut();
-    print('signed out');
     emit(Unauthenticated());
   }
 
   void attemptAutoLogin() async {
     try {
       userUID = authRepository.attemptAutoLogin();
-      print(userUID);
       emit(Authenticated(userID: userUID));
     } on Exception {
       emit(Unauthenticated());

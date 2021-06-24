@@ -11,23 +11,23 @@ class NUSCardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String userName = 'John Smith';
-    const String admitTerm = '2020/2021 Semester 1';
-    const String careerType = 'Undergraduate';
-    const String studentId = 'A0201234Z';
+    const userName = 'John Smith';
+    const admitTerm = '2020/2021 Semester 1';
+    const careerType = 'Undergraduate';
+    const studentId = 'A0201234Z';
 
     /// Manually calculate cardRadius to ensure card displays correctly on
     /// different devices.
-    final double cardWidth =
+    final cardWidth =
         MediaQuery.of(context).size.width - 2 * horizontalPadding;
-    final double cardHeight = cardWidth / (90 / 54);
-    final double cardRadius = 3 / 90 * cardWidth; // 3mm corners
-    final double whiteSectionHeight = cardHeight / 3.75 * 2.75;
+    final cardHeight = cardWidth / (90 / 54);
+    final cardRadius = 3 / 90 * cardWidth; // 3mm corners
+    final whiteSectionHeight = cardHeight / 3.75 * 2.75;
 
     /// These two values are magic numbers derived from trial-and-error.
-    final double photoHeight = whiteSectionHeight * 2 / 3;
-    final double photoSpacing = photoHeight * 0.15;
-    final double nusLogoHeight = cardHeight * 0.3;
+    final photoHeight = whiteSectionHeight * 2 / 3;
+    final photoSpacing = photoHeight * 0.15;
+    final nusLogoHeight = cardHeight * 0.3;
 
     final Widget _card = Theme(
         data: Theme.of(context).copyWith(

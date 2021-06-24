@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 //Local Files
-import 'menu.dart';
 import '../../repository/dining_repository.dart';
+import 'menu.dart';
 
 class DiningModel extends ChangeNotifier {
   DiningModel(this.diningRepository) {

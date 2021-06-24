@@ -1,1 +1,0 @@
-class InvalidQrException implements Exception {}

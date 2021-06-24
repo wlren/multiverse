@@ -12,9 +12,9 @@ void main() {
   group('Temperature model', () {
     test('update method should fetch data from repository', () async {
       final repository = MockUserRepository();
-      List<TemperatureRecord> mockTemperatureRecords = [];
-      bool isTemperatureDeclared = false;
-      bool isTemperatureAcceptable = false;
+      var mockTemperatureRecords = <TemperatureRecord>[];
+      var isTemperatureDeclared = false;
+      const isTemperatureAcceptable = false;
 
       when(repository.isTemperatureDeclared())
           .thenAnswer((_) async => isTemperatureDeclared);
@@ -24,7 +24,7 @@ void main() {
       when(repository.getTemperatureRecords())
           .thenAnswer((_) async => mockTemperatureRecords);
 
-      final TemperatureModel temperatureModel = TemperatureModel(repository);
+      final temperatureModel = TemperatureModel(repository);
 
       // Wait for update
       await temperatureModel.update();
@@ -48,8 +48,8 @@ void main() {
     test('declareTemperature should add a TemperatureRecord in repository',
         () async {
       final repository = MockUserRepository();
-      final List<TemperatureRecord> mockTemperatureRecords = [];
-      bool isTemperatureDeclared = false;
+      final mockTemperatureRecords = <TemperatureRecord>[];
+      var isTemperatureDeclared = false;
 
       // Set up mock interactions
       when(repository.isTemperatureDeclared())
@@ -57,7 +57,7 @@ void main() {
       when(repository.isTemperatureAcceptable()).thenAnswer((_) async => false);
       when(repository.declareTemperature(any))
           .thenAnswer((realInvocation) async {
-        double declaredTemperature =
+        final declaredTemperature =
             realInvocation.positionalArguments.first as double;
         mockTemperatureRecords.add(TemperatureRecord(
             time: DateTime.now(), temperature: declaredTemperature));
@@ -75,7 +75,7 @@ void main() {
       expect(temperatureModel.temperatureRecords, []);
 
       // Declare temperature now
-      double temperatureToDeclare = 34.5;
+      final temperatureToDeclare = 34.5;
       temperatureModel.declareTemperature(temperatureToDeclare);
 
       // Wait for model to update

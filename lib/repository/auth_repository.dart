@@ -62,7 +62,7 @@ class AuthRepository {
   Future<String> login(
       {required String email, required String password}) async {
     try {
-      var userCredential = await FirebaseAuth.instance
+      final userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:multiverse/model/auth/session_cubit.dart';
 import 'package:multiverse/model/dining/menu.dart';
 import 'package:multiverse/screens/dashboard_screen.dart';
 import 'package:multiverse/screens/dining_screen.dart';
@@ -14,21 +15,24 @@ import 'package:mockito/mockito.dart';
 
 import 'dashboard_screen_test.mocks.dart';
 
+const _mockUserId = 'mockUserId';
+
 @GenerateMocks([
   UserModel,
   GreenPassModel,
+  SessionCubit,
 ], customMocks: [
   MockSpec<NavigatorObserver>(returnNullOnMissingStub: true),
   MockSpec<DiningModel>(returnNullOnMissingStub: true),
 ])
 void main() {
-  final MockUserModel mockUserModel = MockUserModel();
+  final mockUserModel = MockUserModel();
   when(mockUserModel.isTemperatureAcceptable).thenReturn(true);
 
-  final MockDiningModel mockDiningModel = MockDiningModel();
-  const int breakfastCredits = 20;
-  const int dinnerCredits = 30;
-  const int totalCredits = 20 + 30;
+  final mockDiningModel = MockDiningModel();
+  const breakfastCredits = 20;
+  const dinnerCredits = 30;
+  const totalCredits = 20 + 30;
   when(mockDiningModel.currentMealType).thenReturn(MealType.breakfast);
   when(mockDiningModel.breakfastCreditCount).thenReturn(breakfastCredits);
   when(mockDiningModel.dinnerCreditCount).thenReturn(dinnerCredits);
@@ -36,19 +40,19 @@ void main() {
   when(mockDiningModel.menu).thenReturn(FullDayMenu());
 
   group('App bar', () {
-    testWidgets('is present', (WidgetTester tester) async {
+    testWidgets('is present', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       // App bar is present
       expect(find.byType(AppBar), findsOneWidget);
     });
-    testWidgets('has title', (WidgetTester tester) async {
+    testWidgets('has title', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       // App title is present
       expect(find.text('multiverse'), findsOneWidget);
     });
-    testWidgets('has icon', (WidgetTester tester) async {
+    testWidgets('has icon', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.bySemanticsLabel('multiverse logo'), findsOneWidget);
@@ -58,12 +62,12 @@ void main() {
   group('Green pass card', () {
 
     group('Temperature not declared', () {
-      final MockUserModel unacceptableModel = MockUserModel();
+      final unacceptableModel = MockUserModel();
       when(unacceptableModel.isTemperatureAcceptable).thenReturn(false);
 
       testWidgets('shows correct declaration state',
-          (WidgetTester tester) async {
-        final MockNavigatorObserver mockObserver = MockNavigatorObserver();
+          (tester) async {
+        final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
             unacceptableModel, mockDiningModel, const DashboardScreen(),
             navigatorObservers: [mockObserver]);
@@ -73,8 +77,8 @@ void main() {
         expect(find.text('View Green Pass'), findsOneWidget);
       });
       testWidgets('is disabled and does not launch green pass screen',
-          (WidgetTester tester) async {
-        final MockNavigatorObserver mockObserver = MockNavigatorObserver();
+          (tester) async {
+        final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
             unacceptableModel, mockDiningModel, const DashboardScreen(),
             navigatorObservers: [mockObserver]);
@@ -87,12 +91,12 @@ void main() {
     });
 
     group('Temperature acceptable', () {
-      final MockUserModel acceptableModel = MockUserModel();
+      final acceptableModel = MockUserModel();
       when(acceptableModel.isTemperatureAcceptable).thenReturn(true);
 
       testWidgets('shows correct declaration state',
-          (WidgetTester tester) async {
-        final MockNavigatorObserver mockObserver = MockNavigatorObserver();
+          (tester) async {
+        final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
             acceptableModel, mockDiningModel, const DashboardScreen(),
             navigatorObservers: [mockObserver]);
@@ -101,8 +105,8 @@ void main() {
         expect(find.text('Temperature declared'), findsOneWidget);
       });
       testWidgets('is enabled and launches correct screen on tap',
-          (WidgetTester tester) async {
-        final MockNavigatorObserver mockObserver = MockNavigatorObserver();
+          (tester) async {
+        final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
             acceptableModel, mockDiningModel, const DashboardScreen(),
             navigatorObservers: [mockObserver]);
@@ -120,27 +124,27 @@ void main() {
   });
 
   group('Dining card', () {
-    testWidgets('Icon is shown', (WidgetTester tester) async {
+    testWidgets('Icon is shown', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.byIcon(Icons.lunch_dining), findsOneWidget);
     });
     group('Meal type is shown and matches dining model', () {
-      testWidgets('Breakfast', (WidgetTester tester) async {
+      testWidgets('Breakfast', (tester) async {
         final DiningModel breakfastModel = MockDiningModel();
         when(breakfastModel.currentMealType).thenReturn(MealType.breakfast);
         await tester.pumpAndSettleScreen(
             mockUserModel, breakfastModel, const DashboardScreen());
         expect(find.text('Breakfast'), findsOneWidget);
       });
-      testWidgets('Dinner', (WidgetTester tester) async {
+      testWidgets('Dinner', (tester) async {
         final DiningModel dinnerModel = MockDiningModel();
         when(dinnerModel.currentMealType).thenReturn(MealType.dinner);
         await tester.pumpAndSettleScreen(
             mockUserModel, dinnerModel, const DashboardScreen());
         expect(find.text('Dinner'), findsOneWidget);
       });
-      testWidgets('No meal', (WidgetTester tester) async {
+      testWidgets('No meal', (tester) async {
         final DiningModel noneModel = MockDiningModel();
         when(noneModel.currentMealType).thenReturn(MealType.none);
         await tester.pumpAndSettleScreen(
@@ -150,14 +154,14 @@ void main() {
     });
 
     testWidgets('Total credits are shown and match dining model',
-        (WidgetTester tester) async {
+        (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.text('$totalCredits credits'), findsOneWidget);
     });
 
-    testWidgets('Launches dining screen on tap', (WidgetTester tester) async {
-      final MockNavigatorObserver mockObserver = MockNavigatorObserver();
+    testWidgets('Launches dining screen on tap', (tester) async {
+      final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),
           navigatorObservers: [mockObserver]);
@@ -171,15 +175,15 @@ void main() {
   });
 
   group('NUS Card card', () {
-    testWidgets('Shown correctly', (WidgetTester tester) async {
+    testWidgets('Shown correctly', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.text('NUS Card'), findsOneWidget);
       expect(find.text('View details'), findsOneWidget);
     });
 
-    testWidgets('Launches NUS Card screen on tap', (WidgetTester tester) async {
-      final MockNavigatorObserver mockObserver = MockNavigatorObserver();
+    testWidgets('Launches NUS Card screen on tap', (tester) async {
+      final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),
           navigatorObservers: [mockObserver]);
@@ -195,17 +199,21 @@ void main() {
 }
 
 // A short hand method to truncate repeated calls
-extension _PumpAndSettleScreen on WidgetTester {
+extension on WidgetTester {
   Future<void> pumpAndSettleScreen(
       UserModel userModel, DiningModel diningModel, Widget screen,
       {List<NavigatorObserver>? navigatorObservers}) async {
-    final MockGreenPassModel mockGreenPassModel = MockGreenPassModel();
+    final mockGreenPassModel = MockGreenPassModel();
     when(mockGreenPassModel.isPassGreen).thenReturn(false);
+
+    final mockSessionCubit = MockSessionCubit();
+    when(mockSessionCubit.userUID).thenReturn(_mockUserId);
     await pumpWidget(MultiProvider(
       providers: [
         ChangeNotifierProvider<UserModel>(create: (context) => userModel),
         ChangeNotifierProvider<DiningModel>(create: (context) => diningModel),
         ChangeNotifierProvider<GreenPassModel>(create: (context) => mockGreenPassModel),
+        Provider<SessionCubit>(create: (context) => mockSessionCubit),
       ],
       child: MaterialApp(
         home: const DashboardScreen(),

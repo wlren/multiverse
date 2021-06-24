@@ -5,8 +5,8 @@ import 'package:multiverse/model/login_model.dart';
 void main() {
   group('Attribute setters work correctly, and call notifyListeners', () {
     test('shouldRememberPassword setter', () {
-      bool testPassed = false;
-      LoginModel loginModel = LoginModel();
+      var testPassed = false;
+      final loginModel = LoginModel();
       loginModel.addListener(() {
         testPassed = true;
       });
@@ -15,8 +15,8 @@ void main() {
       expect(loginModel.shouldRememberPassword, true);
     });
     test('email setter', () {
-      bool testPassed = false;
-      LoginModel loginModel = LoginModel();
+      var testPassed = false;
+      final loginModel = LoginModel();
       loginModel.addListener(() {
         testPassed = true;
       });
@@ -25,8 +25,8 @@ void main() {
       expect(loginModel.email, 'email@email.com');
     });
     test('password setter', () {
-      bool testPassed = false;
-      LoginModel loginModel = LoginModel();
+      var testPassed = false;
+      final loginModel = LoginModel();
       loginModel.addListener(() {
         testPassed = true;
       });
@@ -38,13 +38,13 @@ void main() {
 
   group('Form validators should function correctly', () {
     test('Empty passwords should be invalid', () {
-      LoginModel loginModel = LoginModel();
+      final loginModel = LoginModel();
       loginModel.password = '';
       expect(loginModel.password.isEmpty, true);
       expect(loginModel.isPasswordValid, false);
     });
     test('Non-empty passwords should be valid', () {
-      LoginModel loginModel = LoginModel();
+      final loginModel = LoginModel();
       loginModel.password = 'password123';
       expect(loginModel.isPasswordValid, true);
       loginModel.password = 'pw345';
@@ -53,19 +53,19 @@ void main() {
       expect(loginModel.isPasswordValid, true);
     });
     test('Empty emails should be invalid', () {
-      LoginModel loginModel = LoginModel();
+      final loginModel = LoginModel();
       loginModel.email = '';
       expect(loginModel.email.isEmpty, true);
       expect(loginModel.isEmailValid, false);
     });
     group('Valid emails should be in the format exxxxxxx@u.nus.edu', () {
       test('Wrong domain (not u.nus.edu) should be invalid', () {
-        LoginModel loginModel = LoginModel();
+        final loginModel = LoginModel();
         loginModel.email = 'email@email.com';
         expect(loginModel.isEmailValid, false);
       });
       test('Correct domain but wrong user id format should be invalid', () {
-        LoginModel loginModel = LoginModel();
+        final loginModel = LoginModel();
         loginModel.email = 'e442@u.nus.edu';
         expect(loginModel.isEmailValid, false);
         loginModel.email = '1312109@u.nus.edu';
@@ -74,7 +74,7 @@ void main() {
         expect(loginModel.isEmailValid, false);
       });
       test('Correct format should be valid', () {
-        LoginModel loginModel = LoginModel();
+        final loginModel = LoginModel();
         loginModel.email = 'e4423443@u.nus.edu';
         expect(loginModel.isEmailValid, true);
       });

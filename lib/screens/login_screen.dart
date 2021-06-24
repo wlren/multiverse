@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
   //NUS NetID email widget
   Widget __buildEmailField() {
     return Builder(builder: (context) {
-      LoginModel loginModel = context.read<LoginModel>();
+      final loginModel = context.read<LoginModel>();
       return TextFormField(
         decoration: const InputDecoration(
           filled: true,
@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
   //Password field widget
   Widget _buildPasswordField() {
     return Builder(builder: (context) {
-      LoginModel loginModel = context.read<LoginModel>();
+      final loginModel = context.read<LoginModel>();
       return TextFormField(
         obscureText: true,
         decoration: const InputDecoration(
@@ -79,7 +79,7 @@ class LoginScreen extends StatelessWidget {
   //Sends form information to AWS for authentication
   Widget _buildLoginButton() {
     return BlocBuilder<LoginFormBloc, LoginFormState>(builder: (context, state) {
-      LoginModel loginModel = context.read<LoginModel>();
+      final loginModel = context.read<LoginModel>();
       return state is FormSubmitting
           ? const CircularProgressIndicator()
           : ElevatedButton(
@@ -172,11 +172,11 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildRememberPasswordCheckBox() {
     return Builder(builder: (context) {
-      LoginModel loginModel = context.watch<LoginModel>();
+      final loginModel = context.watch<LoginModel>();
       return CheckboxListTile(
         title: const Text('Remember password'),
         value: loginModel.shouldRememberPassword,
-        onChanged: (bool? value) {
+        onChanged: (value) {
           loginModel.shouldRememberPassword = value ?? false;
         },
       );

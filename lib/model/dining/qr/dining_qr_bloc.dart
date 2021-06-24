@@ -5,7 +5,6 @@ import 'dining_qr_data.dart';
 import 'dining_qr_event.dart';
 import 'dining_qr_state.dart';
 
-
 class DiningQrBloc extends Bloc<DiningQrEvent, DiningQrState> {
   DiningQrBloc(this.currentMenu) : super(ScanningQrState());
 

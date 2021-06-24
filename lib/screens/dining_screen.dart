@@ -8,8 +8,8 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../model/dining/menu.dart';
 import '../model/dining/dining_model.dart';
+import '../model/dining/menu.dart';
 import 'dining_qr_screen.dart';
 
 class DiningScreen extends StatefulWidget {
@@ -57,7 +57,7 @@ class _DiningScreenState extends State<DiningScreen>
             child: extend.NestedScrollView(
               controller: _scrollController,
               headerSliverBuilder:
-                  (BuildContext context, bool? innerBoxIsScrolled) {
+                  (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
                     backwardsCompatibility: false,
@@ -76,7 +76,7 @@ class _DiningScreenState extends State<DiningScreen>
                       ],
                       title: AnimatedBuilder(
                         animation: _scrollController,
-                        builder: (BuildContext context, Widget? child) {
+                        builder: (context, child) {
                           final collapsedPercentage =
                               // This is a hack to make sure error is not thrown
                               // ignore: invalid_use_of_protected_member
@@ -205,7 +205,7 @@ class _DiningScreenState extends State<DiningScreen>
 
   void _onScanQrPressed(BuildContext context) {
     if (context.read<DiningModel>().currentMenu != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => DiningQrScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => DiningQrScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('ups'),

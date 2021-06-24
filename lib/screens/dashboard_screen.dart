@@ -9,10 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../model/dining/menu.dart';
-import '../model/user_model.dart';
 import '../model/auth/session_cubit.dart';
 import '../model/dining/dining_model.dart';
+import '../model/dining/menu.dart';
+import '../model/user_model.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
