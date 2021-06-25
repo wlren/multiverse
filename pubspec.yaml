@@ -41,6 +41,7 @@ dependencies:
   qr_code_scanner: ^0.5.1
 
 dev_dependencies:
+  bloc_test: ^8.0.2
   build_runner: ^1.11.0
   flutter_lints: ^1.0.2
   flutter_test:

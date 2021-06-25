@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 
 import '../menu.dart';
 import 'dining_qr_data.dart';
@@ -16,12 +16,13 @@ class DiningQrBloc extends Bloc<DiningQrEvent, DiningQrState> {
       final scannedMeal = event.data.getMealFromMenu(currentMenu);
       if (scannedMeal != null) {
         yield MealLoadedState(scannedMeal);
-        yield ScanningQrState();
       } else {
-        yield InvalidQrState('Invalid');
+        yield MealNotFoundState();
       }
     } else if (event is QrRetryEvent) {
       yield ScanningQrState();
+    } else if (event is InvalidFormatQrScannedEvent) {
+      yield InvalidQrFormatState();
     }
   }
 }

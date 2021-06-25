@@ -158,7 +158,8 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
       final diningQrBloc = context.read<DiningQrBloc>();
       final cuisineId = int.tryParse(barcode.code);
       if (cuisineId == null) {
-        diningQrBloc.add(InvalidQrScannedEvent('QR code scanned is invalid'));
+        // QR contains wrong content type
+        diningQrBloc.add(InvalidFormatQrScannedEvent());
       } else {
         controller.pauseCamera().then((_) {
           diningQrBloc.add(ValidQrScannedEvent(DiningQrData(cuisineId)));

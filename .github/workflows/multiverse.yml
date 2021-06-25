@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Flutter
+name: multiverse
 
 on:
   push:
@@ -12,15 +12,14 @@ on:
     branches: [ main ]
 
 jobs:
-  update-code-coverage:
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Install flutter
-        # You may pin to the exact commit or the version.
-        # uses: subosito/flutter-action@4389e6cbc6cb8a4b18c628ff96ff90be0e926aa8
         uses: subosito/flutter-action@v1.5.3
         with:
           # The Flutter version to make available on the path
@@ -31,14 +30,36 @@ jobs:
 
       - name: Build mockito files
         run: flutter pub run build_runner build
+        
+      - name: Upload test files
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-files
+          path: ./test
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
+  update-code-coverage:
+    name: Update code coverage
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:      
+      - uses: actions/checkout@v2
 
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
+      - name: Install flutter
+        uses: subosito/flutter-action@v1.5.3
+        with:
+          # The Flutter version to make available on the path
+          flutter-version: '2.2.0'
+
+      - name: Install flutter dependencies
+        run: flutter pub get
+        
+      - name: Download test files
+        uses: actions/download-artifact@v2
+        with:
+          name: test-files
+          path: ./test
+    
       - name: Run tests
         run: flutter test --coverage
         
@@ -48,14 +69,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   lint-checks:
+    name: Check linting
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Install flutter
-        # You may pin to the exact commit or the version.
-        # uses: subosito/flutter-action@4389e6cbc6cb8a4b18c628ff96ff90be0e926aa8
         uses: subosito/flutter-action@v1.5.3
         with:
           # The Flutter version to make available on the path
@@ -63,14 +84,12 @@ jobs:
 
       - name: Install flutter dependencies
         run: flutter pub get
-
-      - name: Build mockito files
-        run: flutter pub run build_runner build
-
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
+                
+      - name: Download test files
+        uses: actions/download-artifact@v2
+        with:
+          name: test-files
+          path: ./test
+          
       - name: Analyze project source
         run: flutter analyze

@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 
 import '../../../repository/dining_repository.dart';
 import 'dining_redeem_event.dart';
