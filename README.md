@@ -2,6 +2,7 @@
 
 ![multiverse banner](banner.png)
 
+[![multiverse](https://github.com/wlren/multiverse/actions/workflows/multiverse.yml/badge.svg)](https://github.com/wlren/multiverse/actions/workflows/multiverse.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wlren/multiverse/badge.svg?branch=main)](https://coveralls.io/github/wlren/multiverse?branch=main)
 
 A mobile application powered by Flutter and AWS Amplify which provides a
