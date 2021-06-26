@@ -79,7 +79,7 @@ void main() {
       await diningModel.update();
       expect(diningModel.currentMenu, sampleMenu.breakfast);
     });
-    
+
     test('currentMealType = dinner', () async {
       final mockRepository = MockDiningRepository();
       when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.dinner);

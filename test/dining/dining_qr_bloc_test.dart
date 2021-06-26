@@ -47,7 +47,7 @@ void main() {
       'emits [MealNotFoundState] when valid QR with invalid cuisine id is scanned',
       build: () => DiningQrBlocWithSampleMenu(),
       act: (bloc) => bloc.add(ValidQrScannedEvent(DiningQrData(10))),
-      expect: () => [isA<InvalidQrFormatState>()],
+      expect: () => [isA<MealNotFoundState>()],
     );
   });
 }
