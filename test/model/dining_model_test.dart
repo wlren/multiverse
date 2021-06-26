@@ -56,5 +56,58 @@ void main() {
       await diningModel.update();
       expect(diningModel.currentMealType, mealType);
     });
+
+    test('currentMenu getter should return the correct value', () async {
+      final diningModel = DiningModel(repository);
+      await diningModel.update();
+      expect(diningModel.totalCreditCount, breakfastCredits + dinnerCredits);
+    });
+  });
+
+  group('currentMenu getter should return the correct value', () {
+    test('currentMealType = breakfast', () async {
+      final mockRepository = MockDiningRepository();
+      when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.breakfast);
+      when(mockRepository.getBreakfastCreditCount())
+          .thenAnswer((_) async => breakfastCredits);
+      when(mockRepository.getDinnerCreditCount())
+          .thenAnswer((_) async => dinnerCredits);
+      when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
+      when(mockRepository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+
+      final diningModel = DiningModel(mockRepository);
+      await diningModel.update();
+      expect(diningModel.currentMenu, sampleMenu.breakfast);
+    });
+    
+    test('currentMealType = dinner', () async {
+      final mockRepository = MockDiningRepository();
+      when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.dinner);
+      when(mockRepository.getBreakfastCreditCount())
+          .thenAnswer((_) async => breakfastCredits);
+      when(mockRepository.getDinnerCreditCount())
+          .thenAnswer((_) async => dinnerCredits);
+      when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
+      when(mockRepository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+
+      final diningModel = DiningModel(mockRepository);
+      await diningModel.update();
+      expect(diningModel.currentMenu, sampleMenu.dinner);
+    });
+
+    test('currentMealType = none', () async {
+      final mockRepository = MockDiningRepository();
+      when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.none);
+      when(mockRepository.getBreakfastCreditCount())
+          .thenAnswer((_) async => breakfastCredits);
+      when(mockRepository.getDinnerCreditCount())
+          .thenAnswer((_) async => dinnerCredits);
+      when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
+      when(mockRepository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+
+      final diningModel = DiningModel(mockRepository);
+      await diningModel.update();
+      expect(diningModel.currentMenu, null);
+    });
   });
 }

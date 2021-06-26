@@ -23,5 +23,4 @@ class DiningRedeemBloc extends Bloc<DiningRedeemEvent, DiningRedeemState> {
       yield UnredeemedState();
     }
   }
-
 }

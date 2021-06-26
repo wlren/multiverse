@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:multiverse/model/dining/menu.dart';
 import 'package:multiverse/model/dining/qr/dining_qr_bloc.dart';
 import 'package:multiverse/model/dining/qr/dining_qr_data.dart';
 import 'package:multiverse/model/dining/qr/dining_qr_event.dart';
@@ -41,6 +40,13 @@ void main() {
       'emits [InvalidQrState] when invalid QR (wrong content format) is scanned',
       build: () => DiningQrBlocWithSampleMenu(),
       act: (bloc) => bloc.add(InvalidFormatQrScannedEvent()),
+      expect: () => [isA<InvalidQrFormatState>()],
+    );
+
+    blocTest<DiningQrBloc, DiningQrState>(
+      'emits [MealNotFoundState] when valid QR with invalid cuisine id is scanned',
+      build: () => DiningQrBlocWithSampleMenu(),
+      act: (bloc) => bloc.add(ValidQrScannedEvent(DiningQrData(10))),
       expect: () => [isA<InvalidQrFormatState>()],
     );
   });
