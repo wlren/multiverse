@@ -253,9 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         .headline6
                         ?.copyWith(color: Colors.white)),
                 Text(
-                    context.watch<DiningModel>().totalCreditCount == null
-                        ? 'Loading'
-                        : '${context.watch<DiningModel>().totalCreditCount} credits',
+                    context.watch<DiningModel>().cardSubtitle,
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2

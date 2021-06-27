@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 import '../mocks/menu.dart';
 import 'dining_model_test.mocks.dart';
 
-@GenerateMocks([DiningRepository])
+@GenerateMocks([], customMocks: [MockSpec<DiningRepository>(returnNullOnMissingStub: true)])
 void main() {
   final repository = MockDiningRepository();
   const mealType = MealType.dinner;
@@ -15,7 +15,7 @@ void main() {
   const dinnerCredits = 48;
   const mealLocation = 'mealLocation';
 
-  when(repository.getCurrentMealType()).thenAnswer((_) async => mealType);
+  when(repository.getCurrentMealType()).thenReturn(mealType);
   when(repository.getBreakfastCreditCount())
       .thenAnswer((_) async => breakfastCredits);
   when(repository.getDinnerCreditCount())
@@ -23,7 +23,7 @@ void main() {
   when(repository.getMealLocation()).thenAnswer((_) async => mealLocation);
   when(repository.getMenu(any, any)).thenAnswer((_) async => sampleMenu);
 
-  group('Dining model should update properly', () {
+  group('Dining model should update correctly', () {
     test('menu date should be updated', () {
       final diningModel = DiningModel(repository);
       final now = DateTime(2021, 1, 1);
@@ -55,10 +55,46 @@ void main() {
       expect(diningModel.currentMealType, mealType);
     });
 
-    test('currentMenu getter should return the correct value', () async {
-      final diningModel = DiningModel(repository);
-      await diningModel.update();
-      expect(diningModel.totalCreditCount, breakfastCredits + dinnerCredits);
+    group('cardSubtitle getter', () {
+      test('should return "... credits" when currentMealType = breakfast', () async {
+        final mockRepository = MockDiningRepository();
+        when(mockRepository.getCurrentMealType()).thenReturn(MealType.breakfast);
+        when(mockRepository.getBreakfastCreditCount())
+            .thenAnswer((_) async => breakfastCredits);
+        when(mockRepository.getDinnerCreditCount())
+            .thenAnswer((_) async => dinnerCredits);
+        when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
+        when(mockRepository.getMenu(any, any)).thenAnswer((_) async => sampleMenu);
+        final diningModel = DiningModel(mockRepository);
+        await diningModel.update();
+        expect(diningModel.cardSubtitle, '$breakfastCredits credits');
+      });
+      test('should return "... credits" when currentMealType = dinner', () async {
+        final mockRepository = MockDiningRepository();
+        when(mockRepository.getCurrentMealType()).thenReturn(MealType.dinner);
+        when(mockRepository.getBreakfastCreditCount())
+            .thenAnswer((_) async => breakfastCredits);
+        when(mockRepository.getDinnerCreditCount())
+            .thenAnswer((_) async => dinnerCredits);
+        when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
+        when(mockRepository.getMenu(any, any)).thenAnswer((_) async => sampleMenu);
+        final diningModel = DiningModel(mockRepository);
+        await diningModel.update();
+        expect(diningModel.cardSubtitle, '$dinnerCredits credits');
+      });
+      test('should return "Until ..." when currentMealType = none', () async {
+        final mockRepository = MockDiningRepository();
+        when(mockRepository.getCurrentMealType()).thenReturn(MealType.none);
+        when(mockRepository.getBreakfastCreditCount())
+            .thenAnswer((_) async => breakfastCredits);
+        when(mockRepository.getDinnerCreditCount())
+            .thenAnswer((_) async => dinnerCredits);
+        when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
+        when(mockRepository.getMenu(any, any)).thenAnswer((_) async => sampleMenu);
+        final diningModel = DiningModel(mockRepository);
+        await diningModel.update();
+        expect(diningModel.cardSubtitle, matches(r'Until \w+'));
+      });
     });
   });
 
@@ -66,7 +102,7 @@ void main() {
     test('currentMealType = breakfast', () async {
       final mockRepository = MockDiningRepository();
       when(mockRepository.getCurrentMealType())
-          .thenAnswer((_) async => MealType.breakfast);
+          .thenReturn(MealType.breakfast);
       when(mockRepository.getBreakfastCreditCount())
           .thenAnswer((_) async => breakfastCredits);
       when(mockRepository.getDinnerCreditCount())
@@ -84,7 +120,7 @@ void main() {
     test('currentMealType = dinner', () async {
       final mockRepository = MockDiningRepository();
       when(mockRepository.getCurrentMealType())
-          .thenAnswer((_) async => MealType.dinner);
+          .thenReturn(MealType.dinner);
       when(mockRepository.getBreakfastCreditCount())
           .thenAnswer((_) async => breakfastCredits);
       when(mockRepository.getDinnerCreditCount())
@@ -102,7 +138,7 @@ void main() {
     test('currentMealType = none', () async {
       final mockRepository = MockDiningRepository();
       when(mockRepository.getCurrentMealType())
-          .thenAnswer((_) async => MealType.none);
+          .thenReturn(MealType.none);
       when(mockRepository.getBreakfastCreditCount())
           .thenAnswer((_) async => breakfastCredits);
       when(mockRepository.getDinnerCreditCount())

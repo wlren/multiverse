@@ -17,7 +17,7 @@ extension MockDiningModelDefaultStub on MockDiningModel {
     when(currentMealType).thenReturn(MealType.breakfast);
     when(breakfastCreditCount).thenReturn(breakfastCredits);
     when(dinnerCreditCount).thenReturn(dinnerCredits);
-    when(totalCreditCount).thenReturn(totalCredits);
+    when(cardSubtitle).thenReturn('$breakfastCredits credits');
     when(menu).thenReturn(sampleMenu);
     when(mealLocation).thenReturn('mealLocation');
   }

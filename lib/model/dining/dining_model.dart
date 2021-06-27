@@ -21,14 +21,19 @@ class DiningModel extends ChangeNotifier {
   int? breakfastCreditCount;
   int? dinnerCreditCount;
 
-  int? get totalCreditCount {
-    if (DateTime.now().hour >= 0 && DateTime.now().hour < 12) {
-      return breakfastCreditCount;
-    } else if (DateTime.now().hour >= 12 && DateTime.now().hour <= 23) {
-      return dinnerCreditCount;
-    } else {
-      return null;
+  int? get _creditCount {
+    switch (currentMealType) {
+      case MealType.breakfast:
+        return breakfastCreditCount;
+      case MealType.dinner:
+        return dinnerCreditCount;
+      default:
+        return null;
     }
+  }
+
+  String get cardSubtitle {
+    return _creditCount != null ? '$_creditCount credits' : 'Until 10:30pm';
   }
 
   Future<void> update() async {
@@ -38,7 +43,6 @@ class DiningModel extends ChangeNotifier {
     dinnerCreditCount = await diningRepository.getDinnerCreditCount();
     currentMealType = diningRepository.getCurrentMealType();
     notifyListeners();
-    //print('update');
   }
 
   Future<void> setMenuDate(DateTime date) async {

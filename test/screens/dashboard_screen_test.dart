@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -117,40 +118,46 @@ void main() {
   });
 
   group('Dining card', () {
-    testWidgets('Icon is shown', (tester) async {
+    testWidgets('icon should be shown', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.byIcon(Icons.lunch_dining), findsOneWidget);
     });
-    group('Meal type is shown and matches dining model', () {
-      testWidgets('Breakfast', (tester) async {
+    group('title should show current meal', () {
+      testWidgets('breakfast', (tester) async {
         final DiningModel breakfastModel = MockDiningModel();
         when(breakfastModel.currentMealType).thenReturn(MealType.breakfast);
+        when(breakfastModel.cardSubtitle).thenReturn('cardSubtitle');
         await tester.pumpAndSettleScreen(
             mockUserModel, breakfastModel, const DashboardScreen());
         expect(find.text('Breakfast'), findsOneWidget);
       });
-      testWidgets('Dinner', (tester) async {
+      testWidgets('dinner', (tester) async {
         final DiningModel dinnerModel = MockDiningModel();
         when(dinnerModel.currentMealType).thenReturn(MealType.dinner);
+        when(dinnerModel.cardSubtitle).thenReturn('cardSubtitle');
         await tester.pumpAndSettleScreen(
             mockUserModel, dinnerModel, const DashboardScreen());
         expect(find.text('Dinner'), findsOneWidget);
       });
-      testWidgets('No meal', (tester) async {
+      testWidgets('no meal', (tester) async {
         final DiningModel noneModel = MockDiningModel();
         when(noneModel.currentMealType).thenReturn(MealType.none);
+        when(noneModel.cardSubtitle).thenReturn('cardSubtitle');
         await tester.pumpAndSettleScreen(
             mockUserModel, noneModel, const DashboardScreen());
         expect(find.text('Closed'), findsOneWidget);
       });
     });
 
-    testWidgets('Total credits are shown and match dining model',
+    testWidgets('subtitle should displayed correctly',
         (tester) async {
+      final DiningModel mockDiningModel = MockDiningModel();
+      when(mockDiningModel.currentMealType).thenReturn(MealType.none);
+      when(mockDiningModel.cardSubtitle).thenReturn('cardSubtitle');
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
-      expect(find.text('${mockDiningModel.totalCreditCount} credits'), findsOneWidget);
+      expect(find.text(mockDiningModel.cardSubtitle), findsOneWidget);
     });
 
     testWidgets('Launches dining screen on tap', (tester) async {
