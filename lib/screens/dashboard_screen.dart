@@ -134,7 +134,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildTemperatureButton() {
     return OpenContainer(
-      useRootNavigator: true,
+      //useRootNavigator: true,
       closedElevation: 0,
       closedShape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),

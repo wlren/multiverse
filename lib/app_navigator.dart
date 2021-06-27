@@ -1,6 +1,7 @@
 //Packages
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multiverse/model/temperature/temperature_model.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -68,11 +69,14 @@ class AppNavigator extends StatelessWidget {
           ChangeNotifierProvider(
               create: (context) => UserModel(context.read<UserRepository>())),
           ChangeNotifierProvider(
-            create: (context) => DiningModel(context.read<DiningRepository>()),
-          ),
+              create: (context) =>
+                  DiningModel(context.read<DiningRepository>())),
           ChangeNotifierProvider(
-            create: (context) => GreenPassModel(context.read<UserRepository>()),
-          ),
+              create: (context) =>
+                  GreenPassModel(context.read<UserRepository>())),
+          ChangeNotifierProvider(
+              create: (context) =>
+                  TemperatureModel(context.read<UserRepository>()))
         ],
         child: WillPopScope(
           // Handles system back navigation when in back navigation
