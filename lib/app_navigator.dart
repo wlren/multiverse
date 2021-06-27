@@ -43,7 +43,8 @@ class AppNavigator extends StatelessWidget {
 
           //Show dashboard
           if (state is Authenticated)
-            MaterialPage(child: _buildWithContext(child: const DashboardScreen())),
+            MaterialPage(
+                child: _buildWithContext(child: const DashboardScreen())),
         ],
         onPopPage: (route, result) => route.didPop(result),
       );
@@ -51,12 +52,16 @@ class AppNavigator extends StatelessWidget {
   }
 
   Widget _buildWithContext({required Widget child}) {
-    print("help ls");
+    //print("help ls");
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepository()),
-        RepositoryProvider(create: (context) => UserRepository(userUID: context.read<SessionCubit>().userUID)),
-        RepositoryProvider(create: (context) => DiningRepository(userUID: context.read<SessionCubit>().userUID)),
+        RepositoryProvider(
+            create: (context) =>
+                UserRepository(userUID: context.read<SessionCubit>().userUID)),
+        RepositoryProvider(
+            create: (context) => DiningRepository(
+                userUID: context.read<SessionCubit>().userUID)),
       ],
       child: MultiProvider(
         providers: [
@@ -71,7 +76,8 @@ class AppNavigator extends StatelessWidget {
         ],
         child: WillPopScope(
           // Handles system back navigation when in back navigation
-          onWillPop: () async => !await dashboardNavigatorKey.currentState!.maybePop(),
+          onWillPop: () async =>
+              !await dashboardNavigatorKey.currentState!.maybePop(),
           child: Navigator(
             key: dashboardNavigatorKey,
             pages: [

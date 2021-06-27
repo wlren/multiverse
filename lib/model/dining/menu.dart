@@ -46,6 +46,8 @@ class MealItem {
 
 enum MealType { breakfast, dinner, none }
 
+enum CuisineType { asian, malay, vegetarian, western }
+
 extension MealTypeShortString on MealType {
   String toShortString() {
     switch (this) {

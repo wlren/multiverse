@@ -1,4 +1,5 @@
 //Packages
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Local Files
@@ -54,9 +55,46 @@ class DiningRepository {
   );
 
   Future<FullDayMenu> getMenu(DateTime date, String location) async {
-    // TODO: Fetch menu from database and parse appropriately
-    // FullDayMenu menu = FullDayMenu.fromJson(data);
-    return sampleMenu;
+    final day = weekDayAsString(date);
+    final menuReference =
+        await diningReference.doc('menu').collection(location).doc(day).get();
+    final mealDict = menuReference.data() as Map<String, dynamic>;
+    final breakfast = mealDict['breakfast'];
+    final dinner = mealDict['dinner'];
+    // ignore: omit_local_variable_types
+    final List<Meal> bf = [];
+    // ignore: omit_local_variable_types
+    final List<Meal> dinz = [];
+    if (breakfast != null) {
+      for (final cuisine in breakfast.keys) {
+        final crusineType = CuisineType.values
+            .firstWhere((element) => describeEnum(element) == cuisine);
+        final newCuisine = Cuisine(crusineType.index, cuisine as String);
+        final mealItems = <MealItem>[];
+        for (final mealName in breakfast[cuisine]!) {
+          mealItems.add(MealItem(mealName as String));
+        }
+        bf.add(Meal(newCuisine, mealItems));
+      }
+    }
+
+    if (dinner != null) {
+      for (final cuisine in dinner.keys) {
+        final crusineType = CuisineType.values
+            .firstWhere((element) => describeEnum(element) == cuisine);
+        final newCuisine = Cuisine(crusineType.index, cuisine as String);
+        final mealItems = <MealItem>[];
+        for (final mealName in dinner[cuisine]!) {
+          mealItems.add(MealItem(mealName as String));
+        }
+        dinz.add(Meal(newCuisine, mealItems));
+      }
+    }
+
+    final menu = FullDayMenu(
+        breakfast: bf.isEmpty ? null : Menu(bf),
+        dinner: dinz.isEmpty ? null : Menu(dinz));
+    return menu;
   }
 
   Future<int> getBreakfastCreditCount() async {
@@ -127,5 +165,42 @@ class DiningRepository {
     int mealCount,
   ) async {
     // TODO
+  }
+
+  String weekDayAsString(DateTime date) {
+    switch (date.weekday) {
+      case 1:
+        {
+          return 'monday';
+        }
+      case 2:
+        {
+          return 'tuesday';
+        }
+      case 3:
+        {
+          return 'wednesday';
+        }
+      case 4:
+        {
+          return 'thursday';
+        }
+      case 5:
+        {
+          return 'friday';
+        }
+      case 6:
+        {
+          return 'saturday';
+        }
+      case 7:
+        {
+          return 'sunday';
+        }
+      default:
+        {
+          return 'invalid';
+        }
+    }
   }
 }

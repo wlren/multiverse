@@ -38,7 +38,7 @@ class DiningModel extends ChangeNotifier {
     dinnerCreditCount = await diningRepository.getDinnerCreditCount();
     currentMealType = diningRepository.getCurrentMealType();
     notifyListeners();
-    print('update');
+    //print('update');
   }
 
   Future<void> setMenuDate(DateTime date) async {
