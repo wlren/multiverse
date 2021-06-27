@@ -7,8 +7,6 @@ import 'package:mockito/mockito.dart';
 import '../mocks/menu.dart';
 import 'dining_model_test.mocks.dart';
 
-
-
 @GenerateMocks([DiningRepository])
 void main() {
   final repository = MockDiningRepository();
@@ -23,7 +21,7 @@ void main() {
   when(repository.getDinnerCreditCount())
       .thenAnswer((_) async => dinnerCredits);
   when(repository.getMealLocation()).thenAnswer((_) async => mealLocation);
-  when(repository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+  when(repository.getMenu(any, any)).thenAnswer((_) async => sampleMenu);
 
   group('Dining model should update properly', () {
     test('menu date should be updated', () {
@@ -67,13 +65,16 @@ void main() {
   group('currentMenu getter should return the correct value', () {
     test('currentMealType = breakfast', () async {
       final mockRepository = MockDiningRepository();
-      when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.breakfast);
+      when(mockRepository.getCurrentMealType())
+          .thenAnswer((_) async => MealType.breakfast);
       when(mockRepository.getBreakfastCreditCount())
           .thenAnswer((_) async => breakfastCredits);
       when(mockRepository.getDinnerCreditCount())
           .thenAnswer((_) async => dinnerCredits);
-      when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
-      when(mockRepository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+      when(mockRepository.getMealLocation())
+          .thenAnswer((_) async => mealLocation);
+      when(mockRepository.getMenu(any, any))
+          .thenAnswer((_) async => sampleMenu);
 
       final diningModel = DiningModel(mockRepository);
       await diningModel.update();
@@ -82,13 +83,16 @@ void main() {
 
     test('currentMealType = dinner', () async {
       final mockRepository = MockDiningRepository();
-      when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.dinner);
+      when(mockRepository.getCurrentMealType())
+          .thenAnswer((_) async => MealType.dinner);
       when(mockRepository.getBreakfastCreditCount())
           .thenAnswer((_) async => breakfastCredits);
       when(mockRepository.getDinnerCreditCount())
           .thenAnswer((_) async => dinnerCredits);
-      when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
-      when(mockRepository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+      when(mockRepository.getMealLocation())
+          .thenAnswer((_) async => mealLocation);
+      when(mockRepository.getMenu(any, any))
+          .thenAnswer((_) async => sampleMenu);
 
       final diningModel = DiningModel(mockRepository);
       await diningModel.update();
@@ -97,13 +101,16 @@ void main() {
 
     test('currentMealType = none', () async {
       final mockRepository = MockDiningRepository();
-      when(mockRepository.getCurrentMealType()).thenAnswer((_) async => MealType.none);
+      when(mockRepository.getCurrentMealType())
+          .thenAnswer((_) async => MealType.none);
       when(mockRepository.getBreakfastCreditCount())
           .thenAnswer((_) async => breakfastCredits);
       when(mockRepository.getDinnerCreditCount())
           .thenAnswer((_) async => dinnerCredits);
-      when(mockRepository.getMealLocation()).thenAnswer((_) async => mealLocation);
-      when(mockRepository.getMenu(any)).thenAnswer((_) async => sampleMenu);
+      when(mockRepository.getMealLocation())
+          .thenAnswer((_) async => mealLocation);
+      when(mockRepository.getMenu(any, any))
+          .thenAnswer((_) async => sampleMenu);
 
       final diningModel = DiningModel(mockRepository);
       await diningModel.update();

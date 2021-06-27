@@ -32,7 +32,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DateFormat dateFormat = DateFormat('dd MMM (aa)');
   final ScrollController _scrollController = ScrollController();
   late final String dateString = dateFormat.format(DateTime.now());
-  String? _userName = null;
+  String? _userName;
 
   @override
   Widget build(BuildContext context) {

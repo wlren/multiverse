@@ -8,7 +8,7 @@ import 'menu.dart';
 class DiningModel extends ChangeNotifier {
   final DiningRepository diningRepository;
   DiningModel(this.diningRepository) {
-    update('test');
+    update();
   }
 
   late String mealLocation;
@@ -29,19 +29,18 @@ class DiningModel extends ChangeNotifier {
     }
   }
 
-  Future<void> update(String userUID) async {
-    mealLocation = await diningRepository.getMealLocation(userUID);
+  Future<void> update() async {
+    mealLocation = await diningRepository.getMealLocation();
     menu = await diningRepository.getMenu(menuDate, mealLocation);
-    breakfastCreditCount =
-        await diningRepository.getBreakfastCreditCount(userUID);
-    dinnerCreditCount = await diningRepository.getDinnerCreditCount(userUID);
+    breakfastCreditCount = await diningRepository.getBreakfastCreditCount();
+    dinnerCreditCount = await diningRepository.getDinnerCreditCount();
     currentMealType = await diningRepository.getCurrentMealType();
     notifyListeners();
   }
 
-  Future<void> setMenuDate(DateTime date, String userUID) async {
+  Future<void> setMenuDate(DateTime date) async {
     menuDate = date;
-    update(userUID);
+    update();
   }
 }
 

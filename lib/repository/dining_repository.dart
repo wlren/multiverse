@@ -49,12 +49,12 @@ class DiningRepository {
     return sampleMenu;
   }
 
-  Future<int> getBreakfastCreditCount(String userUID) async {
+  Future<int> getBreakfastCreditCount() async {
     // TODO: Get from database
     return 50;
   }
 
-  Future<int> getDinnerCreditCount(String userUID) async {
+  Future<int> getDinnerCreditCount() async {
     // TODO: Get from database
     return 48;
   }
@@ -89,7 +89,7 @@ class DiningRepository {
     // }
   }
 
-  Future<String> getMealLocation(String userUID) async {
+  Future<String> getMealLocation() async {
     //TODO get from database
     return 'RVRC';
   }

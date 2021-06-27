@@ -27,10 +27,13 @@ void main() {
       build: () {
         final mockDiningRepository = MockDiningRepository();
         // Success; do not throw exception
-        when(mockDiningRepository.redeemMeal(sampleMenu.breakfast!.meals.first, 1)).thenAnswer((realInvocation) async => {});
+        when(mockDiningRepository.redeemMeal(
+                sampleMenu.breakfast!.meals.first, 1))
+            .thenAnswer((realInvocation) async => {});
         return DiningRedeemBloc(mockDiningRepository);
       },
-      act: (bloc) => bloc.add(TryRedeemEvent(sampleMenu.breakfast!.meals.first, 1)),
+      act: (bloc) =>
+          bloc.add(TryRedeemEvent(sampleMenu.breakfast!.meals.first, 1)),
       expect: () => [
         isA<PendingRedeemState>(),
         isA<SuccessfulRedeemState>(),
@@ -42,10 +45,13 @@ void main() {
       build: () {
         final mockDiningRepository = MockDiningRepository();
         // Meal not found; throw exception
-        when(mockDiningRepository.redeemMeal(sampleMenu.breakfast!.meals.first, 1)).thenThrow(Exception());
+        when(mockDiningRepository.redeemMeal(
+                sampleMenu.breakfast!.meals.first, 1))
+            .thenThrow(Exception());
         return DiningRedeemBloc(mockDiningRepository);
       },
-      act: (bloc) => bloc.add(TryRedeemEvent(sampleMenu.breakfast!.meals.first, 1)),
+      act: (bloc) =>
+          bloc.add(TryRedeemEvent(sampleMenu.breakfast!.meals.first, 1)),
       expect: () => [
         isA<PendingRedeemState>(),
         isA<FailedRedeemState>(),
