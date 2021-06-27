@@ -6,14 +6,14 @@ import 'package:multiverse/model/dining/menu.dart';
 import 'menu.dart';
 import 'model_mocks.mocks.dart';
 
-@GenerateMocks([], customMocks: [MockSpec<DiningModel>(returnNullOnMissingStub: true)])
+@GenerateMocks([],
+    customMocks: [MockSpec<DiningModel>(returnNullOnMissingStub: true)])
 class DefaultMocks {}
 
 extension MockDiningModelDefaultStub on MockDiningModel {
   void stubWithDefaultValues() {
     const breakfastCredits = 20;
     const dinnerCredits = 30;
-    const totalCredits = 20 + 30;
     when(currentMealType).thenReturn(MealType.breakfast);
     when(breakfastCreditCount).thenReturn(breakfastCredits);
     when(dinnerCreditCount).thenReturn(dinnerCredits);

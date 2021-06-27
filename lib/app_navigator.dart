@@ -1,7 +1,6 @@
 //Packages
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multiverse/model/temperature/temperature_model.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -10,6 +9,7 @@ import 'model/auth/session_cubit.dart';
 import 'model/auth/session_state.dart';
 import 'model/dining/dining_model.dart';
 import 'model/green_pass_model.dart';
+import 'model/temperature/temperature_model.dart';
 import 'model/user_model.dart';
 import 'repository/auth_repository.dart';
 import 'repository/dining_repository.dart';
