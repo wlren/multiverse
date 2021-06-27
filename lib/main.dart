@@ -24,6 +24,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     // Providers inject dependencies into the app. Placed outside MaterialApp
@@ -40,11 +42,14 @@ class _MyAppState extends State<MyApp> {
           )
         ],
         child: MaterialApp(
+          navigatorKey:
+              _navigatorKey, // Used to assign AppNavigator as the root navigator
+          onGenerateRoute: (_) => null,
           title: 'Multiverse',
           theme: ThemeDataMultiverse.lightThemeData,
           darkTheme: ThemeDataMultiverse.darkThemeData,
           themeMode: ThemeMode.system,
-          home: const AppNavigator(),
+          builder: (context, _) => AppNavigator(navigatorKey: _navigatorKey),
           debugShowCheckedModeBanner: false, // Hide debug flag
         ),
       ),

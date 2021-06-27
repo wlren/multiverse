@@ -60,7 +60,6 @@ void main() {
   });
 
   group('Green pass card', () {
-
     group('Temperature not declared', () {
       final unacceptableModel = MockUserModel();
       when(unacceptableModel.isTemperatureAcceptable).thenReturn(false);

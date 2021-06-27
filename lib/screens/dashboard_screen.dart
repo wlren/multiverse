@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:multiverse/repository/dining_repository.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -365,7 +366,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // The collapsed (closed) widget is the card on the dashboard.
     // The expanded (open) widget is the full page.
     return OpenContainer(
-      useRootNavigator: true,
+      // useRootNavigator: true,
       closedColor: collapsedColor,
       openColor: expandedColor ?? Theme.of(context).canvasColor,
       tappable: false,
