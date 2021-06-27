@@ -9,9 +9,17 @@ import '../model/dining/menu.dart';
 class DiningRepository {
   String userUID;
   String? location;
+  int? currentBreakfastCredit;
+  int? currentDinnerCredit;
 
   DiningRepository({required this.userUID}) {
     //print(userUID);
+    // redeemMeal(
+    //     Meal(
+    //       const Cuisine(1, 'western'),
+    //       [],
+    //     ),
+    //     2);
   }
 
   CollectionReference diningReference =
@@ -104,7 +112,8 @@ class DiningRepository {
         .doc('info')
         .get();
     final data = studentData.data() as Map<String, dynamic>;
-    return data['breakfast'] as int;
+    currentBreakfastCredit = data['breakfast'] as int;
+    return currentBreakfastCredit!;
   }
 
   Future<int> getDinnerCreditCount() async {
@@ -114,7 +123,8 @@ class DiningRepository {
         .doc('info')
         .get();
     final data = studentData.data() as Map<String, dynamic>;
-    return data['dinner'] as int;
+    currentDinnerCredit = data['dinner'] as int;
+    return currentDinnerCredit!;
   }
 
   MealType getCurrentMealType() {
@@ -164,7 +174,29 @@ class DiningRepository {
     Meal meal,
     int mealCount,
   ) async {
-    // TODO
+    if (getCurrentMealType() == MealType.breakfast) {
+      currentBreakfastCredit ?? await getBreakfastCreditCount();
+      if (currentBreakfastCredit! >= mealCount) {
+        await diningReference
+            .doc('students')
+            .collection(userUID)
+            .doc('info')
+            .update({'breakfast': currentBreakfastCredit! - mealCount});
+      }
+    }
+    if (getCurrentMealType() == MealType.dinner) {
+      currentDinnerCredit ?? await getDinnerCreditCount();
+      if (currentDinnerCredit! >= mealCount) {
+        await diningReference
+            .doc('students')
+            .collection(userUID)
+            .doc('info')
+            .update({'dinner': currentDinnerCredit! - mealCount});
+      }
+    }
+    if (getCurrentMealType() == MealType.none) {
+      throw Exception('No meals currently available');
+    }
   }
 
   String weekDayAsString(DateTime date) {
