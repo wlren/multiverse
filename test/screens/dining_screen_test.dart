@@ -15,8 +15,8 @@ import 'dining_screen_test.mocks.dart';
 
 @GenerateMocks([], customMocks: [MockSpec<NavigatorObserver>(returnNullOnMissingStub: true)])
 void main() {
-  group('Dining menu bar should display correctly', () {
-    testWidgets('Tab bar should be present with two tabs', (tester) async {
+  group('Dining menu bar is displayed correctly', () {
+    testWidgets('Tab bar is present with two tabs', (tester) async {
       final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
       await tester.pumpWidget(ChangeNotifierProvider<DiningModel>(
         create: (_) => mockDiningModel,
@@ -26,7 +26,7 @@ void main() {
       expect(find.byType(TabBar), findsOneWidget);
       expect(find.byType(Tab), findsNWidgets(2));
     });
-    group('menu should launch with focus on correct menu', () {
+    group('menu launches with focus on correct menu', () {
       testWidgets('breakfast with proper menu', (tester) async {
         final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
         when(mockDiningModel.currentMealType).thenReturn(MealType.breakfast);
@@ -54,7 +54,7 @@ void main() {
         expect(find.descendant(of: tabBarView, matching: find.text('No menu found')), findsOneWidget);
       });
     });
-    group('app bar should show correct title', () {
+    group('app bar shows correct title', () {
       testWidgets('breakfast', (tester) async {
         final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
         const mealLocation = 'mockMealLocation';
@@ -95,7 +95,7 @@ void main() {
         expect(find.descendant(of: appBar, matching: find.text('Meals closed')), findsOneWidget);
       });
     });
-    testWidgets('FAB should open DiningQrScreen when currentMenu is not null', (tester) async {
+    testWidgets('FAB opens DiningQrScreen when currentMenu is not null', (tester) async {
       final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
       when(mockDiningModel.currentMenu).thenReturn(sampleMenu.breakfast);
       final mockNavigatorObserver = MockNavigatorObserver();
@@ -118,7 +118,7 @@ void main() {
       verify(mockNavigatorObserver.didPush(any, any));
       expect(find.byType(DiningQrScreen), findsOneWidget);
     });
-    testWidgets('FAB should not open DiningQrScreen when currentMenu is null, snackBar with unavailability message should show', (tester) async {
+    testWidgets('FAB does not open DiningQrScreen when currentMenu is null, snackBar with unavailability message should show', (tester) async {
       final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
       when(mockDiningModel.currentMenu).thenReturn(null);
       final mockNavigatorObserver = MockNavigatorObserver();

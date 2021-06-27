@@ -23,40 +23,40 @@ void main() {
   when(repository.getMealLocation()).thenAnswer((_) async => mealLocation);
   when(repository.getMenu(any, any)).thenAnswer((_) async => sampleMenu);
 
-  group('Dining model should update correctly', () {
-    test('menu date should be updated', () {
+  group('Dining model updates correctly', () {
+    test('menu date is updated', () {
       final diningModel = DiningModel(repository);
       final now = DateTime(2021, 1, 1);
       diningModel.setMenuDate(now);
       expect(diningModel.menuDate, now);
     });
 
-    test('breakfast credit count should be updated', () async {
+    test('breakfast credit count is updated', () async {
       final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.breakfastCreditCount, breakfastCredits);
     });
 
-    test('dinner credit count should be updated', () async {
+    test('dinner credit count is updated', () async {
       final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.dinnerCreditCount, dinnerCredits);
     });
 
-    test('meal location should be updated', () async {
+    test('meal location is updated', () async {
       final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.mealLocation, mealLocation);
     });
 
-    test('current meal type should be updated', () async {
+    test('current meal type is updated', () async {
       final diningModel = DiningModel(repository);
       await diningModel.update();
       expect(diningModel.currentMealType, mealType);
     });
 
     group('cardSubtitle getter', () {
-      test('should return "... credits" when currentMealType = breakfast', () async {
+      test('returns "... credits" when currentMealType = breakfast', () async {
         final mockRepository = MockDiningRepository();
         when(mockRepository.getCurrentMealType()).thenReturn(MealType.breakfast);
         when(mockRepository.getBreakfastCreditCount())
@@ -69,7 +69,7 @@ void main() {
         await diningModel.update();
         expect(diningModel.cardSubtitle, '$breakfastCredits credits');
       });
-      test('should return "... credits" when currentMealType = dinner', () async {
+      test('returns "... credits" when currentMealType = dinner', () async {
         final mockRepository = MockDiningRepository();
         when(mockRepository.getCurrentMealType()).thenReturn(MealType.dinner);
         when(mockRepository.getBreakfastCreditCount())
@@ -82,7 +82,7 @@ void main() {
         await diningModel.update();
         expect(diningModel.cardSubtitle, '$dinnerCredits credits');
       });
-      test('should return "Until ..." when currentMealType = none', () async {
+      test('returns "Until ..." when currentMealType = none', () async {
         final mockRepository = MockDiningRepository();
         when(mockRepository.getCurrentMealType()).thenReturn(MealType.none);
         when(mockRepository.getBreakfastCreditCount())
@@ -98,7 +98,7 @@ void main() {
     });
   });
 
-  group('currentMenu getter should return the correct value', () {
+  group('currentMenu getter returns the correct value', () {
     test('currentMealType = breakfast', () async {
       final mockRepository = MockDiningRepository();
       when(mockRepository.getCurrentMealType())

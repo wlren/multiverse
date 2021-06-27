@@ -118,12 +118,12 @@ void main() {
   });
 
   group('Dining card', () {
-    testWidgets('icon should be shown', (tester) async {
+    testWidgets('icon is shown', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.byIcon(Icons.lunch_dining), findsOneWidget);
     });
-    group('title should show current meal', () {
+    group('title shows current meal', () {
       testWidgets('breakfast', (tester) async {
         final DiningModel breakfastModel = MockDiningModel();
         when(breakfastModel.currentMealType).thenReturn(MealType.breakfast);
@@ -150,7 +150,7 @@ void main() {
       });
     });
 
-    testWidgets('subtitle should displayed correctly',
+    testWidgets('subtitle is displayed correctly',
         (tester) async {
       final DiningModel mockDiningModel = MockDiningModel();
       when(mockDiningModel.currentMealType).thenReturn(MealType.none);
@@ -160,7 +160,7 @@ void main() {
       expect(find.text(mockDiningModel.cardSubtitle), findsOneWidget);
     });
 
-    testWidgets('Launches dining screen on tap', (tester) async {
+    testWidgets('launches dining screen on tap', (tester) async {
       final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),
@@ -175,14 +175,14 @@ void main() {
   });
 
   group('NUS Card card', () {
-    testWidgets('Shown correctly', (tester) async {
+    testWidgets('shows correctly', (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
       expect(find.text('NUS Card'), findsOneWidget);
       expect(find.text('View details'), findsOneWidget);
     });
 
-    testWidgets('Launches NUS Card screen on tap', (tester) async {
+    testWidgets('launches NUS Card screen on tap', (tester) async {
       final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),

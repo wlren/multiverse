@@ -10,7 +10,7 @@ import 'temperature_model_test.mocks.dart';
 @GenerateMocks([UserRepository])
 void main() {
   group('Temperature model', () {
-    test('update method should fetch data from repository', () async {
+    test('update method fetches data from repository', () async {
       final repository = MockUserRepository();
       var mockTemperatureRecords = <TemperatureRecord>[];
       var isTemperatureDeclared = false;
@@ -45,7 +45,7 @@ void main() {
       expect(temperatureModel.temperatureRecords, mockTemperatureRecords);
     });
 
-    test('declareTemperature should add a TemperatureRecord in repository',
+    test('declareTemperature adds a TemperatureRecord in repository',
         () async {
       final repository = MockUserRepository();
       final mockTemperatureRecords = <TemperatureRecord>[];

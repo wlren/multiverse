@@ -36,14 +36,14 @@ void main() {
     });
   });
 
-  group('Form validators should function correctly', () {
-    test('Empty passwords should be invalid', () {
+  group('Form validators function correctly', () {
+    test('Empty passwords are invalid', () {
       final loginModel = LoginModel();
       loginModel.password = '';
       expect(loginModel.password.isEmpty, true);
       expect(loginModel.isPasswordValid, false);
     });
-    test('Non-empty passwords should be valid', () {
+    test('Non-empty passwords are valid', () {
       final loginModel = LoginModel();
       loginModel.password = 'password123';
       expect(loginModel.isPasswordValid, true);
@@ -52,19 +52,19 @@ void main() {
       loginModel.password = 'hellothisismypassword!';
       expect(loginModel.isPasswordValid, true);
     });
-    test('Empty emails should be invalid', () {
+    test('Empty emails are invalid', () {
       final loginModel = LoginModel();
       loginModel.email = '';
       expect(loginModel.email.isEmpty, true);
       expect(loginModel.isEmailValid, false);
     });
-    group('Valid emails should be in the format exxxxxxx@u.nus.edu', () {
-      test('Wrong domain (not u.nus.edu) should be invalid', () {
+    group('Valid emails are in the format exxxxxxx@u.nus.edu', () {
+      test('Wrong domain (not u.nus.edu) is invalid', () {
         final loginModel = LoginModel();
         loginModel.email = 'email@email.com';
         expect(loginModel.isEmailValid, false);
       });
-      test('Correct domain but wrong user id format should be invalid', () {
+      test('Correct domain but wrong user id format is invalid', () {
         final loginModel = LoginModel();
         loginModel.email = 'e442@u.nus.edu';
         expect(loginModel.isEmailValid, false);
@@ -73,7 +73,7 @@ void main() {
         loginModel.email = 'hello@u.nus.edu';
         expect(loginModel.isEmailValid, false);
       });
-      test('Correct format should be valid', () {
+      test('Correct format is valid', () {
         final loginModel = LoginModel();
         loginModel.email = 'e4423443@u.nus.edu';
         expect(loginModel.isEmailValid, true);

@@ -30,15 +30,15 @@ void main() {
       diningRedeemFormModel.onMinusPressed();
       assert(testPassed);
     });
-    group('onMinusPressed should deduct meal count correctly', () {
-      test('meal count should be deducted correctly', () {
+    group('onMinusPressed deducts meal count correctly', () {
+      test('meal count is deducted correctly', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         const initialMealCount = 2;
         diningRedeemFormModel.mealCount = initialMealCount;
         diningRedeemFormModel.onMinusPressed();
         assert(diningRedeemFormModel.mealCount == initialMealCount - 1);
       });
-      test('meal count should not be deducted when meal count is 1', () {
+      test('meal count is deducted when meal count is 1', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         const initialMealCount = 1;
         diningRedeemFormModel.mealCount = initialMealCount;
@@ -46,15 +46,15 @@ void main() {
         assert(diningRedeemFormModel.mealCount == initialMealCount);
       });
     });
-    group('onPlusPressed should increase meal count correctly', () {
-      test('meal count should be increased correctly', () {
+    group('onPlusPressed increases meal count correctly', () {
+      test('meal count is increased correctly', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         final initialMealCount = diningRedeemFormModel.maxMeals - 1;
         diningRedeemFormModel.mealCount = initialMealCount;
         diningRedeemFormModel.onMinusPressed();
         assert(diningRedeemFormModel.mealCount == initialMealCount - 1);
       });
-      test('meal count should not be increased when meal count is at max value', () {
+      test('meal count is not increased when meal count is at max value', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         final initialMealCount = diningRedeemFormModel.maxMeals;
         diningRedeemFormModel.mealCount = initialMealCount;
@@ -62,28 +62,28 @@ void main() {
         assert(diningRedeemFormModel.mealCount == initialMealCount);
       });
     });
-    group('canPressPlus should return correct values', () {
-      test('canPressPlus should be true when meal count is not at max value', () {
+    group('canPressPlus returns correct values', () {
+      test('canPressPlus is true when meal count is not at max value', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         final initialMealCount = diningRedeemFormModel.maxMeals - 1;
         diningRedeemFormModel.mealCount = initialMealCount;
         assert(diningRedeemFormModel.canPressPlus);
       });
-      test('canPressPlus should be false when meal count is at max value', () {
+      test('canPressPlus is false when meal count is at max value', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         final initialMealCount = diningRedeemFormModel.maxMeals;
         diningRedeemFormModel.mealCount = initialMealCount;
         assert(!diningRedeemFormModel.canPressPlus);
       });
     });
-    group('canPressMinus should return correct values', () {
-      test('canPressMinus should be true when meal count is not 1', () {
+    group('canPressMinus returns correct values', () {
+      test('canPressMinus is true when meal count is not 1', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         const initialMealCount = 2;
         diningRedeemFormModel.mealCount = initialMealCount;
         assert(diningRedeemFormModel.canPressMinus);
       });
-      test('canPressMinus should be false when meal count is at 1', () {
+      test('canPressMinus is false when meal count is at 1', () {
         final diningRedeemFormModel = DiningRedeemFormModel(3);
         const initialMealCount = 1;
         diningRedeemFormModel.mealCount = initialMealCount;
