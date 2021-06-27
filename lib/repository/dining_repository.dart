@@ -60,18 +60,26 @@ class DiningRepository {
   }
 
   Future<int> getBreakfastCreditCount() async {
-    // TODO: Get from database
-    return 50;
+    final studentData = await diningReference
+        .doc('students')
+        .collection(userUID)
+        .doc('info')
+        .get();
+    final data = studentData.data() as Map<String, dynamic>;
+    return data['breakfast'] as int;
   }
 
   Future<int> getDinnerCreditCount() async {
-    // TODO: Get from database
-    return 48;
+    final studentData = await diningReference
+        .doc('students')
+        .collection(userUID)
+        .doc('info')
+        .get();
+    final data = studentData.data() as Map<String, dynamic>;
+    return data['dinner'] as int;
   }
 
   MealType getCurrentMealType() {
-    //return MealType.breakfast;
-    // TODO
     final now = DateTime.now();
     final isAfterSeven = now.hour >= 7;
     final isBeforeTenThirty =

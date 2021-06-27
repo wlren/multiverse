@@ -29,16 +29,6 @@ class DiningModel extends ChangeNotifier {
     } else {
       return null;
     }
-
-    //testing
-    //return breakfastCreditCount!;
-    //return dinnerCreditCount!;
-
-    // if (breakfastCreditCount != null && dinnerCreditCount != null) {
-    //   return breakfastCreditCount! + dinnerCreditCount!;
-    // } else {
-    //   return null;
-    // }
   }
 
   Future<void> update() async {
@@ -48,6 +38,7 @@ class DiningModel extends ChangeNotifier {
     dinnerCreditCount = await diningRepository.getDinnerCreditCount();
     currentMealType = diningRepository.getCurrentMealType();
     notifyListeners();
+    print('update');
   }
 
   Future<void> setMenuDate(DateTime date) async {
