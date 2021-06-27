@@ -1,10 +1,20 @@
+//Packages
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 //Local Files
 import '../model/dining/menu.dart';
 
 //Dining related repository which communicates with backend API to fetch dining-related data
 class DiningRepository {
   String userUID;
-  DiningRepository({required this.userUID});
+  String? location;
+
+  DiningRepository({required this.userUID}) {
+    //print(userUID);
+  }
+
+  CollectionReference diningReference =
+      FirebaseFirestore.instance.collection('dining');
   //Temp local data since backend is not set up
   static final FullDayMenu sampleMenu = FullDayMenu(
     breakfast: Menu([
@@ -59,39 +69,48 @@ class DiningRepository {
     return 48;
   }
 
-  Future<MealType> getCurrentMealType() async {
-    return MealType.breakfast;
+  MealType getCurrentMealType() {
+    //return MealType.breakfast;
     // TODO
-    // DateTime now = DateTime.now();
-    // bool isAfterSeven = now.hour >= 7;
-    // bool isBeforeTenThirty =
-    //     now.hour <= 9 || (now.hour == 10 && now.minute <= 30);
-    // bool isBreakfastTime = isAfterSeven && isBeforeTenThirty;
-    //
-    // bool isAfterFiveThirty =
-    //     now.hour >= 6 || (now.hour == 5 && now.minute >= 30);
-    // bool isBeforeNineThirty =
-    //     now.hour <= 8 || (now.hour == 9 && now.minute <= 30);
-    // bool isDinnerTime = isAfterFiveThirty && isBeforeNineThirty;
-    //
-    // // Breakfast served from Monday to Saturday
-    // bool dayHasBreakfast = now.day != DateTime.sunday;
-    //
-    // // Dinner served from Sunday to Friday
-    // bool dayHasDinner = now.day != DateTime.saturday;
-    //
-    // if (dayHasBreakfast && isBreakfastTime) {
-    //   return MealType.breakfast;
-    // } else if (dayHasDinner && isDinnerTime) {
-    //   return MealType.dinner;
-    // } else {
-    //   return MealType.none;
-    // }
+    final now = DateTime.now();
+    final isAfterSeven = now.hour >= 7;
+    final isBeforeTenThirty =
+        now.hour <= 9 || (now.hour == 10 && now.minute <= 30);
+    final isBreakfastTime = isAfterSeven && isBeforeTenThirty;
+
+    final isAfterFiveThirty =
+        now.hour >= 18 || (now.hour == 17 && now.minute >= 30);
+    final isBeforeNineThirty =
+        now.hour <= 20 || (now.hour == 21 && now.minute <= 30);
+    final isDinnerTime = isAfterFiveThirty && isBeforeNineThirty;
+
+    // Breakfast served from Monday to Saturday
+    final dayHasBreakfast = now.day != DateTime.sunday;
+
+    // Dinner served from Sunday to Friday
+    final dayHasDinner = now.day != DateTime.saturday;
+
+    if (dayHasBreakfast && isBreakfastTime) {
+      return MealType.breakfast;
+    } else if (dayHasDinner && isDinnerTime) {
+      return MealType.dinner;
+    } else {
+      return MealType.none;
+    }
   }
 
   Future<String> getMealLocation() async {
-    //TODO get from database
-    return 'RVRC';
+    if (location == null) {
+      final studentData = await diningReference
+          .doc('students')
+          .collection(userUID)
+          .doc('info')
+          .get();
+      final data = studentData.data() as Map<String, dynamic>;
+      location = data['hostel'] as String;
+      return data['hostel'] as String;
+    }
+    return location!;
   }
 
   /// Redeems meal at the database. Throws an exception if failure occurs.
