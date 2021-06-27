@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/repository/dining_repository.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -245,7 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text(
                     context
-                            .read<DiningModel>()
+                            .watch<DiningModel>()
                             .currentMealType
                             ?.toShortString() ??
                         'Loading',
@@ -253,7 +252,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         .textTheme
                         .headline6
                         ?.copyWith(color: Colors.white)),
-                Text('${context.read<DiningModel>().totalCreditCount} credits',
+                Text(
+                    context.watch<DiningModel>().totalCreditCount == null
+                        ? 'Loading'
+                        : '${context.watch<DiningModel>().totalCreditCount} credits',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2
