@@ -7,6 +7,7 @@ import '../model/temperature/temperature_record.dart';
 //User related repository which communicates with backend API to fetch user-related data
 class UserRepository {
   String userUID;
+  String? name;
 
   UserRepository({required this.userUID});
 
@@ -47,10 +48,13 @@ class UserRepository {
   }
 
   Future<String> getName(String userUID) async {
-    final studentInfo = await students.doc(userUID).get();
+    if (name == null) {
+      final studentInfo = await students.doc(userUID).get();
 
-    final studentData = studentInfo.data() as Map<String, dynamic>;
-
-    return studentData['name'] as String;
+      final studentData = studentInfo.data() as Map<String, dynamic>;
+      name = studentData['name'] as String;
+      return name!;
+    }
+    return name!;
   }
 }
