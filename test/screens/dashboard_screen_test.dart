@@ -13,6 +13,8 @@ import 'package:multiverse/model/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 
+import '../mocks/model_mocks.dart';
+import '../mocks/model_mocks.mocks.dart';
 import 'dashboard_screen_test.mocks.dart';
 
 const _mockUserId = 'mockUserId';
@@ -23,21 +25,13 @@ const _mockUserId = 'mockUserId';
   SessionCubit,
 ], customMocks: [
   MockSpec<NavigatorObserver>(returnNullOnMissingStub: true),
-  MockSpec<DiningModel>(returnNullOnMissingStub: true),
 ])
 void main() {
   final mockUserModel = MockUserModel();
   when(mockUserModel.isTemperatureAcceptable).thenReturn(true);
 
-  final mockDiningModel = MockDiningModel();
-  const breakfastCredits = 20;
-  const dinnerCredits = 30;
-  const totalCredits = 20 + 30;
-  when(mockDiningModel.currentMealType).thenReturn(MealType.breakfast);
-  when(mockDiningModel.breakfastCreditCount).thenReturn(breakfastCredits);
-  when(mockDiningModel.dinnerCreditCount).thenReturn(dinnerCredits);
-  when(mockDiningModel.totalCreditCount).thenReturn(totalCredits);
-  when(mockDiningModel.menu).thenReturn(FullDayMenu());
+  final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
+
 
   group('App bar', () {
     testWidgets('is present', (tester) async {
@@ -156,7 +150,7 @@ void main() {
         (tester) async {
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen());
-      expect(find.text('$totalCredits credits'), findsOneWidget);
+      expect(find.text('${mockDiningModel.totalCreditCount} credits'), findsOneWidget);
     });
 
     testWidgets('Launches dining screen on tap', (tester) async {

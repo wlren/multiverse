@@ -53,7 +53,6 @@ class AppNavigator extends StatelessWidget {
   }
 
   Widget _buildWithContext({required Widget child}) {
-    //print("help ls");
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepository()),

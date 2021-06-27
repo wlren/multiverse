@@ -98,43 +98,45 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
             onQRViewCreated: (controller) =>
                 _onQRViewCreated(context, controller),
           ),
-          SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 64.0),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32.0),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 8.0,
+          SingleChildScrollView(
+            child: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(32.0),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 8.0,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0x77000000),
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: _Blink(
-                      duration: fadeDuration,
-                      child: Text('Scanning QR...',
-                        style: Theme.of(context).textTheme.headline6,
+                  const SizedBox(height: 16.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0x77000000),
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: _Blink(
+                        duration: fadeDuration,
+                        child: Text('Scanning QR...',
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

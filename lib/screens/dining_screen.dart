@@ -217,7 +217,6 @@ class _DiningScreenState extends State<DiningScreen>
   void _onScanQrPressed(BuildContext context, Function openContainer) {
     if (context.read<DiningModel>().currentMenu != null) {
       openContainer();
-      // Navigator.push(context, MaterialPageRoute(builder: (context) => DiningQrScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Meals are currently unavailable'),
