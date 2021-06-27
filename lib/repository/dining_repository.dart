@@ -3,6 +3,8 @@ import '../model/dining/menu.dart';
 
 //Dining related repository which communicates with backend API to fetch dining-related data
 class DiningRepository {
+  String userUID;
+  DiningRepository({required this.userUID});
   //Temp local data since backend is not set up
   static final FullDayMenu sampleMenu = FullDayMenu(
     breakfast: Menu([
@@ -41,18 +43,18 @@ class DiningRepository {
     ]),
   );
 
-  Future<FullDayMenu> getMenu(DateTime date) async {
+  Future<FullDayMenu> getMenu(DateTime date, String location) async {
     // TODO: Fetch menu from database and parse appropriately
     // FullDayMenu menu = FullDayMenu.fromJson(data);
     return sampleMenu;
   }
 
-  Future<int> getBreakfastCreditCount() async {
+  Future<int> getBreakfastCreditCount(String userUID) async {
     // TODO: Get from database
     return 50;
   }
 
-  Future<int> getDinnerCreditCount() async {
+  Future<int> getDinnerCreditCount(String userUID) async {
     // TODO: Get from database
     return 48;
   }
@@ -87,13 +89,16 @@ class DiningRepository {
     // }
   }
 
-  Future<String> getMealLocation() async {
+  Future<String> getMealLocation(String userUID) async {
     //TODO get from database
     return 'RVRC';
   }
 
   /// Redeems meal at the database. Throws an exception if failure occurs.
-  Future<void> redeemMeal(Meal meal, int mealCount) async {
+  Future<void> redeemMeal(
+    Meal meal,
+    int mealCount,
+  ) async {
     // TODO
   }
 }

@@ -41,8 +41,12 @@ class AppNavigator extends StatelessWidget {
             MaterialPage(
                 child: MultiRepositoryProvider(
               providers: [
-                RepositoryProvider(create: (context) => UserRepository()),
-                RepositoryProvider(create: (context) => DiningRepository()),
+                RepositoryProvider(
+                    create: (context) => UserRepository(
+                        userUID: context.read<SessionCubit>().userUID)),
+                RepositoryProvider(
+                    create: (context) => DiningRepository(
+                        userUID: context.read<SessionCubit>().userUID)),
               ],
               child: MultiProvider(
                 providers: [
