@@ -36,19 +36,19 @@ class _MyAppState extends State<MyApp> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepository()),
-        RepositoryProvider(create: (context) => UserRepository()),
-        RepositoryProvider(create: (context) => DiningRepository()),
+        // RepositoryProvider(create: (context) => UserRepository()),
+        // RepositoryProvider(create: (context) => DiningRepository()),
       ],
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-              create: (context) => UserModel(context.read<UserRepository>())),
-          ChangeNotifierProvider(
-            create: (context) => DiningModel(context.read<DiningRepository>()),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => GreenPassModel(context.read<UserRepository>()),
-          ),
+          // ChangeNotifierProvider(
+          //     create: (context) => UserModel(context.read<UserRepository>())),
+          // ChangeNotifierProvider(
+          //   create: (context) => DiningModel(context.read<DiningRepository>()),
+          // ),
+          // ChangeNotifierProvider(
+          //   create: (context) => GreenPassModel(context.read<UserRepository>()),
+          // ),
           BlocProvider(
             create: (context) =>
                 SessionCubit(authRepository: context.read<AuthRepository>()),
