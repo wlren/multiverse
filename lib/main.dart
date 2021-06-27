@@ -5,13 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../model/user_model.dart';
-import '../repository/dining_repository.dart';
-import '../repository/user_repository.dart';
 import 'app_navigator.dart';
 import 'model/auth/session_cubit.dart';
-import 'model/dining/dining_model.dart';
-import 'model/green_pass_model.dart';
 import 'repository/auth_repository.dart';
 import 'theme_data.dart';
 
@@ -36,19 +31,9 @@ class _MyAppState extends State<MyApp> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepository()),
-        // RepositoryProvider(create: (context) => UserRepository()),
-        // RepositoryProvider(create: (context) => DiningRepository()),
       ],
       child: MultiProvider(
         providers: [
-          // ChangeNotifierProvider(
-          //     create: (context) => UserModel(context.read<UserRepository>())),
-          // ChangeNotifierProvider(
-          //   create: (context) => DiningModel(context.read<DiningRepository>()),
-          // ),
-          // ChangeNotifierProvider(
-          //   create: (context) => GreenPassModel(context.read<UserRepository>()),
-          // ),
           BlocProvider(
             create: (context) =>
                 SessionCubit(authRepository: context.read<AuthRepository>()),

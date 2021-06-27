@@ -6,17 +6,21 @@ import '../../repository/dining_repository.dart';
 import 'menu.dart';
 
 class DiningModel extends ChangeNotifier {
+  final DiningRepository diningRepository;
   DiningModel(this.diningRepository) {
-    update();
+    update('test');
   }
 
-  final DiningRepository diningRepository;
+  late String mealLocation;
+  MealType? currentMealType;
 
   FullDayMenu menu = FullDayMenu();
   Menu? get currentMenu => menu.getMenuOfType(currentMealType);
+
   DateTime menuDate = DateTime.now();
   int? breakfastCreditCount;
   int? dinnerCreditCount;
+
   int? get totalCreditCount {
     if (breakfastCreditCount != null && dinnerCreditCount != null) {
       return breakfastCreditCount! + dinnerCreditCount!;
@@ -25,21 +29,19 @@ class DiningModel extends ChangeNotifier {
     }
   }
 
-  String? mealLocation;
-  MealType? currentMealType;
-
-  Future<void> update() async {
-    menu = await diningRepository.getMenu(menuDate);
-    breakfastCreditCount = await diningRepository.getBreakfastCreditCount();
-    dinnerCreditCount = await diningRepository.getDinnerCreditCount();
-    mealLocation = await diningRepository.getMealLocation();
+  Future<void> update(String userUID) async {
+    mealLocation = await diningRepository.getMealLocation(userUID);
+    menu = await diningRepository.getMenu(menuDate, mealLocation);
+    breakfastCreditCount =
+        await diningRepository.getBreakfastCreditCount(userUID);
+    dinnerCreditCount = await diningRepository.getDinnerCreditCount(userUID);
     currentMealType = await diningRepository.getCurrentMealType();
     notifyListeners();
   }
 
-  Future<void> setMenuDate(DateTime date) async {
+  Future<void> setMenuDate(DateTime date, String userUID) async {
     menuDate = date;
-    update();
+    update(userUID);
   }
 }
 

@@ -1,5 +1,4 @@
 //Packages
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Local Files
@@ -8,8 +7,9 @@ import '../model/temperature/temperature_record.dart';
 //User related repository which communicates with backend API to fetch user-related data
 class UserRepository {
   String userUID;
+
   UserRepository({required this.userUID});
-  //final db = FirebaseDatabase.instance;
+
   CollectionReference students =
       FirebaseFirestore.instance.collection('students');
 
@@ -47,15 +47,10 @@ class UserRepository {
   }
 
   Future<String> getName(String userUID) async {
-    //print(userUID + 'now here');
     final studentInfo = await students.doc(userUID).get();
-    //print('test');
+
     final studentData = studentInfo.data() as Map<String, dynamic>;
 
-    //final nameReference =
-    //await db.reference().child('students/$userUID').once();
-    //print(nameReference.value['name']);
-    //print('work pls');
     return studentData['name'] as String;
   }
 }

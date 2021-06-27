@@ -419,7 +419,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<String> _getName(BuildContext context) async {
     final userUID = context.read<SessionCubit>().userUID;
-    print('here');
     final userName = await context.read<UserRepository>().getName(userUID);
     _userName = userName;
     return userName;
