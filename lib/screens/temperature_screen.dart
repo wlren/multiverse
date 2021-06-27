@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -73,7 +74,10 @@ class TemperatureScreenState extends State<TemperatureScreen>
         // the animation does not play when screen is initialized.
         if (!_toAnimate) {
           _showFormAnimation.value =
-              context.read<TemperatureModel>().isTemperatureDeclared ? 0 : 1;
+              context.read<TemperatureModel>().temperatureState ==
+                      TemperatureState.undeclared
+                  ? 1
+                  : 0;
         }
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -104,10 +108,11 @@ class TemperatureScreenState extends State<TemperatureScreen>
                           Transform.translate(
                             offset: const Offset(0, -16.0),
                             child: Text(context
-                                    .read<TemperatureModel>()
-                                    .isTemperatureDeclared
-                                ? 'Declared'
-                                : 'Not declared yet'),
+                                        .read<TemperatureModel>()
+                                        .temperatureState ==
+                                    TemperatureState.undeclared
+                                ? 'Not declared yet'
+                                : 'Declared'),
                           ),
                         ],
                       ),
@@ -171,7 +176,8 @@ class TemperatureScreenState extends State<TemperatureScreen>
 
   Widget _buildDeclareButton(BuildContext context) {
     final isTemperatureDeclared =
-        context.read<TemperatureModel>().isTemperatureDeclared;
+        context.read<TemperatureModel>().temperatureState !=
+            TemperatureState.undeclared;
     if (isTemperatureDeclared && !_isRedeclaring) {
       return OutlinedButtonTheme(
         data: OutlinedButtonThemeData(
@@ -183,11 +189,9 @@ class TemperatureScreenState extends State<TemperatureScreen>
         ),
         child: OutlinedButton.icon(
           icon: const Icon(Icons.refresh),
-          label: Text(context.read<TemperatureModel>().isTemperatureDeclared
-              ? 'Redeclare'
-              : 'Declare'),
+          label: Text(isTemperatureDeclared ? 'Redeclare' : 'Declare'),
           onPressed: () {
-            if (context.read<TemperatureModel>().isTemperatureDeclared) {
+            if (isTemperatureDeclared) {
               // Redeclaring temperature
               if (_isRedeclaring) {
                 _tryDeclareTemperature(context, _temperature);
@@ -219,12 +223,9 @@ class TemperatureScreenState extends State<TemperatureScreen>
           icon: _isGoodToDeclare
               ? const Icon(Icons.done)
               : const Icon(Icons.warning),
-          label: Text(context.read<TemperatureModel>().isTemperatureDeclared
-              ? 'Redeclare'
-              : 'Declare'),
+          label: Text(isTemperatureDeclared ? 'Redeclare' : 'Declare'),
           onPressed: () {
-            if (context.read<TemperatureModel>().isTemperatureDeclared &&
-                !_isRedeclaring) {
+            if (isTemperatureDeclared && !_isRedeclaring) {
               setState(() {
                 _isRedeclaring = true;
               });
@@ -365,8 +366,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, position) {
-              final record =
-                  temperatureModel.temperatureRecords[position];
+              final record = temperatureModel.temperatureRecords[position];
               return ListTile(
                 contentPadding:
                     const EdgeInsets.only(left: leftPadding, right: 48.0),
@@ -434,7 +434,8 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   Color _getBackgroundColor() {
-    return context.watch<UserModel>().isTemperatureAcceptable
+    return context.watch<UserModel>().temperatureState ==
+            TemperatureState.acceptable
         ? (Theme.of(context).brightness == Brightness.light
             ? Colors.green.shade300
             : Colors.green.shade900)

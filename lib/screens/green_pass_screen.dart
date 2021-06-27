@@ -11,6 +11,10 @@ class GreenPassScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backwardsCompatibility: false,
+        backgroundColor: _getBackgroundColor(context),
+      ),
       body: Container(
         color: _getBackgroundColor(context),
         child: const Center(

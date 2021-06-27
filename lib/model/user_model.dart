@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 //Local Files
 import '../repository/user_repository.dart';
+import 'temperature/temperature_state.dart';
 
 /// Responsible for communicating between UI and UserRepository.
 /// Provides synchronous versions of the async methods found in the corresponding
@@ -14,11 +15,11 @@ class UserModel extends ChangeNotifier {
   }
 
   void update() async {
-    isTemperatureAcceptable = await userRepository.isTemperatureAcceptable();
+    temperatureState = await userRepository.getTemperatureState();
     notifyListeners();
   }
 
   final UserRepository userRepository;
 
-  bool isTemperatureAcceptable = false;
+  TemperatureState temperatureState = TemperatureState.undeclared;
 }

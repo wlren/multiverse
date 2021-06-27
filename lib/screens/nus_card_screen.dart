@@ -18,8 +18,7 @@ class NUSCardScreen extends StatelessWidget {
 
     /// Manually calculate cardRadius to ensure card displays correctly on
     /// different devices.
-    final cardWidth =
-        MediaQuery.of(context).size.width - 2 * horizontalPadding;
+    final cardWidth = MediaQuery.of(context).size.width - 2 * horizontalPadding;
     final cardHeight = cardWidth / (90 / 54);
     final cardRadius = 3 / 90 * cardWidth; // 3mm corners
     final whiteSectionHeight = cardHeight / 3.75 * 2.75;
@@ -29,7 +28,7 @@ class NUSCardScreen extends StatelessWidget {
     final photoSpacing = photoHeight * 0.15;
     final nusLogoHeight = cardHeight * 0.3;
 
-    final Widget _card = Theme(
+    final Widget card = Theme(
         data: Theme.of(context).copyWith(
           brightness: Brightness.light,
           textTheme: Theme.of(context).textTheme.apply(
@@ -157,7 +156,8 @@ class NUSCardScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _card,
+              card,
+              const SizedBox(height: 16.0),
               QrImage(
                 backgroundColor: Colors.white,
                 data:

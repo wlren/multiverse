@@ -1,5 +1,6 @@
 import 'package:mockito/annotations.dart';
 import 'package:multiverse/model/temperature/temperature_record.dart';
+import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:multiverse/repository/user_repository.dart';
 import 'package:multiverse/model/temperature/temperature_model.dart';
 import 'package:mockito/mockito.dart';
@@ -13,13 +14,10 @@ void main() {
     test('update method fetches data from repository', () async {
       final repository = MockUserRepository();
       var mockTemperatureRecords = <TemperatureRecord>[];
-      var isTemperatureDeclared = false;
-      const isTemperatureAcceptable = false;
+      var temperatureState = TemperatureState.undeclared;
 
-      when(repository.isTemperatureDeclared())
-          .thenAnswer((_) async => isTemperatureDeclared);
-      when(repository.isTemperatureAcceptable())
-          .thenAnswer((_) async => isTemperatureAcceptable);
+      when(repository.getTemperatureState())
+          .thenAnswer((_) async => temperatureState);
       when(repository.declareTemperature(any)).thenAnswer((_) async {});
       when(repository.getTemperatureRecords())
           .thenAnswer((_) async => mockTemperatureRecords);
@@ -30,38 +28,36 @@ void main() {
       await temperatureModel.update();
 
       // Expect values to be the same
-      expect(temperatureModel.isTemperatureDeclared, false);
+      expect(temperatureModel.temperatureState, TemperatureState.undeclared);
       expect(temperatureModel.temperatureRecords, mockTemperatureRecords);
 
       // Change repository values
-      isTemperatureDeclared = true;
+      temperatureState = TemperatureState.acceptable;
       mockTemperatureRecords = [
         TemperatureRecord(time: DateTime.now(), temperature: 34.2),
       ];
 
       // Wait for update, then verify values
       await temperatureModel.update();
-      expect(temperatureModel.isTemperatureDeclared, true);
+      expect(temperatureModel.temperatureState, TemperatureState.acceptable);
       expect(temperatureModel.temperatureRecords, mockTemperatureRecords);
     });
 
-    test('declareTemperature adds a TemperatureRecord in repository',
-        () async {
+    test('declareTemperature adds a TemperatureRecord in repository', () async {
       final repository = MockUserRepository();
       final mockTemperatureRecords = <TemperatureRecord>[];
-      var isTemperatureDeclared = false;
+      var temperatureState = TemperatureState.undeclared;
 
       // Set up mock interactions
-      when(repository.isTemperatureDeclared())
-          .thenAnswer((_) async => isTemperatureDeclared);
-      when(repository.isTemperatureAcceptable()).thenAnswer((_) async => false);
+      when(repository.getTemperatureState())
+          .thenAnswer((_) async => temperatureState);
       when(repository.declareTemperature(any))
           .thenAnswer((realInvocation) async {
         final declaredTemperature =
             realInvocation.positionalArguments.first as double;
         mockTemperatureRecords.add(TemperatureRecord(
             time: DateTime.now(), temperature: declaredTemperature));
-        isTemperatureDeclared = true;
+        temperatureState = TemperatureState.acceptable;
       });
       when(repository.getTemperatureRecords())
           .thenAnswer((_) async => mockTemperatureRecords);
@@ -71,7 +67,7 @@ void main() {
       await temperatureModel.update();
 
       // Expect temperature to be undeclared
-      expect(temperatureModel.isTemperatureDeclared, false);
+      expect(temperatureModel.temperatureState, TemperatureState.undeclared);
       expect(temperatureModel.temperatureRecords, []);
 
       // Declare temperature now
@@ -84,7 +80,7 @@ void main() {
       // Verify that repository method is called
       verify(repository.declareTemperature(temperatureToDeclare));
 
-      expect(temperatureModel.isTemperatureDeclared, true);
+      expect(temperatureModel.temperatureState, TemperatureState.acceptable);
       expect(temperatureModel.temperatureRecords, mockTemperatureRecords);
       // verifyNoMoreInteractions(repository);
     });

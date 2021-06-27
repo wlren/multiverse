@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:multiverse/model/auth/session_cubit.dart';
 import 'package:multiverse/model/dining/menu.dart';
+import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:multiverse/screens/dashboard_screen.dart';
 import 'package:multiverse/screens/dining_screen.dart';
 import 'package:multiverse/screens/green_pass_screen.dart';
@@ -29,10 +29,9 @@ const _mockUserId = 'mockUserId';
 ])
 void main() {
   final mockUserModel = MockUserModel();
-  when(mockUserModel.isTemperatureAcceptable).thenReturn(true);
+  when(mockUserModel.temperatureState).thenReturn(TemperatureState.acceptable);
 
   final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
-
 
   group('App bar', () {
     testWidgets('is present', (tester) async {
@@ -56,14 +55,14 @@ void main() {
 
   group('Green pass card', () {
     group('Temperature not declared', () {
-      final unacceptableModel = MockUserModel();
-      when(unacceptableModel.isTemperatureAcceptable).thenReturn(false);
+      final undeclaredModel = MockUserModel();
+      when(undeclaredModel.temperatureState)
+          .thenReturn(TemperatureState.undeclared);
 
-      testWidgets('shows correct declaration state',
-          (tester) async {
+      testWidgets('shows correct declaration state', (tester) async {
         final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
-            unacceptableModel, mockDiningModel, const DashboardScreen(),
+            undeclaredModel, mockDiningModel, const DashboardScreen(),
             navigatorObservers: [mockObserver]);
 
         expect(find.text('Declare temperature first'), findsOneWidget);
@@ -74,7 +73,7 @@ void main() {
           (tester) async {
         final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
-            unacceptableModel, mockDiningModel, const DashboardScreen(),
+            undeclaredModel, mockDiningModel, const DashboardScreen(),
             navigatorObservers: [mockObserver]);
 
         // Expect that button does not launch green pass screen
@@ -83,13 +82,12 @@ void main() {
         expect(find.byType(GreenPassScreen), findsNothing);
       });
     });
-
     group('Temperature acceptable', () {
       final acceptableModel = MockUserModel();
-      when(acceptableModel.isTemperatureAcceptable).thenReturn(true);
+      when(acceptableModel.temperatureState)
+          .thenReturn(TemperatureState.acceptable);
 
-      testWidgets('shows correct declaration state',
-          (tester) async {
+      testWidgets('shows correct declaration state', (tester) async {
         final mockObserver = MockNavigatorObserver();
         await tester.pumpAndSettleScreen(
             acceptableModel, mockDiningModel, const DashboardScreen(),
@@ -111,8 +109,36 @@ void main() {
         await tester.pumpAndSettle();
 
         // Verify that screen is launched
-        // verify(mockObserver.didPush(any, any));
-        // expect(find.byType(GreenPassScreen), findsOneWidget);
+        verify(mockObserver.didPush(any, any));
+        expect(find.byType(GreenPassScreen), findsOneWidget);
+      });
+    });
+
+    group('Temperature unacceptable', () {
+      final unacceptableModel = MockUserModel();
+      when(unacceptableModel.temperatureState)
+          .thenReturn(TemperatureState.unacceptable);
+
+      testWidgets('shows correct declaration state', (tester) async {
+        final mockObserver = MockNavigatorObserver();
+        await tester.pumpAndSettleScreen(
+            unacceptableModel, mockDiningModel, const DashboardScreen(),
+            navigatorObservers: [mockObserver]);
+
+        expect(find.text('Declare temperature first'), findsNothing);
+        expect(find.text('Temperature unacceptable'), findsOneWidget);
+      });
+      testWidgets('is disabled and does not launch green pass screen',
+          (tester) async {
+        final mockObserver = MockNavigatorObserver();
+        await tester.pumpAndSettleScreen(
+            unacceptableModel, mockDiningModel, const DashboardScreen(),
+            navigatorObservers: [mockObserver]);
+
+        // Expect that button does not launch green pass screen
+        await tester.tap(find.text('View Green Pass'));
+        await tester.pumpAndSettle();
+        expect(find.byType(GreenPassScreen), findsNothing);
       });
     });
   });
@@ -150,8 +176,7 @@ void main() {
       });
     });
 
-    testWidgets('subtitle is displayed correctly',
-        (tester) async {
+    testWidgets('subtitle is displayed correctly', (tester) async {
       final DiningModel mockDiningModel = MockDiningModel();
       when(mockDiningModel.currentMealType).thenReturn(MealType.none);
       when(mockDiningModel.cardSubtitle).thenReturn('cardSubtitle');
@@ -160,7 +185,8 @@ void main() {
       expect(find.text(mockDiningModel.cardSubtitle), findsOneWidget);
     });
 
-    testWidgets('launches dining screen on tap', (tester) async {
+    testWidgets('launches dining screen with proper back navigation on tap',
+        (tester) async {
       final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),
@@ -171,6 +197,11 @@ void main() {
 
       verify(mockObserver.didPush(any, any));
       expect(find.byType(DiningScreen), findsOneWidget);
+
+      // Verify that back navigation works
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byType(DashboardScreen), findsOneWidget);
     });
   });
 
@@ -182,7 +213,8 @@ void main() {
       expect(find.text('View details'), findsOneWidget);
     });
 
-    testWidgets('launches NUS Card screen on tap', (tester) async {
+    testWidgets('launches NUS Card screen with proper back navigation on tap',
+        (tester) async {
       final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),
@@ -194,6 +226,60 @@ void main() {
 
       verify(mockObserver.didPush(any, any));
       expect(find.byType(NUSCardScreen), findsOneWidget);
+
+      // Verify that back navigation works
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byType(DashboardScreen), findsOneWidget);
+    });
+  });
+
+  group('Mini temperature card', () {
+    group('shows correctly', () {
+      testWidgets('when temperature is undeclared', (tester) async {
+        final userModel = MockUserModel();
+        when(userModel.temperatureState)
+            .thenReturn(TemperatureState.undeclared);
+        await tester.pumpAndSettleScreen(
+            userModel, mockDiningModel, const DashboardScreen());
+        expect(find.text('Undeclared'), findsOneWidget);
+      });
+      testWidgets('when temperature is acceptable', (tester) async {
+        final userModel = MockUserModel();
+        when(userModel.temperatureState)
+            .thenReturn(TemperatureState.acceptable);
+        await tester.pumpAndSettleScreen(
+            userModel, mockDiningModel, const DashboardScreen());
+        expect(find.text('Declared'), findsOneWidget);
+      });
+      testWidgets('when temperature is unacceptable', (tester) async {
+        final userModel = MockUserModel();
+        when(userModel.temperatureState)
+            .thenReturn(TemperatureState.unacceptable);
+        await tester.pumpAndSettleScreen(
+            userModel, mockDiningModel, const DashboardScreen());
+        expect(find.text('Unacceptable'), findsOneWidget);
+      });
+    });
+
+    testWidgets('launches NUS Card screen with proper back navigation on tap',
+        (tester) async {
+      final mockObserver = MockNavigatorObserver();
+      await tester.pumpAndSettleScreen(
+          mockUserModel, mockDiningModel, const DashboardScreen(),
+          navigatorObservers: [mockObserver]);
+
+      expect(find.text('NUS Card'), findsOneWidget);
+      await tester.tap(find.text('NUS Card'));
+      await tester.pumpAndSettle();
+
+      verify(mockObserver.didPush(any, any));
+      expect(find.byType(NUSCardScreen), findsOneWidget);
+
+      // Verify that back navigation works
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byType(DashboardScreen), findsOneWidget);
     });
   });
 }
@@ -212,7 +298,8 @@ extension on WidgetTester {
       providers: [
         ChangeNotifierProvider<UserModel>(create: (context) => userModel),
         ChangeNotifierProvider<DiningModel>(create: (context) => diningModel),
-        ChangeNotifierProvider<GreenPassModel>(create: (context) => mockGreenPassModel),
+        ChangeNotifierProvider<GreenPassModel>(
+            create: (context) => mockGreenPassModel),
         Provider<SessionCubit>(create: (context) => mockSessionCubit),
       ],
       child: MaterialApp(

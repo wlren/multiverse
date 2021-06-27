@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Local Files
 import '../model/temperature/temperature_record.dart';
+import '../model/temperature/temperature_state.dart';
 
 //User related repository which communicates with backend API to fetch user-related data
 class UserRepository {
@@ -15,25 +16,18 @@ class UserRepository {
       FirebaseFirestore.instance.collection('students');
 
   // Temporary variables to imitate server state
-  static bool _isTemperatureDeclared = false;
   static final List<TemperatureRecord> _temperatureRecords = [
     TemperatureRecord(time: DateTime(2021, 5, 26, 14), temperature: 36.4),
     TemperatureRecord(time: DateTime(2021, 5, 26, 9), temperature: 36.4),
   ];
 
-  Future<bool> isTemperatureAcceptable() async {
+  Future<TemperatureState> getTemperatureState() async {
     // TODO: Access server to fetch temperature
-    return await isTemperatureDeclared() && _isTemperatureDeclared;
-  }
-
-  Future<bool> isTemperatureDeclared() async {
-    // TODO: Access server to fetch temperature
-    return _isTemperatureDeclared;
+    return TemperatureState.undeclared;
   }
 
   Future<void> declareTemperature(double temperature) async {
     // TODO: Access server to declare temperature
-    _isTemperatureDeclared = true;
     _temperatureRecords
         .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
 

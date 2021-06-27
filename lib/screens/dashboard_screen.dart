@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:multiverse/model/temperature/temperature_record.dart';
+import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
@@ -133,8 +135,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildTemperatureButton() {
+    final temperatureState = context.watch<UserModel>().temperatureState;
+    final label = temperatureState == TemperatureState.acceptable
+        ? 'Declared'
+        : temperatureState == TemperatureState.undeclared
+            ? 'Undeclared'
+            : 'Unacceptable';
     return OpenContainer(
-      //useRootNavigator: true,
       closedElevation: 0,
       closedShape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
@@ -145,28 +152,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
           icon: Stack(
             children: [
               Icon(Icons.thermostat,
-                  color: context.watch<UserModel>().isTemperatureAcceptable
+                  color: context.watch<UserModel>().temperatureState ==
+                          TemperatureState.acceptable
                       ? Theme.of(context).hintColor
                       : Theme.of(context).colorScheme.error),
               Transform.translate(
                 offset: const Offset(12, 12),
                 child: Icon(
-                    context.watch<UserModel>().isTemperatureAcceptable
+                    context.watch<UserModel>().temperatureState ==
+                            TemperatureState.acceptable
                         ? Icons.check_circle
                         : Icons.cancel,
                     size: 16,
-                    color: context.watch<UserModel>().isTemperatureAcceptable
+                    color: context.watch<UserModel>().temperatureState ==
+                            TemperatureState.acceptable
                         ? Colors.green
                         : Theme.of(context).colorScheme.error),
               )
             ],
           ),
           label: Text(
-            context.watch<UserModel>().isTemperatureAcceptable
-                ? 'Declared'
-                : 'Not declared',
+            label,
             style: TextStyle(
-                color: context.watch<UserModel>().isTemperatureAcceptable
+                color: context.watch<UserModel>().temperatureState ==
+                        TemperatureState.acceptable
                     ? Theme.of(context).hintColor
                     : Theme.of(context).colorScheme.error),
           ),
@@ -181,9 +190,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildGreenPassCard() {
+    final temperatureState = context.watch<UserModel>().temperatureState;
+    final subtitle = temperatureState == TemperatureState.acceptable
+        ? 'Temperature declared'
+        : temperatureState == TemperatureState.undeclared
+            ? 'Declare temperature first'
+            : 'Temperature unacceptable';
     return _buildCard(
-      disabled: !context.watch<UserModel>().isTemperatureAcceptable,
-      collapsedColor: context.watch<UserModel>().isTemperatureAcceptable
+      disabled: context.watch<UserModel>().temperatureState !=
+          TemperatureState.acceptable,
+      collapsedColor: context.watch<UserModel>().temperatureState ==
+              TemperatureState.acceptable
           ? (Theme.of(context).brightness == Brightness.light
               ? Colors.green.shade300
               : Colors.green.shade700)
@@ -195,7 +212,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(Icons.gpp_good,
-                color: context.watch<UserModel>().isTemperatureAcceptable
+                color: context.watch<UserModel>().temperatureState ==
+                        TemperatureState.acceptable
                     ? null
                     : Theme.of(context).disabledColor),
             const SizedBox(width: 16.0),
@@ -204,20 +222,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text('View Green Pass',
                     style: Theme.of(context).textTheme.headline6?.copyWith(
-                          color:
-                              context.watch<UserModel>().isTemperatureAcceptable
-                                  ? null
-                                  : Theme.of(context).disabledColor,
+                          color: context.watch<UserModel>().temperatureState ==
+                                  TemperatureState.acceptable
+                              ? null
+                              : Theme.of(context).disabledColor,
                         )),
-                Text(
-                    context.watch<UserModel>().isTemperatureAcceptable
-                        ? 'Temperature declared'
-                        : 'Declare temperature first',
+                Text(subtitle,
                     style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                          color:
-                              context.watch<UserModel>().isTemperatureAcceptable
-                                  ? null
-                                  : Theme.of(context).disabledColor,
+                          color: context.watch<UserModel>().temperatureState ==
+                                  TemperatureState.acceptable
+                              ? null
+                              : Theme.of(context).disabledColor,
                         )),
               ],
             ),
@@ -252,8 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         .textTheme
                         .headline6
                         ?.copyWith(color: Colors.white)),
-                Text(
-                    context.watch<DiningModel>().cardSubtitle,
+                Text(context.watch<DiningModel>().cardSubtitle,
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2
@@ -366,7 +380,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // The collapsed (closed) widget is the card on the dashboard.
     // The expanded (open) widget is the full page.
     return OpenContainer(
-      // useRootNavigator: true,
       closedColor: collapsedColor,
       openColor: expandedColor ?? Theme.of(context).canvasColor,
       tappable: false,

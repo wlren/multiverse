@@ -1,5 +1,6 @@
 //Packages
 import 'package:flutter/material.dart';
+import 'package:multiverse/model/temperature/temperature_state.dart';
 
 //Local Files
 import '../../repository/user_repository.dart';
@@ -11,7 +12,7 @@ class TemperatureModel extends ChangeNotifier {
   UserRepository userRepository;
 
   List<TemperatureRecord> temperatureRecords = [];
-  bool isTemperatureDeclared = false;
+  TemperatureState temperatureState = TemperatureState.undeclared;
 
   TemperatureModel(this.userRepository) {
     update();
@@ -19,7 +20,7 @@ class TemperatureModel extends ChangeNotifier {
 
   Future<void> update() async {
     temperatureRecords = await userRepository.getTemperatureRecords();
-    isTemperatureDeclared = await userRepository.isTemperatureDeclared();
+    temperatureState = await userRepository.getTemperatureState();
     notifyListeners();
   }
 
