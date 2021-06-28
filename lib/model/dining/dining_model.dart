@@ -33,6 +33,7 @@ class DiningModel extends ChangeNotifier {
   }
 
   String get cardSubtitle {
+    // TODO: Calculate the "until" time
     return _creditCount != null ? '$_creditCount credits' : 'Until 10:30pm';
   }
 

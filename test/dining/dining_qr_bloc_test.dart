@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:multiverse/model/dining/menu.dart';
 import 'package:multiverse/model/dining/qr/dining_qr_bloc.dart';
 import 'package:multiverse/model/dining/qr/dining_qr_data.dart';
 import 'package:multiverse/model/dining/qr/dining_qr_event.dart';
@@ -22,10 +23,13 @@ void main() {
     blocTest<DiningQrBloc, DiningQrState>(
       'emits [MealLoadedState] when valid QR is scanned',
       build: () => DiningQrBlocWithSampleMenu(),
-      act: (bloc) => bloc.add(ValidQrScannedEvent(DiningQrData(1))),
+      act: (bloc) => bloc.add(ValidQrScannedEvent(const DiningQrData(1))),
       expect: () => [
-        isA<MealLoadedState>()
-            .having((state) => state.meal, 'meal', equals(sampleMenu.breakfast!.meals.singleWhere((meal) => meal.cuisine.id == 1)))
+        isA<MealLoadedState>().having(
+            (state) => state.meal,
+            'meal',
+            equals(sampleMenu.breakfast!.meals
+                .singleWhere((meal) => meal.cuisine == Cuisine.values[1])))
       ],
     );
 
@@ -46,7 +50,7 @@ void main() {
     blocTest<DiningQrBloc, DiningQrState>(
       'emits [MealNotFoundState] when valid QR with invalid cuisine id is scanned',
       build: () => DiningQrBlocWithSampleMenu(),
-      act: (bloc) => bloc.add(ValidQrScannedEvent(DiningQrData(10))),
+      act: (bloc) => bloc.add(ValidQrScannedEvent(const DiningQrData(10))),
       expect: () => [isA<MealNotFoundState>()],
     );
   });

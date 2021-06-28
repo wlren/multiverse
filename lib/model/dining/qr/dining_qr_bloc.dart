@@ -12,8 +12,12 @@ class DiningQrBloc extends Bloc<DiningQrEvent, DiningQrState> {
 
   @override
   Stream<DiningQrState> mapEventToState(DiningQrEvent event) async* {
+    print('bruh pls la');
     if (event is ValidQrScannedEvent) {
       final scannedMeal = event.data.getMealFromMenu(currentMenu);
+      print('bruh');
+      print(event.data);
+      print(scannedMeal);
       if (scannedMeal != null) {
         yield MealLoadedState(scannedMeal);
       } else {
@@ -32,6 +36,3 @@ extension on DiningQrData {
     return menu.getMealByCuisineId(cuisineId);
   }
 }
-
-
-

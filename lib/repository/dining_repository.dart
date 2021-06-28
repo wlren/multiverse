@@ -28,7 +28,7 @@ class DiningRepository {
   static final FullDayMenu sampleMenu = FullDayMenu(
     breakfast: Menu([
       Meal(
-        const Cuisine(0, 'Western'),
+        Cuisine.western,
         [
           MealItem('Scrambled Egg'),
           MealItem('Honey Ham'),
@@ -36,7 +36,7 @@ class DiningRepository {
         ],
       ),
       Meal(
-        const Cuisine(1, 'Asian'),
+        Cuisine.asian,
         [
           MealItem('Fried Ipoh Hor Fun'),
           MealItem('Nonya Curry Vegetables'),
@@ -44,7 +44,7 @@ class DiningRepository {
         ],
       ),
       Meal(
-        const Cuisine(2, 'Vegetarian'),
+        Cuisine.vegetarian,
         [
           MealItem('Fried Ipoh Hor Fun'),
           MealItem('Nonya Curry Vegetables'),
@@ -52,7 +52,7 @@ class DiningRepository {
         ],
       ),
       Meal(
-        const Cuisine(3, 'Malay'),
+        Cuisine.malay,
         [
           MealItem('Local Fried Mee Hoon'),
           MealItem('Penang Curry Chicken'),
@@ -67,42 +67,7 @@ class DiningRepository {
     final menuReference =
         await diningReference.doc('menu').collection(location).doc(day).get();
     final mealDict = menuReference.data() as Map<String, dynamic>;
-    final breakfast = mealDict['breakfast'];
-    final dinner = mealDict['dinner'];
-    // ignore: omit_local_variable_types
-    final List<Meal> bf = [];
-    // ignore: omit_local_variable_types
-    final List<Meal> dinz = [];
-    if (breakfast != null) {
-      for (final cuisine in breakfast.keys) {
-        final crusineType = CuisineType.values
-            .firstWhere((element) => describeEnum(element) == cuisine);
-        final newCuisine = Cuisine(crusineType.index, cuisine as String);
-        final mealItems = <MealItem>[];
-        for (final mealName in breakfast[cuisine]!) {
-          mealItems.add(MealItem(mealName as String));
-        }
-        bf.add(Meal(newCuisine, mealItems));
-      }
-    }
-
-    if (dinner != null) {
-      for (final cuisine in dinner.keys) {
-        final crusineType = CuisineType.values
-            .firstWhere((element) => describeEnum(element) == cuisine);
-        final newCuisine = Cuisine(crusineType.index, cuisine as String);
-        final mealItems = <MealItem>[];
-        for (final mealName in dinner[cuisine]!) {
-          mealItems.add(MealItem(mealName as String));
-        }
-        dinz.add(Meal(newCuisine, mealItems));
-      }
-    }
-
-    final menu = FullDayMenu(
-        breakfast: bf.isEmpty ? null : Menu(bf),
-        dinner: dinz.isEmpty ? null : Menu(dinz));
-    return menu;
+    return FullDayMenu.fromMap(mealDict);
   }
 
   Future<int> getBreakfastCreditCount() async {

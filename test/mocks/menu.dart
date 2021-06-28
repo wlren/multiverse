@@ -3,7 +3,7 @@ import 'package:multiverse/model/dining/menu.dart';
 final FullDayMenu sampleMenu = FullDayMenu(
   breakfast: Menu([
     Meal(
-      const Cuisine(0, 'Western'),
+      Cuisine.western,
       [
         MealItem('Scrambled Egg'),
         MealItem('Honey Ham'),
@@ -11,7 +11,7 @@ final FullDayMenu sampleMenu = FullDayMenu(
       ],
     ),
     Meal(
-      const Cuisine(1, 'Asian'),
+      Cuisine.asian,
       [
         MealItem('Fried Ipoh Hor Fun'),
         MealItem('Nonya Curry Vegetables'),
@@ -19,7 +19,7 @@ final FullDayMenu sampleMenu = FullDayMenu(
       ],
     ),
     Meal(
-      const Cuisine(2, 'Vegetarian'),
+      Cuisine.vegetarian,
       [
         MealItem('Fried Ipoh Hor Fun'),
         MealItem('Nonya Curry Vegetables'),
@@ -27,7 +27,7 @@ final FullDayMenu sampleMenu = FullDayMenu(
       ],
     ),
     Meal(
-      const Cuisine(3, 'Malay'),
+      Cuisine.malay,
       [
         MealItem('Local Fried Mee Hoon'),
         MealItem('Penang Curry Chicken'),
