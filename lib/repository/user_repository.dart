@@ -1,11 +1,10 @@
 //Packages
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:multiverse/model/auth/user.dart';
+import '../model/auth/user.dart';
 
 //Local Files
 import '../model/temperature/temperature_record.dart';
 import '../model/temperature/temperature_state.dart';
-import 'auth_repository.dart';
 
 //User related repository which communicates with backend API to fetch user-related data
 class UserRepository {

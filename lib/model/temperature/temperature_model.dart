@@ -1,10 +1,10 @@
 //Packages
 import 'package:flutter/material.dart';
-import 'package:multiverse/model/temperature/temperature_state.dart';
 
 //Local Files
 import '../../repository/user_repository.dart';
 import 'temperature_record.dart';
+import 'temperature_state.dart';
 
 // Contains methods/variables representing user interactions in the
 // temperature screen.

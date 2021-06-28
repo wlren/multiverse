@@ -2,13 +2,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 //Local Files
 import '../model/temperature/temperature_model.dart';
 import '../model/temperature/temperature_record.dart';
+import '../model/temperature/temperature_state.dart';
 import '../model/user_model.dart';
 import '../repository/user_repository.dart';
 

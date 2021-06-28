@@ -6,14 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/model/temperature/temperature_record.dart';
-import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
 import '../model/auth/session_cubit.dart';
 import '../model/dining/dining_model.dart';
 import '../model/dining/menu.dart';
+import '../model/temperature/temperature_state.dart';
 import '../model/user_model.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';

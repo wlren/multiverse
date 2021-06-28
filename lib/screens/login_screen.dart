@@ -12,7 +12,6 @@ import '../model/auth/login/login_form_event.dart';
 import '../model/auth/login/login_form_state.dart';
 import '../model/auth/session_cubit.dart';
 import '../model/login_model.dart';
-import '../repository/auth_repository.dart';
 
 /// The initial screen which user would see upon launching app
 /// prompts user to log in and will authenticate using Firebase

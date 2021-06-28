@@ -9,7 +9,6 @@ class FullDayMenu {
   FullDayMenu({this.breakfast, this.dinner});
 
   factory FullDayMenu.fromMap(Map<String, dynamic> mealDict) {
-    print(mealDict);
     final breakfast = mealDict['breakfast'] as Map<String, dynamic>?;
     final dinner = mealDict['dinner'] as Map<String, dynamic>?;
 
