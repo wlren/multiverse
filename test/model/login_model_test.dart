@@ -4,16 +4,6 @@ import 'package:multiverse/model/login_model.dart';
 
 void main() {
   group('Attribute setters work correctly, and call notifyListeners', () {
-    test('shouldRememberPassword setter', () {
-      var testPassed = false;
-      final loginModel = LoginModel();
-      loginModel.addListener(() {
-        testPassed = true;
-      });
-      loginModel.shouldRememberPassword = true;
-      expect(testPassed, true);
-      expect(loginModel.shouldRememberPassword, true);
-    });
     test('email setter', () {
       var testPassed = false;
       final loginModel = LoginModel();

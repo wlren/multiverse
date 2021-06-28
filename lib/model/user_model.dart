@@ -16,10 +16,12 @@ class UserModel extends ChangeNotifier {
 
   void update() async {
     temperatureState = await userRepository.getTemperatureState();
+    userName = await userRepository.getName();
     notifyListeners();
   }
 
   final UserRepository userRepository;
 
   TemperatureState temperatureState = TemperatureState.undeclared;
+  String? userName;
 }

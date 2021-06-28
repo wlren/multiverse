@@ -42,15 +42,15 @@ class AuthRepository {
 
   final auth = FirebaseAuth.instance;
 
-  /// Attempts automatic log in and retreival of user UID
+  /// Attempts automatic log in and retrieval of user id
   ///
   /// Throws a [LoginException] if auto-sign in fails
   String attemptAutoLogin() {
     //Make it cleaner
-    String userID;
+    String userId;
     if (auth.currentUser != null) {
-      userID = auth.currentUser!.uid;
-      return userID;
+      userId = auth.currentUser!.uid;
+      return userId;
     } else {
       throw FailAutoLogInException('not signed in');
     }

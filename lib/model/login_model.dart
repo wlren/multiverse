@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 // Contains methods/variables representing user interactions in the
 // login screen.
 class LoginModel extends ChangeNotifier {
-  String _email = '';
-  String _password = '';
-  bool _shouldRememberPassword = false;
+  String _email = 'e0000000';
+  String _password = 'test123';
 
   String get email => _email;
   String get password => _password;
-  bool get shouldRememberPassword => _shouldRememberPassword;
 
   set email(String value) {
     _email = value;
@@ -19,11 +17,6 @@ class LoginModel extends ChangeNotifier {
 
   set password(String value) {
     _password = value;
-    notifyListeners();
-  }
-
-  set shouldRememberPassword(bool value) {
-    _shouldRememberPassword = value;
     notifyListeners();
   }
 

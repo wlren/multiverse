@@ -1,4 +1,5 @@
 //Packages
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -27,27 +28,49 @@ class AppNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
-      return Navigator(
-        key: navigatorKey,
-        pages: [
-          //Loading screen
-          if (state is UnknownSessionState)
-            const MaterialPage(child: LoadingScreen()),
+      return Theme(
+        data: Theme.of(context).copyWith(
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
+          TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+              transitionType: SharedAxisTransitionType.scaled),
+          TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+              transitionType: SharedAxisTransitionType.scaled),
+        })),
+        child: Navigator(
+          key: navigatorKey,
+          // initialRoute: '/',
+          // onGenerateRoute: (settings) {
+          //   if (settings.name == '/') {
 
-          //Show login screen
-          if (state is Unauthenticated)
-            MaterialPage(
-                child: BlocProvider(
-                    create: (context) =>
-                        AuthCubit(sessionCubit: context.read<SessionCubit>()),
-                    child: LoginScreen())),
+          //   }
+          // },
+          pages: [
+            //Loading screen
+            if (state is UnknownSessionState)
+              const MaterialPage(
+                  name: '/',
+                  key: ValueKey(LoadingScreen),
+                  child: LoadingScreen()),
 
-          //Show dashboard
-          if (state is Authenticated)
-            MaterialPage(
-                child: _buildWithContext(child: const DashboardScreen())),
-        ],
-        onPopPage: (route, result) => route.didPop(result),
+            //Show login screen
+            if (state is Unauthenticated)
+              MaterialPage(
+                  name: '/',
+                  key: const ValueKey(LoginScreen),
+                  child: BlocProvider(
+                      create: (context) =>
+                          AuthCubit(sessionCubit: context.read<SessionCubit>()),
+                      child: const LoginScreen())),
+
+            //Show dashboard
+            if (state is Authenticated)
+              MaterialPage(
+                  name: '/',
+                  key: const ValueKey(DashboardScreen),
+                  child: _buildWithContext(child: const DashboardScreen())),
+          ],
+          onPopPage: (route, result) => route.didPop(result),
+        ),
       );
     });
   }
@@ -58,10 +81,10 @@ class AppNavigator extends StatelessWidget {
         RepositoryProvider(create: (context) => AuthRepository()),
         RepositoryProvider(
             create: (context) =>
-                UserRepository(userUID: context.read<SessionCubit>().userUID)),
+                UserRepository(userId: context.read<SessionCubit>().userId)),
         RepositoryProvider(
-            create: (context) => DiningRepository(
-                userUID: context.read<SessionCubit>().userUID)),
+            create: (context) =>
+                DiningRepository(userId: context.read<SessionCubit>().userId)),
       ],
       child: MultiProvider(
         providers: [

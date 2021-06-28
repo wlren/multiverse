@@ -7,10 +7,12 @@ import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:multiverse/screens/dashboard_screen.dart';
 import 'package:multiverse/screens/dining_screen.dart';
 import 'package:multiverse/screens/green_pass_screen.dart';
+import 'package:multiverse/screens/login_screen.dart';
 import 'package:multiverse/screens/nus_card_screen.dart';
 import 'package:multiverse/model/dining/dining_model.dart';
 import 'package:multiverse/model/green_pass_model.dart';
 import 'package:multiverse/model/user_model.dart';
+import 'package:multiverse/screens/temperature_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 
@@ -30,6 +32,7 @@ const _mockUserId = 'mockUserId';
 void main() {
   final mockUserModel = MockUserModel();
   when(mockUserModel.temperatureState).thenReturn(TemperatureState.acceptable);
+  when(mockUserModel.userName).thenReturn('userName');
 
   final mockDiningModel = MockDiningModel()..stubWithDefaultValues();
 
@@ -58,6 +61,7 @@ void main() {
       final undeclaredModel = MockUserModel();
       when(undeclaredModel.temperatureState)
           .thenReturn(TemperatureState.undeclared);
+      when(undeclaredModel.userName).thenReturn('userName');
 
       testWidgets('shows correct declaration state', (tester) async {
         final mockObserver = MockNavigatorObserver();
@@ -86,6 +90,7 @@ void main() {
       final acceptableModel = MockUserModel();
       when(acceptableModel.temperatureState)
           .thenReturn(TemperatureState.acceptable);
+      when(acceptableModel.userName).thenReturn('userName');
 
       testWidgets('shows correct declaration state', (tester) async {
         final mockObserver = MockNavigatorObserver();
@@ -118,6 +123,7 @@ void main() {
       final unacceptableModel = MockUserModel();
       when(unacceptableModel.temperatureState)
           .thenReturn(TemperatureState.unacceptable);
+      when(unacceptableModel.userName).thenReturn('userName');
 
       testWidgets('shows correct declaration state', (tester) async {
         final mockObserver = MockNavigatorObserver();
@@ -234,12 +240,13 @@ void main() {
     });
   });
 
-  group('Mini temperature card', () {
+  group('Temperature declaration button', () {
     group('shows correctly', () {
       testWidgets('when temperature is undeclared', (tester) async {
         final userModel = MockUserModel();
         when(userModel.temperatureState)
             .thenReturn(TemperatureState.undeclared);
+        when(userModel.userName).thenReturn('userName');
         await tester.pumpAndSettleScreen(
             userModel, mockDiningModel, const DashboardScreen());
         expect(find.text('Undeclared'), findsOneWidget);
@@ -248,6 +255,7 @@ void main() {
         final userModel = MockUserModel();
         when(userModel.temperatureState)
             .thenReturn(TemperatureState.acceptable);
+        when(userModel.userName).thenReturn('userName');
         await tester.pumpAndSettleScreen(
             userModel, mockDiningModel, const DashboardScreen());
         expect(find.text('Declared'), findsOneWidget);
@@ -256,31 +264,57 @@ void main() {
         final userModel = MockUserModel();
         when(userModel.temperatureState)
             .thenReturn(TemperatureState.unacceptable);
+        when(userModel.userName).thenReturn('userName');
         await tester.pumpAndSettleScreen(
             userModel, mockDiningModel, const DashboardScreen());
         expect(find.text('Unacceptable'), findsOneWidget);
       });
     });
 
-    testWidgets('launches NUS Card screen with proper back navigation on tap',
+    testWidgets(
+        'launches temperature declaration screen with proper back navigation on tap',
         (tester) async {
       final mockObserver = MockNavigatorObserver();
       await tester.pumpAndSettleScreen(
           mockUserModel, mockDiningModel, const DashboardScreen(),
           navigatorObservers: [mockObserver]);
 
-      expect(find.text('NUS Card'), findsOneWidget);
-      await tester.tap(find.text('NUS Card'));
+      expect(find.text('Declared'), findsOneWidget);
+      await tester.tap(find.text('Declared'));
       await tester.pumpAndSettle();
 
       verify(mockObserver.didPush(any, any));
-      expect(find.byType(NUSCardScreen), findsOneWidget);
+      expect(find.byType(TemperatureScreen), findsOneWidget);
 
       // Verify that back navigation works
       await tester.pageBack();
       await tester.pumpAndSettle();
       expect(find.byType(DashboardScreen), findsOneWidget);
     });
+  });
+
+  testWidgets('Sign out button is present and signs out correctly',
+      (tester) async {
+    final mockObserver = MockNavigatorObserver();
+    await tester.pumpAndSettleScreen(
+        mockUserModel, mockDiningModel, const DashboardScreen(),
+        navigatorObservers: [mockObserver]);
+    expect(find.text('Sign out'), findsOneWidget);
+
+    await tester.tap(find.text('Sign out'));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    verify(mockObserver.didPush(any, any));
+    expect(find.byType(LoginScreen), findsOneWidget);
+  });
+
+  testWidgets('User name shows correctly', (tester) async {
+    final mockObserver = MockNavigatorObserver();
+    await tester.pumpAndSettleScreen(
+        mockUserModel, mockDiningModel, const DashboardScreen(),
+        navigatorObservers: [mockObserver]);
+
+    expect(find.text('Hello, userName!'), findsOneWidget);
   });
 }
 
@@ -293,7 +327,7 @@ extension on WidgetTester {
     when(mockGreenPassModel.isPassGreen).thenReturn(false);
 
     final mockSessionCubit = MockSessionCubit();
-    when(mockSessionCubit.userUID).thenReturn(_mockUserId);
+    when(mockSessionCubit.userId).thenReturn(_mockUserId);
     await pumpWidget(MultiProvider(
       providers: [
         ChangeNotifierProvider<UserModel>(create: (context) => userModel),

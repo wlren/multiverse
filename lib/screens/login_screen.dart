@@ -14,16 +14,19 @@ import '../model/auth/login/login_form_state.dart';
 import '../model/login_model.dart';
 import '../repository/auth_repository.dart';
 
-///The initial screen which user would see upon launching app
-///prompts user to log in and will authenticate using AWS Amplify
-///Authentication services
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+/// The initial screen which user would see upon launching app
+/// prompts user to log in and will authenticate using Firebase
+/// Authentication services
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
-  //Allows form validation
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  //Show snackbar on failed login
   void _showSnackBarOnFail(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
@@ -32,12 +35,8 @@ class LoginScreen extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  /* WIDGETS start*/
-
-  //NUS NetID email widget
-  Widget __buildEmailField() {
+  Widget _buildEmailField() {
     return Builder(builder: (context) {
-      final loginModel = context.read<LoginModel>();
       return TextFormField(
         decoration: const InputDecoration(
           filled: true,
@@ -46,19 +45,19 @@ class LoginScreen extends StatelessWidget {
         ),
         //Validation check
         validator: (value) {
-          return loginModel.isEmailValid ? null : 'exxxxxxx (7 digits)';
+          return context.read<LoginModel>().isEmailValid
+              ? null
+              : 'exxxxxxx (7 digits)';
         },
         onChanged: (value) {
-          loginModel.email = value + '@u.nus.edu';
+          context.read<LoginModel>().email = value + '@u.nus.edu';
         },
       );
     });
   }
 
-  //Password field widget
   Widget _buildPasswordField() {
     return Builder(builder: (context) {
-      final loginModel = context.read<LoginModel>();
       return TextFormField(
         obscureText: true,
         decoration: const InputDecoration(
@@ -67,29 +66,31 @@ class LoginScreen extends StatelessWidget {
         ),
         //Validation check
         validator: (_) {
-          return loginModel.isPasswordValid ? null : 'Password cannot be empty';
+          return context.read<LoginModel>().isPasswordValid
+              ? null
+              : 'Password cannot be empty';
         },
         onChanged: (value) {
-          loginModel.password = value;
+          context.read<LoginModel>().password = value;
         },
       );
     });
   }
 
-  //Sends form information to AWS for authentication
   Widget _buildLoginButton() {
-    return BlocBuilder<LoginFormBloc, LoginFormState>(builder: (context, state) {
-      final loginModel = context.read<LoginModel>();
+    return BlocBuilder<LoginFormBloc, LoginFormState>(
+        builder: (context, state) {
       return state is FormSubmitting
           ? const CircularProgressIndicator()
           : ElevatedButton(
               onPressed: () {
+                final loginModel = context.read<LoginModel>();
                 //Validation check
                 if (_formKey.currentState!.validate()) {
                   context.read<LoginFormBloc>().add(LoginFormSubmitted(
-                    email: loginModel.email,
-                    password: loginModel.password,
-                  ));
+                        email: loginModel.email,
+                        password: loginModel.password,
+                      ));
                 }
               },
               child: const Text('Login'),
@@ -97,7 +98,6 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
-  //Encapsulated form for BloC architecture purposes
   Widget __buildLoginForm() {
     return BlocListener<LoginFormBloc, LoginFormState>(
       listener: (context, state) {
@@ -116,11 +116,10 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                __buildEmailField(),
+                _buildEmailField(),
                 const SizedBox(height: 16.0),
                 _buildPasswordField(),
                 const SizedBox(height: 16.0),
-                _buildRememberPasswordCheckBox(),
                 _buildLoginButton(),
               ],
             ),
@@ -129,8 +128,6 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-
-  /* WIDGETS end*/
 
   @override
   Widget build(BuildContext context) {
@@ -168,18 +165,5 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildRememberPasswordCheckBox() {
-    return Builder(builder: (context) {
-      final loginModel = context.watch<LoginModel>();
-      return CheckboxListTile(
-        title: const Text('Remember password'),
-        value: loginModel.shouldRememberPassword,
-        onChanged: (value) {
-          loginModel.shouldRememberPassword = value ?? false;
-        },
-      );
-    });
   }
 }

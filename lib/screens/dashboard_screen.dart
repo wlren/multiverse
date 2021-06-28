@@ -15,7 +15,6 @@ import '../model/auth/session_cubit.dart';
 import '../model/dining/dining_model.dart';
 import '../model/dining/menu.dart';
 import '../model/user_model.dart';
-import '../repository/user_repository.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
@@ -34,11 +33,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final DateFormat dateFormat = DateFormat('dd MMM (aa)');
   final ScrollController _scrollController = ScrollController();
   late final String dateString = dateFormat.format(DateTime.now());
-  String? _userName;
 
   @override
   Widget build(BuildContext context) {
-    //_getName(context);
+    final userName = context.watch<UserModel>().userName;
     return Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
@@ -83,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: const EdgeInsetsDirectional.only(end: 8.0),
                   child: TextButton(
                       onPressed: () => signOut(context),
-                      child: const Text('Sign Out')),
+                      child: const Text('Sign out')),
                 ),
               ],
             ),
@@ -100,16 +98,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _userName != null
-                        ? Text('Hello, $_userName!',
-                            style: Theme.of(context).textTheme.headline5)
-                        : FutureBuilder<String>(
-                            builder: (context, snapshot) {
-                              return Text('Hello, ${snapshot.data}!',
-                                  style: Theme.of(context).textTheme.headline5);
-                            },
-                            future: _getName(context),
-                          ),
+                    Text('Hello, $userName!',
+                        style: Theme.of(context).textTheme.headline5),
                     _buildTemperatureButton(),
                   ],
                 ),
@@ -429,12 +419,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //temp
   void signOut(BuildContext context) {
     context.read<SessionCubit>().signOut();
-  }
-
-  Future<String> _getName(BuildContext context) async {
-    final userUID = context.read<SessionCubit>().userUID;
-    final userName = await context.read<UserRepository>().getName(userUID);
-    _userName = userName;
-    return userName;
   }
 }

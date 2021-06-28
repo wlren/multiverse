@@ -18,18 +18,18 @@ class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
 
   @override
   Stream<LoginFormState> mapEventToState(LoginFormEvent event) async* {
-     if (event is LoginFormSubmitted) {
-       yield FormSubmitting();
+    if (event is LoginFormSubmitted) {
+      yield FormSubmitting();
 
       try {
-        final userID = await authRepo.login(
+        final userId = await authRepo.login(
           email: event.email,
           password: event.password,
         );
         yield SubmissionSuccess();
 
         authCubit
-            .launchSession(AuthCredentials(email: event.email, userID: userID));
+            .launchSession(AuthCredentials(email: event.email, userId: userId));
       } on LoginException catch (e) {
         yield SubmissionFailed(e);
         yield const InitialFormState();

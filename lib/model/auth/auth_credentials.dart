@@ -1,13 +1,13 @@
 class AuthCredentials {
-  final String userID;
+  final String userId;
   final String email;
   final String? password;
-  String? matricID;
+  String? matricId;
 
   AuthCredentials({
-    required this.userID,
+    required this.userId,
     required this.email,
     this.password,
-    this.matricID,
+    this.matricId,
   });
 }

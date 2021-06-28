@@ -7,10 +7,10 @@ import '../model/temperature/temperature_state.dart';
 
 //User related repository which communicates with backend API to fetch user-related data
 class UserRepository {
-  String userUID;
+  String userId;
   String? name;
 
-  UserRepository({required this.userUID});
+  UserRepository({required this.userId});
 
   CollectionReference students =
       FirebaseFirestore.instance.collection('students');
@@ -41,9 +41,9 @@ class UserRepository {
     return _temperatureRecords;
   }
 
-  Future<String> getName(String userUID) async {
+  Future<String> getName() async {
     if (name == null) {
-      final studentInfo = await students.doc(userUID).get();
+      final studentInfo = await students.doc(userId).get();
 
       final studentData = studentInfo.data() as Map<String, dynamic>;
       name = studentData['name'] as String;
