@@ -5,6 +5,7 @@
 [![build](https://github.com/wlren/multiverse/actions/workflows/build.yml/badge.svg)](https://github.com/wlren/multiverse/actions/workflows/build.yml)
 [![lint](https://github.com/wlren/multiverse/actions/workflows/lint.yml/badge.svg)](https://github.com/wlren/multiverse/actions/workflows/lint.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wlren/multiverse/badge.svg?branch=main)](https://coveralls.io/github/wlren/multiverse?branch=main)
+
 A mobile application powered by Flutter and AWS Amplify which provides a
 one-stop solution to all campus needs.
 
