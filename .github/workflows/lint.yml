@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: multiverse
+name: lint
 
 on:
   push:
@@ -36,37 +36,6 @@ jobs:
         with:
           name: test-files
           path: ./test
-
-  update-code-coverage:
-    name: Update code coverage
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:      
-      - uses: actions/checkout@v2
-
-      - name: Install flutter
-        uses: subosito/flutter-action@v1.5.3
-        with:
-          # The Flutter version to make available on the path
-          flutter-version: '2.2.0'
-
-      - name: Install flutter dependencies
-        run: flutter pub get
-        
-      - name: Download test files
-        uses: actions/download-artifact@v2
-        with:
-          name: test-files
-          path: ./test
-    
-      - name: Run tests
-        run: flutter test --coverage
-        
-      - name: Upload coverage to coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   lint-checks:
     name: Check linting
