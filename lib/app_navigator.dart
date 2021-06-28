@@ -76,9 +76,9 @@ class AppNavigator extends StatelessWidget {
   }
 
   Widget _buildWithContext({required AuthUser user, required Widget child}) {
-    return MultiRepositoryProvider(
+    return MultiProvider(
       providers: [
-        RepositoryProvider(create: (context) => UserRepository(user)),
+        ChangeNotifierProvider(create: (context) => UserRepository(user)),
         RepositoryProvider(create: (context) => DiningRepository(user: user)),
       ],
       child: MultiProvider(
@@ -99,12 +99,18 @@ class AppNavigator extends StatelessWidget {
           // Handles system back navigation when in back navigation
           onWillPop: () async =>
               !await dashboardNavigatorKey.currentState!.maybePop(),
-          child: Navigator(
-            key: dashboardNavigatorKey,
-            pages: [
-              MaterialPage(child: child),
-            ],
-            onPopPage: (route, result) => route.didPop(result),
+          child: Builder(
+            builder: (context) => Theme(
+              data: Theme.of(context)
+                  .copyWith(pageTransitionsTheme: const PageTransitionsTheme()),
+              child: Navigator(
+                key: dashboardNavigatorKey,
+                pages: [
+                  MaterialPage(child: child),
+                ],
+                onPopPage: (route, result) => route.didPop(result),
+              ),
+            ),
           ),
         ),
       ),

@@ -1,8 +1,7 @@
 //Packages
 import 'package:animations/animations.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
-    as extend;
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
@@ -26,7 +25,16 @@ class DiningScreen extends StatefulWidget {
 class _DiningScreenState extends State<DiningScreen>
     with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
-  final double _expandedHeight = 320;
+  static const double _expandedHeight = 320;
+  static const double _backgroundHeight = _expandedHeight - kToolbarHeight;
+
+  double get collapsedPercentage =>
+      // This is a hack to make sure error is not thrown
+      // ignore: invalid_use_of_protected_member
+      _scrollController.positions.length == 1
+          ? _scrollController.offset.clamp(0, _backgroundHeight) /
+              _backgroundHeight
+          : 0;
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +63,10 @@ class _DiningScreenState extends State<DiningScreen>
           body: DefaultTabController(
             length: 2,
             initialIndex: _getInitialTabIndex(context),
-            child: extend.NestedScrollView(
+            child: NestedScrollView(
+              physics: _DiningScreenScrollPhysics(),
               controller: _scrollController,
-              headerSliverBuilder:
-                  (context, innerBoxIsScrolled) {
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
                     backwardsCompatibility: false,
@@ -78,14 +86,6 @@ class _DiningScreenState extends State<DiningScreen>
                       title: AnimatedBuilder(
                         animation: _scrollController,
                         builder: (context, child) {
-                          final collapsedPercentage =
-                              // This is a hack to make sure error is not thrown
-                              // ignore: invalid_use_of_protected_member
-                              _scrollController.positions.length == 1
-                                  ? _scrollController.offset
-                                          .clamp(0, _expandedHeight) /
-                                      _expandedHeight
-                                  : 0;
                           return Transform.translate(
                             offset:
                                 Offset(-24.0 * (1 - collapsedPercentage), 0),
@@ -100,49 +100,63 @@ class _DiningScreenState extends State<DiningScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: kToolbarHeight +
-                                      MediaQuery.of(context).padding.top,
-                                  left: 72.0,
-                                  bottom: 24.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (context
-                                          .read<DiningModel>()
-                                          .currentMealType !=
-                                      MealType.none) ...{
+                            AnimatedBuilder(
+                              animation: _scrollController,
+                              builder: (context, child) {
+                                return Transform.translate(
+                                    offset: Offset(
+                                        0,
+                                        _expandedHeight /
+                                            2 *
+                                            collapsedPercentage),
+                                    child: child);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: kToolbarHeight +
+                                        MediaQuery.of(context).padding.top,
+                                    left: 72.0,
+                                    bottom: 24.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (context
+                                            .read<DiningModel>()
+                                            .currentMealType !=
+                                        MealType.none) ...{
+                                      Text(
+                                        '${context.read<DiningModel>().currentMealType!.toShortString()} · ${context.read<DiningModel>().mealLocation}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4,
+                                      ),
+                                    } else ...{
+                                      Text(
+                                        'Meals closed',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4,
+                                      ),
+                                    },
+                                    const SizedBox(height: 16.0),
+                                    Text('You have:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6),
                                     Text(
-                                      '${context.read<DiningModel>().currentMealType!.toShortString()} · ${context.read<DiningModel>().mealLocation}',
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
-                                    ),
-                                  } else ...{
+                                        '• ${context.read<DiningModel>().breakfastCreditCount} breakfast credits',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6),
                                     Text(
-                                      'Meals closed',
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
-                                    ),
-                                  },
-                                  const SizedBox(height: 16.0),
-                                  Text('You have:',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline6),
-                                  Text(
-                                      '• ${context.read<DiningModel>().breakfastCreditCount} breakfast credits',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline6),
-                                  Text(
-                                      '• ${context.read<DiningModel>().dinnerCreditCount} dinner credits',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline6),
-                                  const SizedBox(height: 16.0),
-                                ],
+                                        '• ${context.read<DiningModel>().dinnerCreditCount} dinner credits',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6),
+                                    const SizedBox(height: 16.0),
+                                  ],
+                                ),
                               ),
                             ),
                             Expanded(
@@ -162,9 +176,6 @@ class _DiningScreenState extends State<DiningScreen>
                     ),
                   ),
                 ];
-              },
-              pinnedHeaderSliverHeightBuilder: () {
-                return MediaQuery.of(context).padding.top + kToolbarHeight;
               },
               body: Column(
                 children: [
@@ -202,7 +213,8 @@ class _DiningScreenState extends State<DiningScreen>
             closedShape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(32.0),
             ),
-            closedBuilder: (context, openContainer) => FloatingActionButton.extended(
+            closedBuilder: (context, openContainer) =>
+                FloatingActionButton.extended(
               label: const Text('Scan QR'),
               elevation: 0,
               icon: const Icon(Icons.qr_code_scanner),
@@ -228,42 +240,45 @@ class _DiningScreenState extends State<DiningScreen>
     if (menu == null) {
       return const Center(child: Text('No menu found'));
     } else {
-      return CustomScrollView(slivers: [
-        for (Meal meal in menu.meals) ...{
-          SliverStickyHeader(
-            sticky: false,
-            header: Material(
-              color: DiningScreen.bottomColor,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 16.0, horizontal: 32.0),
-                child: Text(meal.cuisine.name,
-                    style: Theme.of(context).textTheme.headline6),
-              ),
-            ),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, position) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 48.0, vertical: 8.0),
-                  child: Text(meal.mealItems[position].name),
+      return CustomScrollView(
+          primary: false,
+          physics: const NeverScrollableScrollPhysics(),
+          slivers: [
+            for (Meal meal in menu.meals) ...{
+              SliverStickyHeader(
+                sticky: false,
+                header: Material(
+                  color: DiningScreen.bottomColor,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 32.0),
+                    child: Text(meal.cuisine.name,
+                        style: Theme.of(context).textTheme.headline6),
+                  ),
                 ),
-                childCount: meal.mealItems.length,
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, position) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 48.0, vertical: 8.0),
+                      child: Text(meal.mealItems[position].name),
+                    ),
+                    childCount: meal.mealItems.length,
+                  ),
+                ),
               ),
-            ),
-          ),
-          if (meal != menu.meals.last)
+              if (meal != menu.meals.last)
+                const SliverToBoxAdapter(
+                  child: Divider(),
+                ),
+            },
+            // To account for floating action button blocking last element
             const SliverToBoxAdapter(
-              child: Divider(),
-            ),
-        },
-        // To account for floating action button blocking last element
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: 64.0,
-          ),
-        )
-      ]);
+              child: SizedBox(
+                height: 64.0,
+              ),
+            )
+          ]);
     }
   }
 
@@ -278,6 +293,47 @@ class _DiningScreenState extends State<DiningScreen>
         return 0;
       default:
         return 0;
+    }
+  }
+}
+
+class _DiningScreenScrollPhysics extends ScrollPhysics {
+  const _DiningScreenScrollPhysics({ScrollPhysics? parent})
+      : super(parent: parent);
+
+  @override
+  ScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return _DiningScreenScrollPhysics(parent: ancestor);
+  }
+
+  @override
+  Simulation? createBallisticSimulation(
+      ScrollMetrics position, double velocity) {
+    final defaultScrollSimulation =
+        ClampingScrollSimulation(position: position.pixels, velocity: velocity);
+
+    final projectedCollapsedPercentage =
+        defaultScrollSimulation.x(20) / _DiningScreenState._backgroundHeight;
+    assert(defaultScrollSimulation.isDone(20));
+
+    final isProjectedHalfCollapsed =
+        projectedCollapsedPercentage > 0 && projectedCollapsedPercentage < 1;
+
+    if (isProjectedHalfCollapsed) {
+      final endCollapsedPercentage = projectedCollapsedPercentage.round();
+      final endPositionPixels =
+          endCollapsedPercentage * _DiningScreenState._backgroundHeight;
+
+      final spring = SpringDescription.withDampingRatio(
+        mass: 1,
+        stiffness: 500,
+        ratio: 1,
+      );
+
+      return ScrollSpringSimulation(
+          spring, position.pixels, endPositionPixels, velocity);
+    } else {
+      return defaultScrollSimulation;
     }
   }
 }

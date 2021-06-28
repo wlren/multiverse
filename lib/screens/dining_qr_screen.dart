@@ -39,28 +39,28 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
         ),
         scaffoldBackgroundColor: Colors.black,
         textTheme: Theme.of(context).textTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
-        ),
+              bodyColor: Colors.white,
+              displayColor: Colors.white,
+            ),
       ),
       child: BlocProvider(
-        create: (context) => DiningQrBloc(context.read<DiningModel>().currentMenu!),
-        child: BlocBuilder<DiningQrBloc, DiningQrState>(
-          builder: (context, state) {
-            return BlocListener<DiningQrBloc, DiningQrState>(
-              listener: _onBlocUpdate,
-              child: WillPopScope(
-                onWillPop: () => _onWillPop(context, state),
-                child: Scaffold(
-                  extendBodyBehindAppBar: true,
-                  appBar: AppBar(),
-                  // TODO: Darken the rest of the body to match app bar
-                  body: _buildContent(context, state),
-                ),
+        create: (context) =>
+            DiningQrBloc(context.read<DiningModel>().currentMenu!),
+        child:
+            BlocBuilder<DiningQrBloc, DiningQrState>(builder: (context, state) {
+          return BlocListener<DiningQrBloc, DiningQrState>(
+            listener: _onBlocUpdate,
+            child: WillPopScope(
+              onWillPop: () => _onWillPop(context, state),
+              child: Scaffold(
+                extendBodyBehindAppBar: true,
+                appBar: AppBar(),
+                // TODO: Darken the rest of the body to match app bar
+                body: _buildContent(context, state),
               ),
-            );
-          }
-        ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -72,7 +72,10 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
 
     // Load meal screen
     if (state is MealLoadedState) {
-      await Navigator.push(context, MaterialPageRoute(builder: (context) => DiningRedeemScreen(state.meal)));
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DiningRedeemScreen(state.meal)));
       context.read<DiningQrBloc>().add(QrRetryEvent());
     }
   }
@@ -98,8 +101,8 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
             onQRViewCreated: (controller) =>
                 _onQRViewCreated(context, controller),
           ),
-          SingleChildScrollView(
-            child: SafeArea(
+          SafeArea(
+            child: SizedBox.expand(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -126,10 +129,12 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
                       borderRadius: BorderRadius.circular(32.0),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
                       child: _Blink(
                         duration: fadeDuration,
-                        child: Text('Scanning QR...',
+                        child: Text(
+                          'Scanning QR...',
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
@@ -172,7 +177,8 @@ class _DiningQrScreenState extends State<DiningQrScreen> {
 }
 
 class _Blink extends StatefulWidget {
-  const _Blink({Key? key, required this.child, required this.duration}) : super(key: key);
+  const _Blink({Key? key, required this.child, required this.duration})
+      : super(key: key);
 
   final Widget child;
   final Duration duration;

@@ -55,15 +55,21 @@ class DiningRedeemScreen extends StatelessWidget {
                             redeemed: state is SuccessfulRedeemState),
                       ),
                       if (state is UnredeemedState) ...{
-                        ElevatedButton.icon(
-                          onPressed: () => _onRedeemPressed(context),
-                          icon: const Icon(Icons.done),
-                          label: Text('Redeem ${formModel.mealCount}'),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 16.0))),
+                            onPressed: () => _onRedeemPressed(context),
+                            icon: const Icon(Icons.done),
+                            label: Text('Redeem ${formModel.mealCount}'),
+                          ),
                         ),
                       } else if (state is PendingRedeemState) ...{
                         const CircularProgressIndicator(),
-                      } else if (state is SuccessfulRedeemState)
-                        ...{
+                      } else if (state is SuccessfulRedeemState) ...{
                         ElevatedButton.icon(
                           onPressed: () => _onFinishPressed(context),
                           icon: const Icon(Icons.done_all),
