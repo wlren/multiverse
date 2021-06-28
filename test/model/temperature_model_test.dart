@@ -8,9 +8,23 @@ import 'package:test/test.dart';
 
 import 'temperature_model_test.mocks.dart';
 
-@GenerateMocks([UserRepository])
+@GenerateMocks([],
+    customMocks: [MockSpec<UserRepository>(returnNullOnMissingStub: true)])
 void main() {
   group('Temperature model', () {
+    test('listens to repository changes', () async {
+      final mockTemperatureRecords = <TemperatureRecord>[];
+      const temperatureState = TemperatureState.undeclared;
+      final repository = MockUserRepository();
+      when(repository.getTemperatureRecords())
+          .thenAnswer((_) async => mockTemperatureRecords);
+      when(repository.getTemperatureState())
+          .thenAnswer((_) async => temperatureState);
+      // ignore: unused_local_variable
+      final temperatureModel = TemperatureModel(repository);
+      verify(repository.addListener(any));
+    });
+
     test('update method fetches data from repository', () async {
       final repository = MockUserRepository();
       var mockTemperatureRecords = <TemperatureRecord>[];

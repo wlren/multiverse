@@ -1,5 +1,6 @@
 //Packages
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 //Local Files
 import '../model/auth/user.dart';
@@ -85,6 +86,10 @@ class DiningRepository {
   }
 
   MealType getCurrentMealType() {
+    if (!kReleaseMode) {
+      // Debug mode
+      return MealType.breakfast;
+    }
     final now = DateTime.now();
     final isAfterSeven = now.hour >= 7;
     final isBeforeTenThirty =

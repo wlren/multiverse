@@ -12,6 +12,9 @@ import 'temperature/temperature_state.dart';
 class UserModel extends ChangeNotifier {
   UserModel(this.userRepository) {
     update();
+    userRepository.addListener(() {
+      update();
+    });
   }
 
   void update() async {

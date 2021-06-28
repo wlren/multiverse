@@ -9,8 +9,6 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../model/temperature/temperature_model.dart';
 import '../model/temperature/temperature_record.dart';
 import '../model/temperature/temperature_state.dart';
-import '../model/user_model.dart';
-import '../repository/user_repository.dart';
 
 class TemperatureScreen extends StatefulWidget {
   static final Color acceptableTemperatureColor = Colors.green.shade300;
@@ -67,110 +65,103 @@ class TemperatureScreenState extends State<TemperatureScreen>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => TemperatureModel(context.read<UserRepository>()),
-      builder: (context, _) {
-        // Set here instead of in AnimationController constructor so that
-        // the animation does not play when screen is initialized.
-        if (!_toAnimate) {
-          _showFormAnimation.value =
-              context.read<TemperatureModel>().temperatureState ==
-                      TemperatureState.undeclared
-                  ? 1
-                  : 0;
-        }
-        return Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backwardsCompatibility: false,
-            backgroundColor: Colors.transparent,
-            title: const Text('Temperature Declaration'),
-            foregroundColor: Theme.of(context).textTheme.headline6!.color,
-            titleSpacing: 8.0,
-            elevation: 0,
-          ),
-          body: Column(
-            children: [
-              Material(
-                clipBehavior: Clip.none,
-                color: _getBackgroundColor(),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height:
-                          kToolbarHeight + MediaQuery.of(context).padding.top,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: leftPadding),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Transform.translate(
-                            offset: const Offset(0, -16.0),
-                            child: Text(context
-                                        .read<TemperatureModel>()
-                                        .temperatureState ==
+    // Set here instead of in AnimationController constructor so that
+    // the animation does not play when screen is initialized.
+    if (!_toAnimate) {
+      _showFormAnimation.value =
+          context.read<TemperatureModel>().temperatureState ==
+                  TemperatureState.undeclared
+              ? 1
+              : 0;
+    }
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backwardsCompatibility: false,
+        backgroundColor: Colors.transparent,
+        title: const Text('Temperature Declaration'),
+        foregroundColor: Theme.of(context).textTheme.headline6!.color,
+        titleSpacing: 8.0,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          Material(
+            clipBehavior: Clip.none,
+            color: _getBackgroundColor(),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: kToolbarHeight + MediaQuery.of(context).padding.top,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: leftPadding),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Transform.translate(
+                        offset: const Offset(0, -16.0),
+                        child: Text(
+                            context.read<TemperatureModel>().temperatureState ==
                                     TemperatureState.undeclared
                                 ? 'Not declared yet'
                                 : 'Declared'),
-                          ),
-                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+                child: Container(
+              color: _getBackgroundColor(),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(16.0)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Column(
+                    children: [
+                      // Hide the temperature form once declared, unless
+                      // declaring
+                      AnimatedBuilder(
+                        animation: _showFormAnimation,
+                        builder: (context, child) {
+                          return Opacity(
+                            opacity: CurvedAnimation(
+                              parent: _showFormAnimation,
+                              curve: const Interval(0.75, 1.0),
+                            ).value,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              heightFactor: CurvedAnimation(
+                                parent: _showFormAnimation,
+                                curve: const Interval(0.0, 0.75,
+                                    curve: Curves.easeInOutCubic),
+                              ).value,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: _buildTemperatureForm(context),
+                      ),
+                      const SizedBox(height: 24.0),
+                      _buildDeclareButton(context),
+                      const SizedBox(height: 32.0),
+                      _buildTemperatureList(context),
+                    ],
+                  ),
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                    child: Container(
-                  color: _getBackgroundColor(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor,
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16.0)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Column(
-                        children: [
-                          // Hide the temperature form once declared, unless
-                          // declaring
-                          AnimatedBuilder(
-                            animation: _showFormAnimation,
-                            builder: (context, child) {
-                              return Opacity(
-                                opacity: CurvedAnimation(
-                                  parent: _showFormAnimation,
-                                  curve: const Interval(0.75, 1.0),
-                                ).value,
-                                child: Align(
-                                  alignment: Alignment.topCenter,
-                                  heightFactor: CurvedAnimation(
-                                    parent: _showFormAnimation,
-                                    curve: const Interval(0.0, 0.75,
-                                        curve: Curves.easeInOutCubic),
-                                  ).value,
-                                  child: child,
-                                ),
-                              );
-                            },
-                            child: _buildTemperatureForm(context),
-                          ),
-                          const SizedBox(height: 24.0),
-                          _buildDeclareButton(context),
-                          const SizedBox(height: 32.0),
-                          _buildTemperatureList(context),
-                        ],
-                      ),
-                    ),
-                  ),
-                )),
-              ),
-            ],
+            )),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -434,7 +425,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   Color _getBackgroundColor() {
-    return context.watch<UserModel>().temperatureState ==
+    return context.watch<TemperatureModel>().temperatureState ==
             TemperatureState.acceptable
         ? (Theme.of(context).brightness == Brightness.light
             ? Colors.green.shade300
@@ -446,7 +437,6 @@ class TemperatureScreenState extends State<TemperatureScreen>
 
   void _declareTemperature(BuildContext context, double temperature) {
     context.read<TemperatureModel>().declareTemperature(temperature);
-    context.read<UserModel>().update();
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Temperature declared')));
     setState(() {

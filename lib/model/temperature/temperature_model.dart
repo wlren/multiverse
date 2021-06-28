@@ -16,6 +16,9 @@ class TemperatureModel extends ChangeNotifier {
 
   TemperatureModel(this.userRepository) {
     update();
+    userRepository.addListener(() {
+      update();
+    });
   }
 
   Future<void> update() async {

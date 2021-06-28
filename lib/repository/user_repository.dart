@@ -1,5 +1,6 @@
 //Packages
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../model/auth/user.dart';
 
 //Local Files
@@ -7,7 +8,7 @@ import '../model/temperature/temperature_record.dart';
 import '../model/temperature/temperature_state.dart';
 
 //User related repository which communicates with backend API to fetch user-related data
-class UserRepository {
+class UserRepository extends ChangeNotifier {
   AuthUser user;
 
   UserRepository(this.user);
@@ -26,16 +27,6 @@ class UserRepository {
     return TemperatureState.undeclared;
   }
 
-  Future<void> declareTemperature(double temperature) async {
-    // TODO: Access server to declare temperature
-    _temperatureRecords
-        .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
-
-    // Sort temperature records by temperature. This should be done by a
-    // sorted SQL call.
-    _temperatureRecords.sort((a, b) => -a.time.compareTo(b.time));
-  }
-
   Future<List<TemperatureRecord>> getTemperatureRecords() async {
     // TODO: Access server
     return _temperatureRecords;
@@ -46,5 +37,16 @@ class UserRepository {
 
     final studentData = studentInfo.data() as Map<String, dynamic>;
     return studentData['name'] as String;
+  }
+
+  Future<void> declareTemperature(double temperature) async {
+    // TODO: Access server to declare temperature
+    _temperatureRecords
+        .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
+
+    // Sort temperature records by temperature. This should be done by a
+    // sorted SQL call.
+    _temperatureRecords.sort((a, b) => -a.time.compareTo(b.time));
+    notifyListeners();
   }
 }

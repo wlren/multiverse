@@ -144,6 +144,8 @@ class NUSCardScreen extends StatelessWidget {
           ),
         ));
 
+    final qrData = '$studentId;${DateTime.now().millisecondsSinceEpoch};NUSSTU';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('NUS Card'),
@@ -159,10 +161,9 @@ class NUSCardScreen extends StatelessWidget {
               card,
               const SizedBox(height: 16.0),
               QrImage(
+                key: ValueKey(qrData),
                 backgroundColor: Colors.white,
-                data:
-                    '$studentId;${DateTime.now().millisecondsSinceEpoch};NUSSTU',
-                version: QrVersions.auto,
+                data: qrData,
                 size: 200.0,
               ),
             ],
