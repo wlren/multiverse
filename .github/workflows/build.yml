@@ -13,7 +13,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build and upload coverage
     runs-on: ubuntu-latest
 
     steps:
@@ -32,4 +32,9 @@ jobs:
         run: flutter pub run build_runner build
         
       - name: Run test cases
-        run: flutter test
+        run: flutter test --coverage
+        
+      - name: Upload coverage to coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
