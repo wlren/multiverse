@@ -140,8 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         final formStatus = state;
         if (formStatus is SubmissionFailed) {
-          _showSnackBarOnFail(
-              context, formStatus.loginException.message ?? 'Login failed');
+          _showSnackBarOnFail(context, formStatus.loginException.message);
         }
       },
       child: ChangeNotifierProvider(

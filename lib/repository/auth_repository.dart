@@ -9,34 +9,34 @@ import '../model/auth/user.dart';
 abstract class LoginException implements Exception {
   LoginException(this.message);
 
-  final String? message;
+  final String message;
 }
 
 class InvalidEmailException implements LoginException {
   InvalidEmailException(this._message);
 
-  final String? _message;
+  final String _message;
 
   @override
-  String? get message => _message;
+  String get message => _message;
 }
 
 class InvalidPasswordException implements LoginException {
   InvalidPasswordException(this._message);
 
-  final String? _message;
+  final String _message;
 
   @override
-  String? get message => _message;
+  String get message => _message;
 }
 
 class FailedAutoLoginException implements LoginException {
   FailedAutoLoginException(this._message);
 
-  final String? _message;
+  final String _message;
 
   @override
-  String? get message => _message;
+  String get message => _message;
 }
 
 class AuthRepository {

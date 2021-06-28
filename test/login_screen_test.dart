@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:multiverse/model/auth/session_cubit.dart';
+import 'package:multiverse/repository/auth_repository.dart';
 import 'package:multiverse/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -34,5 +35,33 @@ void main() {
     verify(mockSessionCubit.login(
         email: 'e1234567@u.nus.edu', password: 'password'));
     verifyNoMoreInteractions(mockSessionCubit);
+  });
+
+  testWidgets('Snackbar shows when login error occurs', (tester) async {
+    const errorMessage = 'Login exception message';
+    final mockSessionCubit = MockSessionCubit();
+    when(mockSessionCubit.login(
+            email: anyNamed('email'), password: anyNamed('password')))
+        .thenThrow(InvalidEmailException(errorMessage));
+    await tester.pumpWidget(Provider<SessionCubit>(
+      create: (context) => mockSessionCubit,
+      child: const MaterialApp(home: LoginScreen()),
+    ));
+    final emailField = find.ancestor(
+        of: find.text('NUSNET Email'), matching: find.byType(TextField));
+    final passwordField = find.ancestor(
+        of: find.text('Password'), matching: find.byType(TextField));
+    expect(emailField, findsOneWidget);
+    expect(passwordField, findsOneWidget);
+
+    await tester.enterText(emailField, 'e1234567');
+    await tester.enterText(passwordField, 'password');
+    await tester.tap(find.text('Login'));
+    await tester.pumpAndSettle();
+
+    final snackBar = find.byType(SnackBar);
+    expect(snackBar, findsOneWidget);
+    expect(find.descendant(of: snackBar, matching: find.text(errorMessage)),
+        findsOneWidget);
   });
 }

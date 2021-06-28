@@ -18,7 +18,6 @@ class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
   Stream<LoginFormState> mapEventToState(LoginFormEvent event) async* {
     if (event is LoginFormSubmitted) {
       yield FormSubmitting();
-
       try {
         final userId = await sessionCubit.login(
           email: event.email,
