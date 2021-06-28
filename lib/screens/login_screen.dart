@@ -7,10 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import '../model/auth/auth_cubit.dart';
 import '../model/auth/login/login_form_bloc.dart';
 import '../model/auth/login/login_form_event.dart';
 import '../model/auth/login/login_form_state.dart';
+import '../model/auth/session_cubit.dart';
 import '../model/login_model.dart';
 import '../repository/auth_repository.dart';
 
@@ -26,6 +26,43 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 64.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    SvgPicture.asset('assets/logo.svg'),
+                    const SizedBox(height: 16.0),
+                    Text(
+                      'multiverse',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.spartan(
+                        textStyle: Theme.of(context).textTheme.headline5,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 48.0),
+                BlocProvider(
+                  child: __buildLoginForm(),
+                  create: (context) =>
+                      LoginFormBloc(sessionCubit: context.read<SessionCubit>()),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   void _showSnackBarOnFail(BuildContext context, String message) {
     final snackBar = SnackBar(
@@ -121,44 +158,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 _buildPasswordField(),
                 const SizedBox(height: 16.0),
                 _buildLoginButton(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 64.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    SvgPicture.asset('assets/logo.svg'),
-                    const SizedBox(height: 16.0),
-                    Text(
-                      'multiverse',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.spartan(
-                        textStyle: Theme.of(context).textTheme.headline5,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 48.0),
-                BlocProvider(
-                  child: __buildLoginForm(),
-                  create: (context) => LoginFormBloc(
-                      authRepo: context.read<AuthRepository>(),
-                      authCubit: context.read<AuthCubit>()),
-                ),
               ],
             ),
           ),

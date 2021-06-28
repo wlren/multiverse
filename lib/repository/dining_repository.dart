@@ -3,24 +3,17 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Local Files
+import '../model/auth/user.dart';
 import '../model/dining/menu.dart';
 
 //Dining related repository which communicates with backend API to fetch dining-related data
 class DiningRepository {
-  String userId;
+  AuthUser user;
   String? location;
   int? currentBreakfastCredit;
   int? currentDinnerCredit;
 
-  DiningRepository({required this.userId}) {
-    //print(userId);
-    // redeemMeal(
-    //     Meal(
-    //       const Cuisine(1, 'western'),
-    //       [],
-    //     ),
-    //     2);
-  }
+  DiningRepository({required this.user});
 
   CollectionReference diningReference =
       FirebaseFirestore.instance.collection('dining');
@@ -73,7 +66,7 @@ class DiningRepository {
   Future<int> getBreakfastCreditCount() async {
     final studentData = await diningReference
         .doc('students')
-        .collection(userId)
+        .collection(user.id)
         .doc('info')
         .get();
     final data = studentData.data() as Map<String, dynamic>;
@@ -84,7 +77,7 @@ class DiningRepository {
   Future<int> getDinnerCreditCount() async {
     final studentData = await diningReference
         .doc('students')
-        .collection(userId)
+        .collection(user.id)
         .doc('info')
         .get();
     final data = studentData.data() as Map<String, dynamic>;
@@ -124,7 +117,7 @@ class DiningRepository {
     if (location == null) {
       final studentData = await diningReference
           .doc('students')
-          .collection(userId)
+          .collection(user.id)
           .doc('info')
           .get();
       final data = studentData.data() as Map<String, dynamic>;
@@ -144,7 +137,7 @@ class DiningRepository {
       if (currentBreakfastCredit! >= mealCount) {
         await diningReference
             .doc('students')
-            .collection(userId)
+            .collection(user.id)
             .doc('info')
             .update({'breakfast': currentBreakfastCredit! - mealCount});
       }
@@ -154,7 +147,7 @@ class DiningRepository {
       if (currentDinnerCredit! >= mealCount) {
         await diningReference
             .doc('students')
-            .collection(userId)
+            .collection(user.id)
             .doc('info')
             .update({'dinner': currentDinnerCredit! - mealCount});
       }

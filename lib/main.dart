@@ -30,17 +30,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // Providers inject dependencies into the app. Placed outside MaterialApp
     // to allow any screen to use this information.
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) => AuthRepository()),
-      ],
-      child: MultiProvider(
-        providers: [
-          BlocProvider(
-            create: (context) =>
-                SessionCubit(authRepository: context.read<AuthRepository>()),
-          )
-        ],
+    return RepositoryProvider(
+      create: (context) => AuthRepository(),
+      child: BlocProvider(
+        create: (context) =>
+            SessionCubit(authRepository: context.read<AuthRepository>()),
         child: MaterialApp(
           navigatorKey:
               _navigatorKey, // Used to assign AppNavigator as the root navigator

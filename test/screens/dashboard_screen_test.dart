@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:multiverse/model/auth/session_cubit.dart';
+import 'package:multiverse/model/auth/user.dart';
 import 'package:multiverse/model/dining/menu.dart';
 import 'package:multiverse/model/temperature/temperature_model.dart';
 import 'package:multiverse/model/temperature/temperature_state.dart';
 import 'package:multiverse/screens/dashboard_screen.dart';
 import 'package:multiverse/screens/dining_screen.dart';
 import 'package:multiverse/screens/green_pass_screen.dart';
-import 'package:multiverse/screens/login_screen.dart';
 import 'package:multiverse/screens/nus_card_screen.dart';
 import 'package:multiverse/model/dining/dining_model.dart';
 import 'package:multiverse/model/green_pass_model.dart';
 import 'package:multiverse/model/user_model.dart';
-import 'package:multiverse/screens/temperature_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 
@@ -21,7 +20,7 @@ import '../mocks/model_mocks.dart';
 import '../mocks/model_mocks.mocks.dart';
 import 'dashboard_screen_test.mocks.dart';
 
-const _mockUserId = 'mockUserId';
+const _mockUser = AuthUser('mockUserId');
 
 @GenerateMocks([
   UserModel,
@@ -305,7 +304,7 @@ void main() {
     expect(find.text('Sign out'), findsOneWidget);
 
     await tester.tap(find.text('Sign out'));
-    verify(mockSessionCubit.signOut());
+    verify(mockSessionCubit.logout());
   });
 
   testWidgets('User name shows correctly', (tester) async {
@@ -328,7 +327,7 @@ extension on WidgetTester {
     when(mockGreenPassModel.isPassGreen).thenReturn(false);
 
     final mockSessionCubit = MockSessionCubit();
-    when(mockSessionCubit.userId).thenReturn(_mockUserId);
+    when(mockSessionCubit.user).thenReturn(_mockUser);
 
     sessionCubit ??= mockSessionCubit;
 

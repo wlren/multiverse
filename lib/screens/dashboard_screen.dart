@@ -418,6 +418,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   //temp
   void signOut(BuildContext context) {
-    context.read<SessionCubit>().signOut();
+    context.read<SessionCubit>().logout();
   }
 }

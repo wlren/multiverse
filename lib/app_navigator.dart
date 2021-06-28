@@ -5,14 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 //Local Files
-import 'model/auth/auth_cubit.dart';
 import 'model/auth/session_cubit.dart';
 import 'model/auth/session_state.dart';
+import 'model/auth/user.dart';
 import 'model/dining/dining_model.dart';
 import 'model/green_pass_model.dart';
 import 'model/temperature/temperature_model.dart';
 import 'model/user_model.dart';
-import 'repository/auth_repository.dart';
 import 'repository/dining_repository.dart';
 import 'repository/user_repository.dart';
 import 'screens/dashboard_screen.dart';
@@ -48,26 +47,27 @@ class AppNavigator extends StatelessWidget {
             //Loading screen
             if (state is UnknownSessionState)
               const MaterialPage(
-                  name: '/',
-                  key: ValueKey(LoadingScreen),
-                  child: LoadingScreen()),
+                name: '/',
+                key: ValueKey(LoadingScreen),
+                child: LoadingScreen(),
+              ),
 
             //Show login screen
             if (state is Unauthenticated)
-              MaterialPage(
-                  name: '/',
-                  key: const ValueKey(LoginScreen),
-                  child: BlocProvider(
-                      create: (context) =>
-                          AuthCubit(sessionCubit: context.read<SessionCubit>()),
-                      child: const LoginScreen())),
+              const MaterialPage(
+                name: '/',
+                key: ValueKey(LoginScreen),
+                child: LoginScreen(),
+              ),
 
             //Show dashboard
             if (state is Authenticated)
               MaterialPage(
-                  name: '/',
-                  key: const ValueKey(DashboardScreen),
-                  child: _buildWithContext(child: const DashboardScreen())),
+                name: '/',
+                key: const ValueKey(DashboardScreen),
+                child: _buildWithContext(
+                    user: state.user, child: const DashboardScreen()),
+              ),
           ],
           onPopPage: (route, result) => route.didPop(result),
         ),
@@ -75,16 +75,11 @@ class AppNavigator extends StatelessWidget {
     });
   }
 
-  Widget _buildWithContext({required Widget child}) {
+  Widget _buildWithContext({required AuthUser user, required Widget child}) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => AuthRepository()),
-        RepositoryProvider(
-            create: (context) =>
-                UserRepository(userId: context.read<SessionCubit>().userId)),
-        RepositoryProvider(
-            create: (context) =>
-                DiningRepository(userId: context.read<SessionCubit>().userId)),
+        RepositoryProvider(create: (context) => UserRepository(user)),
+        RepositoryProvider(create: (context) => DiningRepository(user: user)),
       ],
       child: MultiProvider(
         providers: [

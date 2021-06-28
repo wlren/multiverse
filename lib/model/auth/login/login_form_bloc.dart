@@ -3,18 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 //Local Files
 import '../../../repository/auth_repository.dart';
-import '../auth_credentials.dart';
-import '../auth_cubit.dart';
+import '../session_cubit.dart';
+import '../user.dart';
 import 'login_form_event.dart';
 import 'login_form_state.dart';
 
 //BloC Architecture for login
 class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
-  final AuthRepository authRepo;
-  final AuthCubit authCubit;
+  final SessionCubit sessionCubit;
 
-  LoginFormBloc({required this.authRepo, required this.authCubit})
-      : super(const InitialFormState());
+  LoginFormBloc({required this.sessionCubit}) : super(const InitialFormState());
 
   @override
   Stream<LoginFormState> mapEventToState(LoginFormEvent event) async* {
@@ -22,14 +20,14 @@ class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
       yield FormSubmitting();
 
       try {
-        final userId = await authRepo.login(
+        final userId = await sessionCubit.login(
           email: event.email,
           password: event.password,
         );
+        final user = AuthUser(userId);
         yield SubmissionSuccess();
 
-        authCubit
-            .launchSession(AuthCredentials(email: event.email, userId: userId));
+        sessionCubit.showSession(user);
       } on LoginException catch (e) {
         yield SubmissionFailed(e);
         yield const InitialFormState();

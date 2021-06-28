@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../model/auth/user.dart';
+
 //For testing purposes
 //Authentication related repository which communicates with backend API to fetch
 //authentication -related data
@@ -28,8 +30,8 @@ class InvalidPasswordException implements LoginException {
   String? get message => _message;
 }
 
-class FailAutoLogInException implements LoginException {
-  FailAutoLogInException(this._message);
+class FailedAutoLoginException implements LoginException {
+  FailedAutoLoginException(this._message);
 
   final String? _message;
 
@@ -45,14 +47,11 @@ class AuthRepository {
   /// Attempts automatic log in and retrieval of user id
   ///
   /// Throws a [LoginException] if auto-sign in fails
-  String attemptAutoLogin() {
-    //Make it cleaner
-    String userId;
+  AuthUser attemptAutoLogin() {
     if (auth.currentUser != null) {
-      userId = auth.currentUser!.uid;
-      return userId;
+      return AuthUser(auth.currentUser!.uid);
     } else {
-      throw FailAutoLogInException('not signed in');
+      throw FailedAutoLoginException('Automatic sign in failed');
     }
   }
 
@@ -81,7 +80,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> logout() async {
     await auth.signOut();
   }
 }
