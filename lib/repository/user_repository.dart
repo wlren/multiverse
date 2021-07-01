@@ -1,9 +1,10 @@
 //Packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/auth/user.dart';
+import 'package:multiverse/screens/temperature_screen.dart';
 
 //Local Files
+import '../model/auth/user.dart';
 import '../model/temperature/temperature_record.dart';
 import '../model/temperature/temperature_state.dart';
 
@@ -22,9 +23,11 @@ class UserRepository extends ChangeNotifier {
     TemperatureRecord(time: DateTime(2021, 5, 26, 9), temperature: 36.4),
   ];
 
+  TemperatureState temperatureState = TemperatureState.undeclared;
+
   Future<TemperatureState> getTemperatureState() async {
     // TODO: Access server to fetch temperature
-    return TemperatureState.undeclared;
+    return temperatureState;
   }
 
   Future<List<TemperatureRecord>> getTemperatureRecords() async {
@@ -47,6 +50,11 @@ class UserRepository extends ChangeNotifier {
     // Sort temperature records by temperature. This should be done by a
     // sorted SQL call.
     _temperatureRecords.sort((a, b) => -a.time.compareTo(b.time));
+    if (temperature < TemperatureScreen.unacceptableTemperature) {
+      temperatureState = TemperatureState.acceptable;
+    } else {
+      temperatureState = TemperatureState.unacceptable;
+    }
     notifyListeners();
   }
 }

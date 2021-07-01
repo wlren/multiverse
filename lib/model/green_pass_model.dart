@@ -21,6 +21,7 @@ class GreenPassModel extends ChangeNotifier {
 
   // TODO: Add other factors
   bool get isPassGreen {
+    update();
     return _isTemperatureAcceptable;
   }
 }
