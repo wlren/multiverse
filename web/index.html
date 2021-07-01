@@ -27,6 +27,31 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+
+  <!-- SDKs for Firebase products -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyD00Y-GvlUcYVxRZ8Amwtj_dHrwJChbEJM",
+      authDomain: "multiverse-b08de.firebaseapp.com",
+      databaseURL: "https://multiverse-b08de-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "multiverse-b08de",
+      storageBucket: "multiverse-b08de.appspot.com",
+      messagingSenderId: "892337996736",
+      appId: "1:892337996736:web:a4dd7008f20b3b1b0bbe25",
+      measurementId: "G-Z783RD336X"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
