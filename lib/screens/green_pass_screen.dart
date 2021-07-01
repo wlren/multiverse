@@ -32,17 +32,19 @@ class _GreenPassScreenState extends State<GreenPassScreen> {
             backgroundColor: context.getBackgroundColor(secondsLeft),
             elevation: 0,
           ),
-          body: Container(
-            color: context.getBackgroundColor(secondsLeft),
-            child: Center(
-              child: Column(
-                children: [
-                  _buildIcon(context, secondsLeft),
-                  Text(
-                    '$secondsLeft',
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                ],
+          body: SingleChildScrollView(
+            child: Container(
+              color: context.getBackgroundColor(secondsLeft),
+              child: Center(
+                child: Column(
+                  children: [
+                    _buildIcon(context, secondsLeft),
+                    Text(
+                      '$secondsLeft',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
