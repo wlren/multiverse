@@ -1,6 +1,7 @@
 //Packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class NUSCardScreen extends StatelessWidget {
@@ -144,7 +145,8 @@ class NUSCardScreen extends StatelessWidget {
           ),
         ));
 
-    final qrData = '$studentId;${DateTime.now().millisecondsSinceEpoch};NUSSTU';
+    final qrData =
+        '$studentId;${DateFormat('yyyyMMdd').format(DateTime.now())};NUSSTU';
 
     return Scaffold(
       appBar: AppBar(
@@ -165,6 +167,7 @@ class NUSCardScreen extends StatelessWidget {
                 backgroundColor: Colors.white,
                 data: qrData,
                 size: 200.0,
+                gapless: false,
               ),
             ],
           ),

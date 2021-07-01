@@ -263,38 +263,29 @@ class TemperatureScreenState extends State<TemperatureScreen>
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  const Text('I do not have COVID-19 symptoms.'),
-                  const Spacer(),
-                  Checkbox(
-                      value: _isSymptomless,
-                      onChanged: (value) {
-                        setState(() {
-                          _isSymptomless = value!;
-                        });
-                      }),
-                ],
+              CheckboxListTile(
+                title: const Text('I do not have COVID-19 symptoms.'),
+                value: _isSymptomless,
+                contentPadding: const EdgeInsets.all(0),
+                onChanged: (value) {
+                  setState(() {
+                    _isSymptomless = value!;
+                  });
+                },
               ),
-              Row(
-                children: [
-                  const Flexible(
-                    flex: 3,
-                    child: Text(
-                      'Nobody in the same household has fever, '
-                      'and/or is showing the above stated symptoms.',
-                      softWrap: true,
-                    ),
-                  ),
-                  const Spacer(),
-                  Checkbox(
-                      value: _isHouseholdSymptomless,
-                      onChanged: (value) {
-                        setState(() {
-                          _isHouseholdSymptomless = value!;
-                        });
-                      }),
-                ],
+              CheckboxListTile(
+                title: const Text(
+                  'Nobody in the same household has fever, '
+                  'and/or is showing the above stated symptoms.',
+                  softWrap: true,
+                ),
+                value: _isHouseholdSymptomless,
+                contentPadding: const EdgeInsets.all(0),
+                onChanged: (value) {
+                  setState(() {
+                    _isHouseholdSymptomless = value!;
+                  });
+                },
               ),
             ],
           ),
@@ -435,8 +426,8 @@ class TemperatureScreenState extends State<TemperatureScreen>
             : Colors.deepOrange.shade900);
   }
 
-  void _declareTemperature(BuildContext context, double temperature) {
-    context.read<TemperatureModel>().declareTemperature(temperature);
+  void _declareTemperature(BuildContext context, double temperature) async {
+    await context.read<TemperatureModel>().declareTemperature(temperature);
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Temperature declared')));
     setState(() {
@@ -450,7 +441,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
     } else {
       showDialog(
           context: context,
-          builder: (_) {
+          builder: (context) {
             return AlertDialog(
               title: const Text('Are you sure?'),
               content: Column(

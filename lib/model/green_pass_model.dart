@@ -8,7 +8,9 @@ import 'temperature/temperature_state.dart';
 // Contains methods/variables representing user interactions in the
 // green pass screen.
 class GreenPassModel extends ChangeNotifier {
-  GreenPassModel(this.userRepository);
+  GreenPassModel(this.userRepository) {
+    update();
+  }
 
   final UserRepository userRepository;
   bool _isTemperatureAcceptable = false;
@@ -19,7 +21,6 @@ class GreenPassModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: Add other factors
   bool get isPassGreen {
     update();
     return _isTemperatureAcceptable;

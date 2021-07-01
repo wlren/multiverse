@@ -64,7 +64,7 @@ class _DiningScreenState extends State<DiningScreen>
             length: 2,
             initialIndex: _getInitialTabIndex(context),
             child: NestedScrollView(
-              physics: _DiningScreenScrollPhysics(),
+              physics: const _DiningScreenScrollPhysics(),
               controller: _scrollController,
               headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return [
