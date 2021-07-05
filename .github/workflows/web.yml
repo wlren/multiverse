@@ -1,0 +1,53 @@
+name: Flutter Web
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install flutter
+      uses: subosito/flutter-action@v1.5.3
+      with:
+        # The Flutter version to make available on the path
+        flutter-version: '2.2.0'
+        
+    - run: flutter config --enable-web
+    
+    - run: flutter pub get
+    
+    - run: flutter build web
+    
+    - name: Archive Production Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: web-build
+        path: build/web
+        
+    - name: Download Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: web-build 
+        
+    - name: Display structure of build files
+      run: ls -R
+      working-directory: ./web
+      
+    - name: Deploy to GH Pages
+      run: |
+        cd build/web
+        git init
+        git config --local user.email "$(git log --format='%ae' HEAD^!)"
+        git config --local user.name "$(git log --format='%an' HEAD^!)"
+        git status
+        git remote set-url --push origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY
+        git checkout -b gh-pages
+        git add --all
+        git commit -m "Update Github Pages"
+        git push origin gh-pages -f
