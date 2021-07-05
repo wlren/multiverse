@@ -42,8 +42,8 @@ jobs:
       run: |
         cd build/web
         git init
-        git config --global user.name "Jeff Sieu"
-        git config --global user.email 'jeffsy00@gmail.com'
+        git config --global user.name "GitHub Action"
+        git config --global user.email "github-action@users.noreply.github.com"
         git remote add origin "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git checkout -b gh-pages
         git add --all
