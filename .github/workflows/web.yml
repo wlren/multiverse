@@ -38,9 +38,15 @@ jobs:
       run: ls -R
       working-directory: ./web
       
+    - name: Commit changes
+      run: |
+        cd build/web
+        git init
+        git config --local user.email 'action@github.com'
+        git config --local user.name 'GitHub Action'
+        git add --all
     - name: Deploy to Github Pages
       uses: ad-m/github-push-action@master
       with:
         branch: gh-pages
         force: true
-        directory: ./build/web
