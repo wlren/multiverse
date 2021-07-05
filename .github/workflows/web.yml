@@ -1,5 +1,4 @@
-name: Flutter Web
-
+name: web
 on:
   push:
     branches: [ main ]
