@@ -38,14 +38,9 @@ jobs:
       run: ls -R
       working-directory: ./web
       
-    - name: Deploy to GH Pages
-      run: |
-        cd build/web
-        git init
-        git config --global user.name "GitHub Action"
-        git config --global user.email "github-action@users.noreply.github.com"
-        git remote add origin "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-        git checkout -b gh-pages
-        git add --all
-        git commit -m "Update Github Pages"
-        git push origin gh-pages -f
+    - name: Deploy to Github Pages
+      uses: ad-m/github-push-action@master
+      with:
+        branch: 'gh-pages'
+        force: true
+        directory: 'build/web'
