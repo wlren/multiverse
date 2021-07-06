@@ -44,7 +44,7 @@ needs to go about their daily lives?
 
 ## Android
 
-```
+```sh
 flutter build apk
 ```
 
@@ -54,7 +54,7 @@ The current web/index.html has the `<base>` tag's href set to `/multiverse`. Cha
 
 > The path provided below has to start and end with a slash `/` in order for it to work correctly.
 
-```
+```sh
 flutter build web
 cd build/web
 python -m http.server # python 3
