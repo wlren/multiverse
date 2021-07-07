@@ -427,7 +427,9 @@ class TemperatureScreenState extends State<TemperatureScreen>
   }
 
   void _declareTemperature(BuildContext context, double temperature) async {
-    await context.read<TemperatureModel>().declareTemperature(temperature);
+    await context
+        .read<TemperatureModel>()
+        .declareTemperature(temperature, _isGoodToDeclare);
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Temperature declared')));
     setState(() {

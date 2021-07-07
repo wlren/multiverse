@@ -17,16 +17,21 @@ class UserRepository extends ChangeNotifier {
   CollectionReference students =
       FirebaseFirestore.instance.collection('students');
 
+  CollectionReference temp = FirebaseFirestore.instance.collection('temp');
+
   // Temporary variables to imitate server state
   static final List<TemperatureRecord> _temperatureRecords = [
-    TemperatureRecord(time: DateTime(2021, 5, 26, 14), temperature: 36.4),
-    TemperatureRecord(time: DateTime(2021, 5, 26, 9), temperature: 36.4),
+    TemperatureRecord(
+        time: DateTime(2021, 5, 26, 14), temperature: 36.4, hasSymptoms: false),
+    TemperatureRecord(
+        time: DateTime(2021, 5, 26, 9), temperature: 36.4, hasSymptoms: false),
   ];
 
   // Temporary variable
   TemperatureState _temperatureState = TemperatureState.undeclared;
 
   Future<TemperatureState> getTemperatureState() async {
+    await getTemperatureRecords();
     // TODO: Access server to fetch temperature
     return _temperatureState;
   }
@@ -43,15 +48,16 @@ class UserRepository extends ChangeNotifier {
     return studentData['name'] as String;
   }
 
-  Future<void> declareTemperature(double temperature) async {
+  Future<void> declareTemperature(double temperature, bool hasSymptoms) async {
     // TODO: Access server to declare temperature
-    _temperatureRecords
-        .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
+    // _temperatureRecords
+    //     .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
 
     // Sort temperature records by temperature. This should be done by a
     // sorted SQL call.
     _temperatureRecords.sort((a, b) => -a.time.compareTo(b.time));
-    if (temperature < TemperatureScreen.unacceptableTemperature) {
+    if (temperature < TemperatureScreen.unacceptableTemperature &&
+        !hasSymptoms) {
       _temperatureState = TemperatureState.acceptable;
     } else {
       _temperatureState = TemperatureState.unacceptable;
