@@ -20,7 +20,7 @@ class UserRepository extends ChangeNotifier {
 
   CollectionReference temp = FirebaseFirestore.instance.collection('temp');
 
-  List<TemperatureRecord> _temperatureRecords = [];
+  final List<TemperatureRecord> _temperatureRecords = [];
   bool changed = false;
 
   // Temporary variable
