@@ -1,6 +1,7 @@
 //Packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 //Local Files
 import '../model/auth/user.dart';
@@ -19,13 +20,8 @@ class UserRepository extends ChangeNotifier {
 
   CollectionReference temp = FirebaseFirestore.instance.collection('temp');
 
-  // Temporary variables to imitate server state
-  static final List<TemperatureRecord> _temperatureRecords = [
-    TemperatureRecord(
-        time: DateTime(2021, 5, 26, 14), temperature: 36.4, hasSymptoms: false),
-    TemperatureRecord(
-        time: DateTime(2021, 5, 26, 9), temperature: 36.4, hasSymptoms: false),
-  ];
+  List<TemperatureRecord> _temperatureRecords = [];
+  bool changed = false;
 
   // Temporary variable
   TemperatureState _temperatureState = TemperatureState.undeclared;
@@ -37,8 +33,51 @@ class UserRepository extends ChangeNotifier {
   }
 
   Future<List<TemperatureRecord>> getTemperatureRecords() async {
-    // TODO: Access server
+    //memoization
+    if (changed == false && _temperatureRecords.isNotEmpty) {
+      return _temperatureRecords;
+    }
+    changed = false;
+    _temperatureRecords.clear();
+    //fetch data
+    final tempInfo = await temp
+        .doc('records')
+        .collection(user.id)
+        .orderBy('time', descending: true)
+        .limit(10)
+        .get();
+
+    for (var i = 0; i < tempInfo.docs.length; i++) {
+      final healthData = tempInfo.docs[i].data();
+      final tempDate = healthData['time'] as String;
+      final dateWithT = tempDate.substring(0, 8) + 'T' + tempDate.substring(8);
+      final dateTime = DateTime.parse(dateWithT);
+      _temperatureRecords.add(TemperatureRecord(
+          time: dateTime,
+          temperature: healthData['temp'] as double,
+          hasSymptoms: healthData['hasSymptops'] as bool));
+    }
+
+    //print(tempInfo.docs.toString());
     return _temperatureRecords;
+  }
+
+  Future<void> declareTemperature(double temperature, bool hasSymptoms) async {
+    final timeStamp = DateFormat('yyyyMMddhhmmss').format(DateTime.now());
+    // print(timeStamp);
+    // print(user.id);
+    await temp.doc('records').collection(user.id).doc(timeStamp).set(
+        {'temp': temperature, 'hasSymptoms': hasSymptoms, 'time': timeStamp});
+
+    if (temperature < TemperatureScreen.unacceptableTemperature &&
+        !hasSymptoms) {
+      _temperatureState = TemperatureState.acceptable;
+    } else {
+      _temperatureState = TemperatureState.unacceptable;
+    }
+    changed = true;
+    await getTemperatureRecords();
+    notifyListeners();
   }
 
   Future<String> getName() async {
@@ -46,22 +85,5 @@ class UserRepository extends ChangeNotifier {
 
     final studentData = studentInfo.data() as Map<String, dynamic>;
     return studentData['name'] as String;
-  }
-
-  Future<void> declareTemperature(double temperature, bool hasSymptoms) async {
-    // TODO: Access server to declare temperature
-    // _temperatureRecords
-    //     .add(TemperatureRecord(time: DateTime.now(), temperature: temperature));
-
-    // Sort temperature records by temperature. This should be done by a
-    // sorted SQL call.
-    _temperatureRecords.sort((a, b) => -a.time.compareTo(b.time));
-    if (temperature < TemperatureScreen.unacceptableTemperature &&
-        !hasSymptoms) {
-      _temperatureState = TemperatureState.acceptable;
-    } else {
-      _temperatureState = TemperatureState.unacceptable;
-    }
-    notifyListeners();
   }
 }
