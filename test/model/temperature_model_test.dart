@@ -48,7 +48,8 @@ void main() {
       // Change repository values
       temperatureState = TemperatureState.acceptable;
       mockTemperatureRecords = [
-        TemperatureRecord(time: DateTime.now(), temperature: 34.2),
+        TemperatureRecord(
+            time: DateTime.now(), temperature: 34.2, hasSymptoms: false),
       ];
 
       // Wait for update, then verify values
@@ -70,7 +71,9 @@ void main() {
         final declaredTemperature =
             realInvocation.positionalArguments.first as double;
         mockTemperatureRecords.add(TemperatureRecord(
-            time: DateTime.now(), temperature: declaredTemperature));
+            time: DateTime.now(),
+            temperature: declaredTemperature,
+            hasSymptoms: false));
         temperatureState = TemperatureState.acceptable;
       });
       when(repository.getTemperatureRecords())
@@ -86,7 +89,7 @@ void main() {
 
       // Declare temperature now
       const temperatureToDeclare = 34.5;
-      temperatureModel.declareTemperature(temperatureToDeclare);
+      temperatureModel.declareTemperature(temperatureToDeclare, false);
 
       // Wait for model to update
       await temperatureModel.update();
