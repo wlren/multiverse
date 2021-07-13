@@ -28,7 +28,23 @@ class UserRepository extends ChangeNotifier {
 
   Future<TemperatureState> getTemperatureState() async {
     await getTemperatureRecords();
-    // TODO: Access server to fetch temperature
+    final currentDay = DateFormat('yyyyMMdd').format(DateTime.now());
+    final lastDeclared =
+        DateFormat('yyyyMMdd').format(_temperatureRecords[0].time);
+    print(currentDay);
+    print(lastDeclared);
+
+    if (currentDay != lastDeclared) {
+      _temperatureState = TemperatureState.undeclared;
+    } else {
+      if (_temperatureRecords[0].temperature < 37.5 &&
+          !_temperatureRecords[0].hasSymptoms) {
+        _temperatureState = TemperatureState.acceptable;
+      } else {
+        _temperatureState = TemperatureState.unacceptable;
+      }
+    }
+
     return _temperatureState;
   }
 
@@ -55,17 +71,15 @@ class UserRepository extends ChangeNotifier {
       _temperatureRecords.add(TemperatureRecord(
           time: dateTime,
           temperature: healthData['temp'] as double,
-          hasSymptoms: healthData['hasSymptops'] as bool));
+          hasSymptoms: healthData['hasSymptoms'] as bool));
     }
 
-    //print(tempInfo.docs.toString());
     return _temperatureRecords;
   }
 
   Future<void> declareTemperature(double temperature, bool hasSymptoms) async {
     final timeStamp = DateFormat('yyyyMMddhhmmss').format(DateTime.now());
-    // print(timeStamp);
-    // print(user.id);
+
     await temp.doc('records').collection(user.id).doc(timeStamp).set(
         {'temp': temperature, 'hasSymptoms': hasSymptoms, 'time': timeStamp});
 
@@ -75,6 +89,7 @@ class UserRepository extends ChangeNotifier {
     } else {
       _temperatureState = TemperatureState.unacceptable;
     }
+
     changed = true;
     await getTemperatureRecords();
     notifyListeners();
