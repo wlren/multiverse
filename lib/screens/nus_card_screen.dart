@@ -3,23 +3,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:provider/provider.dart';
 
-class NUSCardScreen extends StatelessWidget {
+//Local Files
+import '../model/user_model.dart';
+
+class NUSCardScreen extends StatefulWidget {
   const NUSCardScreen({Key? key}) : super(key: key);
 
   static const double horizontalPadding = 32.0;
   static const Color nusOrange = Color(0xFFF07D08);
 
   @override
+  _NUSCardScreenState createState() => _NUSCardScreenState();
+}
+
+class _NUSCardScreenState extends State<NUSCardScreen> {
+  @override
   Widget build(BuildContext context) {
-    const userName = 'John Smith';
-    const admitTerm = '2020/2021 Semester 1';
-    const careerType = 'Undergraduate';
-    const studentId = 'A0201234Z';
+    final userName = context.watch<UserModel>().userName;
+    final admitTerm = context.watch<UserModel>().admitTerm;
+    final careerType = context.watch<UserModel>().career;
+    final studentId = context.watch<UserModel>().matric;
 
     /// Manually calculate cardRadius to ensure card displays correctly on
     /// different devices.
-    final cardWidth = MediaQuery.of(context).size.width - 2 * horizontalPadding;
+    final cardWidth =
+        MediaQuery.of(context).size.width - 2 * NUSCardScreen.horizontalPadding;
     final cardHeight = cardWidth / (90 / 54);
     final cardRadius = 3 / 90 * cardWidth; // 3mm corners
     final whiteSectionHeight = cardHeight / 3.75 * 2.75;
@@ -53,7 +63,7 @@ class NUSCardScreen extends StatelessWidget {
                   Flexible(
                     flex: 100,
                     child: Container(
-                        color: nusOrange,
+                        color: NUSCardScreen.nusOrange,
                         child: SizedBox.expand(
                           child: Stack(
                             children: [
@@ -88,12 +98,12 @@ class NUSCardScreen extends StatelessWidget {
                                 bottom: 0,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children: [
                                     Text(userName,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold)),
-                                    Text(''), // 1 line of spacing
-                                    Text('Admit Term:'),
+                                    const Text(''), // 1 line of spacing
+                                    const Text('Admit Term:'),
                                     Text(admitTerm),
                                     Text('Career: $careerType'),
                                   ],
@@ -109,12 +119,12 @@ class NUSCardScreen extends StatelessWidget {
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
-                                      children: const [
-                                        Text('Student ID:',
+                                      children: [
+                                        const Text('Student ID:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         Text(studentId,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                       ],
                                     ),
@@ -156,7 +166,7 @@ class NUSCardScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(horizontalPadding),
+          padding: const EdgeInsets.all(NUSCardScreen.horizontalPadding),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

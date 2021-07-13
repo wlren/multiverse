@@ -20,11 +20,17 @@ class UserModel extends ChangeNotifier {
   void update() async {
     temperatureState = await userRepository.getTemperatureState();
     userName = await userRepository.getName();
+    admitTerm = await userRepository.getAdmitTerm();
+    matric = await userRepository.getMatric();
+    career = await userRepository.getCareer();
     notifyListeners();
   }
 
   final UserRepository userRepository;
 
   TemperatureState temperatureState = TemperatureState.undeclared;
-  String? userName;
+  String userName = 'Default';
+  String admitTerm = 'Default';
+  String matric = 'Default';
+  String career = 'Default';
 }

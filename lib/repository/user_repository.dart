@@ -31,8 +31,6 @@ class UserRepository extends ChangeNotifier {
     final currentDay = DateFormat('yyyyMMdd').format(DateTime.now());
     final lastDeclared =
         DateFormat('yyyyMMdd').format(_temperatureRecords[0].time);
-    print(currentDay);
-    print(lastDeclared);
 
     if (currentDay != lastDeclared) {
       _temperatureState = TemperatureState.undeclared;
@@ -100,5 +98,26 @@ class UserRepository extends ChangeNotifier {
 
     final studentData = studentInfo.data() as Map<String, dynamic>;
     return studentData['name'] as String;
+  }
+
+  Future<String> getAdmitTerm() async {
+    final studentInfo = await students.doc(user.id).get();
+
+    final studentData = studentInfo.data() as Map<String, dynamic>;
+    return studentData['enroll'] as String;
+  }
+
+  Future<String> getMatric() async {
+    final studentInfo = await students.doc(user.id).get();
+
+    final studentData = studentInfo.data() as Map<String, dynamic>;
+    return studentData['matric'] as String;
+  }
+
+  Future<String> getCareer() async {
+    final studentInfo = await students.doc(user.id).get();
+
+    final studentData = studentInfo.data() as Map<String, dynamic>;
+    return studentData['career'] as String;
   }
 }
