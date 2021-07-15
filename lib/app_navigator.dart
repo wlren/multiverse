@@ -8,10 +8,12 @@ import 'package:provider/provider.dart';
 import 'model/auth/session_cubit.dart';
 import 'model/auth/session_state.dart';
 import 'model/auth/user.dart';
+import 'model/bus_model.dart';
 import 'model/dining/dining_model.dart';
 import 'model/green_pass_model.dart';
 import 'model/temperature/temperature_model.dart';
 import 'model/user_model.dart';
+import 'repository/bus_repository.dart';
 import 'repository/dining_repository.dart';
 import 'repository/user_repository.dart';
 import 'screens/dashboard_screen.dart';
@@ -80,6 +82,7 @@ class AppNavigator extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => UserRepository(user)),
         RepositoryProvider(create: (context) => DiningRepository(user: user)),
+        RepositoryProvider(create: (context) => BusRepository())
       ],
       child: MultiProvider(
         providers: [
@@ -93,7 +96,9 @@ class AppNavigator extends StatelessWidget {
                   GreenPassModel(context.read<UserRepository>())),
           ChangeNotifierProvider(
               create: (context) =>
-                  TemperatureModel(context.read<UserRepository>()))
+                  TemperatureModel(context.read<UserRepository>())),
+          ChangeNotifierProvider(
+              create: (context) => BusModel(context.read<BusRepository>()))
         ],
         child: WillPopScope(
           // Handles system back navigation when in back navigation

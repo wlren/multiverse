@@ -38,6 +38,7 @@ dependencies:
   cloud_firestore: ^2.2.2
   firebase_database: ^7.1.1
   qr_code_scanner: ^0.5.1
+  http: ^0.13.3
 
 dev_dependencies:
   bloc_test: ^8.0.2
