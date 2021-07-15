@@ -13,8 +13,7 @@ import 'temperature_screen_test.mocks.dart';
 void main() {
   testWidgets('Declare button declares a temperature record', (tester) async {
     final mockTemperatureModel = MockTemperatureModel();
-    when(mockTemperatureModel.declareTemperature(any, any))
-        .thenAnswer((_) async {});
+    when(mockTemperatureModel.declareTemperature(any)).thenAnswer((_) async {});
     when(mockTemperatureModel.temperatureState)
         .thenReturn(TemperatureState.undeclared);
     when(mockTemperatureModel.temperatureRecords).thenAnswer((_) => []);

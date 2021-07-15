@@ -27,8 +27,8 @@ class TemperatureModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> declareTemperature(double temperature, bool hasSymptops) async {
-    await userRepository.declareTemperature(temperature, hasSymptops);
+  Future<void> declareTemperature(double temperature, bool hasSymptoms) async {
+    await userRepository.declareTemperature(temperature, hasSymptoms);
     update();
   }
 }

@@ -32,7 +32,7 @@ void main() {
 
       when(repository.getTemperatureState())
           .thenAnswer((_) async => temperatureState);
-      when(repository.declareTemperature(any, any)).thenAnswer((_) async {});
+      when(repository.declareTemperature(any)).thenAnswer((_) async {});
       when(repository.getTemperatureRecords())
           .thenAnswer((_) async => mockTemperatureRecords);
 
@@ -66,7 +66,7 @@ void main() {
       // Set up mock interactions
       when(repository.getTemperatureState())
           .thenAnswer((_) async => temperatureState);
-      when(repository.declareTemperature(any, any))
+      when(repository.declareTemperature(any))
           .thenAnswer((realInvocation) async {
         final declaredTemperature =
             realInvocation.positionalArguments.first as double;
@@ -95,7 +95,7 @@ void main() {
       await temperatureModel.update();
 
       // Verify that repository method is called
-      verify(repository.declareTemperature(temperatureToDeclare, false));
+      verify(repository.declareTemperature(temperatureToDeclare));
 
       expect(temperatureModel.temperatureState, TemperatureState.acceptable);
       expect(temperatureModel.temperatureRecords, mockTemperatureRecords);
