@@ -4,12 +4,12 @@ const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
   "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"main.dart.js": "3c300d74bf725b03c6eb4ddec5681207",
-"index.html": "fca8c77bfa25fd796e4c7dd3d1233ad2",
-"/": "fca8c77bfa25fd796e4c7dd3d1233ad2",
+"main.dart.js": "de80441c7605dac4a46d0e6b86840226",
+"index.html": "97f0313340a35c0212eb8fb5d147ce70",
+"/": "97f0313340a35c0212eb8fb5d147ce70",
 "manifest.json": "fee3dc949c372e397cb581d854bbee5a",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"assets/NOTICES": "efa3ffe7aca7264898b483c8020ffa92",
+"assets/NOTICES": "06f3702eeda26cec84deb59a909bf8bc",
 "assets/FontManifest.json": "ac6a01254335b920f062ce55dd8fc838",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
 "assets/assets/images/nus-logo.jpg": "b538b0343054cd814bbca16ecf02877c",
