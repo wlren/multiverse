@@ -20,11 +20,14 @@ import 'screens/dashboard_screen.dart';
 import 'screens/loading_screen.dart';
 import 'screens/login_screen.dart';
 
+final GlobalKey<NavigatorState> dashboardNavigatorKey = GlobalKey();
+final HeroController controller = HeroController();
+
+// TODO: Fix navigator so that hero animation can be used for the bus stops card.
 class AppNavigator extends StatelessWidget {
-  AppNavigator({Key? key, required this.navigatorKey}) : super(key: key);
+  const AppNavigator({Key? key, required this.navigatorKey}) : super(key: key);
 
   final GlobalKey<NavigatorState> navigatorKey;
-  final GlobalKey<NavigatorState> dashboardNavigatorKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -37,41 +40,39 @@ class AppNavigator extends StatelessWidget {
           TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
               transitionType: SharedAxisTransitionType.scaled),
         })),
-        child: Navigator(
-          key: navigatorKey,
-          // initialRoute: '/',
-          // onGenerateRoute: (settings) {
-          //   if (settings.name == '/') {
+        child: HeroControllerScope(
+          controller: MaterialApp.createMaterialHeroController(),
+          child: Navigator(
+            key: navigatorKey,
+            observers: [controller],
+            pages: [
+              //Loading screen
+              if (state is UnknownSessionState)
+                const MaterialPage(
+                  name: '/',
+                  key: ValueKey(LoadingScreen),
+                  child: LoadingScreen(),
+                ),
 
-          //   }
-          // },
-          pages: [
-            //Loading screen
-            if (state is UnknownSessionState)
-              const MaterialPage(
-                name: '/',
-                key: ValueKey(LoadingScreen),
-                child: LoadingScreen(),
-              ),
+              //Show login screen
+              if (state is Unauthenticated)
+                const MaterialPage(
+                  name: '/',
+                  key: ValueKey(LoginScreen),
+                  child: LoginScreen(),
+                ),
 
-            //Show login screen
-            if (state is Unauthenticated)
-              const MaterialPage(
-                name: '/',
-                key: ValueKey(LoginScreen),
-                child: LoginScreen(),
-              ),
-
-            //Show dashboard
-            if (state is Authenticated)
-              MaterialPage(
-                name: '/',
-                key: const ValueKey(DashboardScreen),
-                child: _buildWithContext(
-                    user: state.user, child: const DashboardScreen()),
-              ),
-          ],
-          onPopPage: (route, result) => route.didPop(result),
+              //Show dashboard
+              if (state is Authenticated)
+                MaterialPage(
+                  name: '/',
+                  key: const ValueKey(DashboardScreen),
+                  child: _buildWithContext(
+                      user: state.user, child: const DashboardScreen()),
+                ),
+            ],
+            onPopPage: (route, result) => route.didPop(result),
+          ),
         ),
       );
     });
@@ -80,9 +81,12 @@ class AppNavigator extends StatelessWidget {
   Widget _buildWithContext({required AuthUser user, required Widget child}) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UserRepository(user)),
-        RepositoryProvider(create: (context) => DiningRepository(user: user)),
-        RepositoryProvider(create: (context) => BusRepository())
+        ChangeNotifierProvider<UserRepository>(
+            create: (context) => UserRepository(user)),
+        RepositoryProvider<DiningRepository>(
+            create: (context) => DiningRepository(user: user)),
+        RepositoryProvider<BusRepository>(
+            create: (context) => DebugBusRepository())
       ],
       child: MultiProvider(
         providers: [

@@ -14,7 +14,7 @@ class ThemeDataMultiverse {
     ),
     cardTheme: CardTheme(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(32.0),
+        borderRadius: BorderRadius.circular(16.0),
       ),
     ),
     popupMenuTheme: PopupMenuThemeData(
@@ -38,7 +38,7 @@ class ThemeDataMultiverse {
     ),
     cardTheme: CardTheme(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(32.0),
+        borderRadius: BorderRadius.circular(16.0),
       ),
     ),
     popupMenuTheme: PopupMenuThemeData(
@@ -48,9 +48,9 @@ class ThemeDataMultiverse {
     textTheme: GoogleFonts.senTextTheme(
       ThemeData.dark().textTheme,
     ).copyWith(
-      subtitle1: GoogleFonts.senTextTheme(
-        ThemeData.dark().textTheme,
-      ).subtitle1?.copyWith(
+      subtitle1: GoogleFonts.senTextTheme(ThemeData.dark().textTheme)
+          .subtitle1
+          ?.copyWith(
             fontWeight: FontWeight.w400,
           ),
     ),

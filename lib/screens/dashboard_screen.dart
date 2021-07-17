@@ -10,10 +10,12 @@ import 'package:provider/provider.dart';
 
 //Local Files
 import '../model/auth/session_cubit.dart';
+import '../model/bus_model.dart';
 import '../model/dining/dining_model.dart';
 import '../model/dining/menu.dart';
 import '../model/temperature/temperature_state.dart';
 import '../model/user_model.dart';
+import '../widgets/bus_stop_view.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
@@ -303,6 +305,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBusStopsCard() {
+    // return InkWell(
+    //   onTap: () {
+    //     print(Navigator.of(context));
+    //     Navigator.of(context)
+    //         .push(MaterialPageRoute<void>(builder: (context) => BusesScreen()));
+    //   },
+    //   child: Container(
+    //     padding: const EdgeInsets.all(16.0),
+    //     child: Column(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         Row(
+    //           crossAxisAlignment: CrossAxisAlignment.center,
+    //           children: [
+    //             const Icon(Icons.directions_bus),
+    //             const SizedBox(width: 16.0),
+    //             Column(
+    //               crossAxisAlignment: CrossAxisAlignment.start,
+    //               children: [
+    //                 Text('Bus stops',
+    //                     style: Theme.of(context).textTheme.headline6),
+    //               ],
+    //             ),
+    //           ],
+    //         ),
+    //         const SizedBox(height: 16.0),
+    //         Hero(
+    //           transitionOnUserGestures: true,
+    //           tag: 'busStopCard',
+    //           child: BusStopView(
+    //               busStop: context.watch<BusModel>().nearestBusStop!),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
     return _buildCard(
       collapsedColor: Theme.of(context).cardColor,
       collapsedBorder: Border.all(
@@ -310,41 +348,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       collapsed: Container(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
+          // mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(Icons.directions_bus),
-                const SizedBox(width: 16.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Bus stops',
-                        style: Theme.of(context).textTheme.headline6),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, position) {
-                  // TODO: Update with actual bus stops
-                  return ListTile(
-                    contentPadding:
-                        const EdgeInsets.only(left: 40.0, right: 16.0),
-                    title: Text('Bus stop $position'),
-                    subtitle: const Text('Some supplementary info'),
-                  );
-                },
-                itemCount: 3,
-              ),
+            const Icon(Icons.directions_bus),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: BusStopView(
+                  compact: false,
+                  busStop: context.watch<BusModel>().nearestBusStop!,
+                  overline: 'NEAREST BUS STOP'),
             ),
           ],
         ),
@@ -380,15 +394,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onTap: disabled ? null : openContainer,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius:
+                  (Theme.of(context).cardTheme.shape as RoundedRectangleBorder)
+                      .borderRadius,
               border: collapsedBorder,
             ),
             child: collapsed,
           ),
         ),
       ),
-      closedShape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      closedShape: Theme.of(context).cardTheme.shape!,
       closedElevation: 0,
     );
   }

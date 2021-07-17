@@ -27,7 +27,7 @@ class BusStop {
     required this.longitude,
   });
 
-  factory BusStop.fromJson(Map<String, String> json) {
+  factory BusStop.fromJson(Map<String, dynamic> json) {
     final id = json.getStringEntry('name')!;
     final latitude = json.getDoubleEntry('latitude')!;
     final longitude = json.getDoubleEntry('longitude')!;

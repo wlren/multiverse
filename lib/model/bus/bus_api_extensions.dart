@@ -8,13 +8,13 @@ extension ToInt on String {
   }
 }
 
-extension ApiEntries on Map<String, String> {
+extension ApiEntries on Map<String, dynamic> {
   String? getStringEntry(String key) {
     final value = this[key]!;
-    if (value == '-' || value.isEmpty) {
+    if (value == '-' || value.toString().isEmpty) {
       return null;
     } else {
-      return value;
+      return value.toString();
     }
   }
 
