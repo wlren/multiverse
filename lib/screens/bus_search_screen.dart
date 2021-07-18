@@ -132,8 +132,12 @@ class BusSearchScreen extends StatelessWidget {
                     // ignore: prefer_const_constructors
                     Divider(),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: horizontalPadding),
+                      padding: const EdgeInsets.only(
+                        top: 16.0,
+                        bottom: 8.0,
+                        left: horizontalPadding,
+                        right: horizontalPadding,
+                      ),
                       child: BusStopView(
                         busStop: busStop,
                         overline: busStop

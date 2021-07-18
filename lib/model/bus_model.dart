@@ -23,6 +23,13 @@ class BusModel extends ChangeNotifier {
   BusArrivalInfo? arrivalInfo;
   BusStop? _nearestBusStop;
   LatLng userLocation = yusofIshakHouseLatLng;
+  LatLng? _focusedLocation;
+
+  LatLng get focusedLocation => _focusedLocation ?? userLocation;
+
+  set focusedLocation(LatLng? focusedLocation) {
+    _focusedLocation = focusedLocation;
+  }
 
   BusStop? get nearestBusStop => _nearestBusStop;
 
@@ -52,5 +59,9 @@ class BusModel extends ChangeNotifier {
 extension BusStopDistance on BusStop {
   double distanceTo(LatLng latLng) {
     return Path.from([latLng, LatLng(latitude, longitude)]).distance;
+  }
+
+  LatLng get location {
+    return LatLng(latitude, longitude);
   }
 }

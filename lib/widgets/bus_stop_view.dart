@@ -80,14 +80,17 @@ class _BusStopViewState extends State<BusStopView>
         ],
       );
     } else {
-      return Row(
-        children: [
-          for (BusArrivalInfo info in busArrivals) ...{
-            _buildRouteName(
-                context.watch<BusModel>().getRouteWithName(info.name)!),
-            const SizedBox(width: 8.0),
-          }
-        ],
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Row(
+          children: [
+            for (BusArrivalInfo info in busArrivals) ...{
+              _buildRouteName(
+                  context.watch<BusModel>().getRouteWithName(info.name)!),
+              const SizedBox(width: 8.0),
+            }
+          ],
+        ),
       );
     }
   }

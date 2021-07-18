@@ -346,21 +346,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
       collapsedBorder: Border.all(
         color: Theme.of(context).dividerColor,
       ),
-      collapsed: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          // mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Icon(Icons.directions_bus),
-            const SizedBox(width: 16.0),
-            Expanded(
-              child: BusStopView(
-                  compact: false,
-                  busStop: context.watch<BusModel>().nearestBusStop!,
-                  overline: 'NEAREST BUS STOP'),
-            ),
-          ],
+      collapsed: GestureDetector(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            // mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.directions_bus),
+              const SizedBox(width: 16.0),
+              if (context.watch<BusModel>().nearestBusStop != null)
+                Expanded(
+                  child: BusStopView(
+                      compact: false,
+                      busStop: context.watch<BusModel>().nearestBusStop!,
+                      overline: 'NEAREST BUS STOP'),
+                ),
+            ],
+          ),
         ),
       ),
       expanded: const BusesScreen(),
