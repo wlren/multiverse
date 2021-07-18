@@ -18,10 +18,10 @@ class BusModel extends ChangeNotifier {
   final BusRepository busRepository;
 
   BusStop? selectedBusStop;
+  BusStop? _nearestBusStop;
   List<BusStop>? busStops;
   List<BusRoute>? busRoutes;
-  BusArrivalInfo? arrivalInfo;
-  BusStop? _nearestBusStop;
+  Map<BusStop, List<BusArrivalInfo>> arrivalInfo = {};
   LatLng userLocation = yusofIshakHouseLatLng;
   LatLng? _focusedLocation;
 
@@ -31,7 +31,10 @@ class BusModel extends ChangeNotifier {
     _focusedLocation = focusedLocation;
   }
 
-  BusStop? get nearestBusStop => _nearestBusStop;
+  BusStop? get nearestBusStop {
+    update();
+    return _nearestBusStop;
+  }
 
   void selectBusStop(BusStop? busStop) {
     selectedBusStop = busStop;
@@ -42,17 +45,36 @@ class BusModel extends ChangeNotifier {
     return busRoutes?.firstWhere((route) => route.name == name);
   }
 
-  void update() async {
-    busStops = await busRepository.fetchBusStops();
-    busRoutes = await busRepository.fetchBusRoutes();
+  BusStop? getBusWithName(String name) {
+    return busStops?.firstWhere((stop) => stop.shortDisplayName == name);
+  }
 
-    // Sort bus stops by distance from user.
-    busStops!.sort((busStop1, busStop2) => busStop1
-        .distanceTo(userLocation)
-        .compareTo(busStop2.distanceTo(userLocation)));
-    _nearestBusStop = busStops!.first;
-    // arrivalInfo = await busRepository.fetchBusArrivalInfo('COM2');
+  void update() async {
+    busStops ??= await busRepository.fetchBusStops();
+    busRoutes ??= await busRepository.fetchBusRoutes();
+
+    await updateNearestBusStop();
+    await updateArrivalInfo(nearestBusStop!);
+
     notifyListeners();
+  }
+
+  Future<void> updateArrivalInfo(BusStop busName) async {
+    print(busName.id);
+    final busArrivalInfo = await busRepository.fetchBusArrivalInfo(busName.id);
+    if (arrivalInfo.containsKey(busName)) {
+      arrivalInfo.update(busName, (value) => busArrivalInfo);
+    } else {
+      arrivalInfo[busName] = busArrivalInfo;
+    }
+  }
+
+  Future<void> updateNearestBusStop() async {
+    // Sort bus stops by distance from user.
+    await Future<void>(() => busStops!.sort((busStop1, busStop2) => busStop1
+        .distanceTo(userLocation)
+        .compareTo(busStop2.distanceTo(userLocation))));
+    _nearestBusStop = busStops!.first;
   }
 }
 

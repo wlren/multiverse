@@ -85,8 +85,7 @@ class AppNavigator extends StatelessWidget {
             create: (context) => UserRepository(user)),
         RepositoryProvider<DiningRepository>(
             create: (context) => DiningRepository(user: user)),
-        RepositoryProvider<BusRepository>(
-            create: (context) => DebugBusRepository())
+        RepositoryProvider<BusRepository>(create: (context) => BusRepository())
       ],
       child: MultiProvider(
         providers: [
