@@ -123,7 +123,7 @@ class BusSearchScreen extends StatelessWidget {
                         horizontal: horizontalPadding),
                     child: BusStopView(
                       overline: 'NEAREST',
-                      compact: false,
+                      expanded: true,
                       busStop: context.watch<BusModel>().busStops!.first,
                     ),
                   ),
@@ -139,6 +139,7 @@ class BusSearchScreen extends StatelessWidget {
                         right: horizontalPadding,
                       ),
                       child: BusStopView(
+                        canExpand: true,
                         busStop: busStop,
                         overline: busStop
                                 .distanceTo(

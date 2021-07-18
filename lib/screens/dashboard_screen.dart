@@ -16,6 +16,7 @@ import '../model/dining/menu.dart';
 import '../model/temperature/temperature_state.dart';
 import '../model/user_model.dart';
 import '../widgets/bus_stop_view.dart';
+import 'bus_search_screen.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
@@ -341,32 +342,75 @@ class _DashboardScreenState extends State<DashboardScreen> {
     //     ),
     //   ),
     // );
-    return _buildCard(
-      collapsedColor: Theme.of(context).cardColor,
-      collapsedBorder: Border.all(
-        color: Theme.of(context).dividerColor,
-      ),
-      collapsed: GestureDetector(
+    return OpenContainer(
+      closedShape: Theme.of(context).cardTheme.shape!,
+      tappable: false,
+      closedColor: Theme.of(context).cardColor,
+      // collapsedBorder: Border.all(
+      //   color: Theme.of(context).dividerColor,
+      // ),
+      closedBuilder: (context, openContainer) => GestureDetector(
         child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            // mainAxisSize: MainAxisSize.min,
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.directions_bus),
-              const SizedBox(width: 16.0),
-              if (context.watch<BusModel>().nearestBusStop != null)
-                Expanded(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  // mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.directions_bus),
+                    const SizedBox(width: 16.0),
+                    Text(
+                      'Buses',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'GET AROUND NUS',
+                  style: Theme.of(context).textTheme.overline,
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.map_rounded),
+                title: const Text('Campus map'),
+                horizontalTitleGap: 0,
+                onTap: openContainer,
+              ),
+              ListTile(
+                leading: const Icon(Icons.format_list_bulleted_rounded),
+                title: const Text('Bus routes and stops'),
+                horizontalTitleGap: 0,
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const BusSearchScreen()));
+                },
+              ),
+              if (context.watch<BusModel>().nearestBusStop != null) ...{
+                const Divider(),
+                const SizedBox(height: 8.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: BusStopView(
-                      compact: false,
+                      canExpand: true,
+                      expanded: false,
                       busStop: context.watch<BusModel>().nearestBusStop!,
                       overline: 'NEAREST BUS STOP'),
                 ),
+              }
             ],
           ),
         ),
       ),
-      expanded: const BusesScreen(),
+      openBuilder: (context, _) => const BusesScreen(),
     );
   }
 

@@ -23,13 +23,6 @@ class BusModel extends ChangeNotifier {
   BusArrivalInfo? arrivalInfo;
   BusStop? _nearestBusStop;
   LatLng userLocation = yusofIshakHouseLatLng;
-  LatLng? _focusedLocation;
-
-  LatLng get focusedLocation => _focusedLocation ?? userLocation;
-
-  set focusedLocation(LatLng? focusedLocation) {
-    _focusedLocation = focusedLocation;
-  }
 
   BusStop? get nearestBusStop => _nearestBusStop;
 

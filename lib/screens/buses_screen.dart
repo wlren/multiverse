@@ -1,6 +1,5 @@
 //Packages
 import 'package:animations/animations.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -69,7 +68,7 @@ class _BusesScreenState extends State<BusesScreen>
                           size: 24,
                         ),
                         Text(
-                          'View all stops/services',
+                          'View all stops/routes',
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1
@@ -116,11 +115,11 @@ class _BusesScreenState extends State<BusesScreen>
     final _zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
 
     // Create a animation controller that has a duration and a TickerProvider.
-    var controller = AnimationController(
+    final controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
     // The animation determines what path the animation will take. You can try different Curves values, although I found
     // fastOutSlowIn to be my favorite.
-    Animation<double> animation =
+    final animation =
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
 
     controller.addListener(() {
@@ -140,20 +139,17 @@ class _BusesScreenState extends State<BusesScreen>
     controller.forward();
   }
 
-  void _onCardTap() {
-    setState(() {
-      context.read<BusModel>().focusedLocation =
-          (context.read<BusModel>().selectedBusStop ??
-                  context.read<BusModel>().nearestBusStop)!
-              .location;
-    });
-    _animatedMapMove(context.read<BusModel>().focusedLocation, 16.0);
+  void _focusOnBusStop(BusStop? busStop) {
+    if (busStop == null) return;
+    _animatedMapMove(busStop.location, 16.0);
   }
 
   Widget _buildInfoCard(BuildContext context, VoidCallback expandContainer) {
+    final busStop = context.watch<BusModel>().selectedBusStop ??
+        context.watch<BusModel>().nearestBusStop;
+    final isSelected = context.watch<BusModel>().selectedBusStop != null;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: _onCardTap,
       onVerticalDragDown: (_) {
         controller.stop();
       },
@@ -201,22 +197,13 @@ class _BusesScreenState extends State<BusesScreen>
               horizontal: 16.0,
               vertical: 8.0,
             ),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: _buildBusStop(
-                      context, context.watch<BusModel>().selectedBusStop),
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: IconButton(
-                    icon: const Icon(Icons.gps_fixed_outlined),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: _buildBusStop(
+                context,
+                busStop,
+                isSelected,
+              ),
             ),
           ),
           AnimatedBuilder(
@@ -224,14 +211,31 @@ class _BusesScreenState extends State<BusesScreen>
             builder: (context, child) =>
                 Container(height: controller.value * maxPullOffset),
           ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+            child: OutlinedButton.icon(
+              label: const Text('Show on map'),
+              icon: const Icon(Icons.gps_fixed_outlined),
+              style: OutlinedButton.styleFrom(
+                primary: Theme.of(context).hintColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0)),
+              ),
+              // tooltip: 'Show on map',
+              onPressed: () {
+                _focusOnBusStop(busStop);
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildMap(BuildContext context) {
-    BusStop? selectedBusStop = context.watch<BusModel>().selectedBusStop;
-    BusStop? nearestBusStop = context.watch<BusModel>().nearestBusStop;
+    final selectedBusStop = context.watch<BusModel>().selectedBusStop;
+    final nearestBusStop = context.watch<BusModel>().nearestBusStop;
     return FlutterMap(
       key: ValueKey(MediaQuery.of(context).orientation),
       mapController: _mapController,
@@ -325,18 +329,16 @@ class _BusesScreenState extends State<BusesScreen>
     );
   }
 
-  Widget _buildBusStop(BuildContext context, BusStop? selectedBusStop) {
-    final busStop = selectedBusStop ?? context.watch<BusModel>().nearestBusStop;
+  Widget _buildBusStop(
+      BuildContext context, BusStop? busStop, bool isSelected) {
     return Builder(
       builder: (context) => Hero(
         tag: 'busStopCard',
         child: busStop != null
             ? BusStopView(
                 busStop: busStop,
-                compact: selectedBusStop == null,
-                overline: selectedBusStop != null
-                    ? 'SELECTED BUS STOP'
-                    : 'NEAREST BUS STOP',
+                expanded: isSelected,
+                overline: isSelected ? 'SELECTED BUS STOP' : 'NEAREST BUS STOP',
               )
             : Container(),
       ),

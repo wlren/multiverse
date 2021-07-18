@@ -21,57 +21,82 @@ final List<BusArrivalInfo> allBusArrivals = [
 
 class BusStopView extends StatefulWidget {
   const BusStopView(
-      {Key? key, required this.busStop, this.overline, this.compact = true})
+      {Key? key,
+      required this.busStop,
+      this.overline,
+      this.expanded = true,
+      this.canExpand = false})
       : super(key: key);
 
   final BusStop busStop;
   final String? overline;
 
   /// Whether to display compact/detailed information
-  final bool compact;
+  final bool expanded;
+  final bool canExpand;
 
   @override
   _BusStopViewState createState() => _BusStopViewState();
 }
 
 class _BusStopViewState extends State<BusStopView>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final List<BusArrivalInfo> busArrivals = allBusArrivals;
+  late bool isExpanded = widget.expanded;
 
   @override
   Widget build(BuildContext context) {
     final title = widget.busStop.shortDisplayName;
     // final subtitle = widget.busStop.longDisplayName;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        if (widget.overline != null)
-          Text(widget.overline!, style: Theme.of(context).textTheme.overline),
-        SizedBox(
-          width: MediaQuery.of(context).size.width - 128,
-          child: AutoSizeText(
-            title,
-            maxLines: 1,
-            style: Theme.of(context).textTheme.headline6,
+        if (widget.canExpand)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: ExpandIcon(
+                isExpanded: isExpanded,
+                onPressed: (value) {
+                  setState(() {
+                    isExpanded = !value;
+                  });
+                }),
           ),
-        ),
-        const SizedBox(height: 16.0),
-        AnimatedSize(
-          vsync: this,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: _buildDetails(context),
-          ),
+        // IconButton(icon: ,)
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.overline != null)
+              Text(widget.overline!,
+                  style: Theme.of(context).textTheme.overline),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 128,
+              child: AutoSizeText(
+                title,
+                maxLines: 1,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            AnimatedSize(
+              // alignment: Alignment.topLeft,
+              vsync: this,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 100),
+                child: _buildDetails(context),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
   Widget _buildDetails(BuildContext context) {
-    if (!widget.compact) {
+    if (isExpanded) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -116,6 +141,7 @@ class _BusStopViewState extends State<BusStopView>
         const Spacer(),
         IconButton(
           icon: const Icon(Icons.chevron_right),
+          color: Theme.of(context).hintColor,
           onPressed: () {},
         )
       ],
