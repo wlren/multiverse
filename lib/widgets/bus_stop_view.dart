@@ -41,7 +41,7 @@ class BusStopView extends StatefulWidget {
 
 class _BusStopViewState extends State<BusStopView>
     with TickerProviderStateMixin {
-  final List<BusArrivalInfo> busArrivals = allBusArrivals;
+  List<BusArrivalInfo> busArrivals = allBusArrivals;
   late bool isExpanded = widget.expanded;
 
   @override
@@ -96,28 +96,34 @@ class _BusStopViewState extends State<BusStopView>
   }
 
   Widget _buildDetails(BuildContext context) {
-    if (isExpanded) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (BusArrivalInfo info in busArrivals)
-            _buildBusArrivalInfo(context, info),
-        ],
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: Row(
-          children: [
-            for (BusArrivalInfo info in busArrivals) ...{
-              _buildRouteName(
-                  context.watch<BusModel>().getRouteWithName(info.name)!),
-              const SizedBox(width: 8.0),
-            }
-          ],
-        ),
-      );
-    }
+    return StreamBuilder(
+        stream: context.watch<BusModel>().currArrivalInfoStream,
+        builder: (BuildContext context,
+            AsyncSnapshot<List<BusArrivalInfo>> snapshot) {
+          busArrivals = snapshot.data!;
+          if (isExpanded) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (BusArrivalInfo info in busArrivals)
+                  _buildBusArrivalInfo(context, info),
+              ],
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                children: [
+                  for (BusArrivalInfo info in busArrivals) ...{
+                    _buildRouteName(
+                        context.watch<BusModel>().getRouteWithName(info.name)!),
+                    const SizedBox(width: 8.0),
+                  }
+                ],
+              ),
+            );
+          }
+        });
   }
 
   Widget _buildBusArrivalInfo(

@@ -1,4 +1,5 @@
 //Package
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -17,6 +18,8 @@ class BusRepository {
   static const password = '13dL?zY,3feWR^"T';
   static final token = base64Encode(utf8.encode('$username:$password'));
 
+  Map<BusStop, StreamController<List<BusArrivalInfo>>> streamMap = {};
+
   BusRepository();
 
   Future<List<BusStop>> fetchBusStops() async {
@@ -31,18 +34,21 @@ class BusRepository {
     }
   }
 
-  Future<List<BusArrivalInfo>> fetchBusArrivalInfo(String busStop) async {
+  Future<List<BusArrivalInfo>> _fetchBusArrivalInfo(BusStop busStop) async {
+    final busName = busStop.id;
     try {
-      final json = await fetchJsonAtPath('ShuttleService?busstopname=$busStop');
+      final json = await fetchJsonAtPath('ShuttleService?busstopname=$busName');
       final shuttles =
           json['ShuttleServiceResult']['shuttles'] as List<dynamic>;
+
       final newShuttles = <Map<String, dynamic>>[];
       for (var i = 0; i < shuttles.length; i++) {
         newShuttles.add(shuttles[i] as Map<String, dynamic>);
       }
+
       return newShuttles.map((s) => BusArrivalInfo.fromJson(s)).toList();
     } on Exception {
-      throw Exception('Failed to fetch bus information for $busStop.');
+      throw Exception('Failed to fetch bus information for $busName.');
     }
   }
 
@@ -56,6 +62,39 @@ class BusRepository {
           .toList();
     } on Exception {
       throw Exception('Failed to fetch bus routes.');
+    }
+  }
+
+  Stream<List<BusArrivalInfo>> getBusArrivalStream(BusStop busStop) {
+    if (streamMap.containsKey(busStop)) {
+      return streamMap[busStop]!.stream;
+    } else {
+      late StreamController<List<BusArrivalInfo>> controller;
+      Timer? timer;
+
+      void updateBusArrival() async {
+        final info = await _fetchBusArrivalInfo(busStop);
+        controller.add(info);
+      }
+
+      void startTimer() async {
+        final firstArrivalInfo = await _fetchBusArrivalInfo(busStop);
+        controller.add(firstArrivalInfo);
+        timer = Timer(const Duration(seconds: 60), updateBusArrival);
+      }
+
+      void stopTimer() {
+        timer?.cancel();
+        timer = null;
+      }
+
+      controller = StreamController<List<BusArrivalInfo>>(
+          onListen: startTimer,
+          onCancel: stopTimer,
+          onPause: stopTimer,
+          onResume: startTimer);
+      streamMap[busStop] = controller;
+      return controller.stream;
     }
   }
 

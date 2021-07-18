@@ -21,7 +21,7 @@ class BusModel extends ChangeNotifier {
   BusStop? _nearestBusStop;
   List<BusStop>? busStops;
   List<BusRoute>? busRoutes;
-  Map<BusStop, List<BusArrivalInfo>> arrivalInfo = {};
+  Stream<List<BusArrivalInfo>>? _currArrivalInfoStream;
   LatLng userLocation = yusofIshakHouseLatLng;
 
   BusStop? get nearestBusStop {
@@ -29,9 +29,15 @@ class BusModel extends ChangeNotifier {
     return _nearestBusStop;
   }
 
+  Stream<List<BusArrivalInfo>>? get currArrivalInfoStream {
+    update();
+    return _currArrivalInfoStream;
+  }
+
   void selectBusStop(BusStop? busStop) {
     selectedBusStop = busStop;
-    notifyListeners();
+    //currArrivalInfoStream = getArrivalInfoStream(selectedBusStop!);
+    update();
   }
 
   BusRoute? getRouteWithName(String name) {
@@ -47,19 +53,17 @@ class BusModel extends ChangeNotifier {
     busRoutes ??= await busRepository.fetchBusRoutes();
 
     await updateNearestBusStop();
-    await updateArrivalInfo(nearestBusStop!);
+    if (selectedBusStop == null) {
+      _currArrivalInfoStream = getArrivalInfoStream(nearestBusStop!);
+    } else {
+      _currArrivalInfoStream = getArrivalInfoStream(selectedBusStop!);
+    }
 
     notifyListeners();
   }
 
-  Future<void> updateArrivalInfo(BusStop busName) async {
-    print(busName.id);
-    final busArrivalInfo = await busRepository.fetchBusArrivalInfo(busName.id);
-    if (arrivalInfo.containsKey(busName)) {
-      arrivalInfo.update(busName, (value) => busArrivalInfo);
-    } else {
-      arrivalInfo[busName] = busArrivalInfo;
-    }
+  Stream<List<BusArrivalInfo>> getArrivalInfoStream(BusStop busStop) {
+    return busRepository.getBusArrivalStream(busStop);
   }
 
   Future<void> updateNearestBusStop() async {
