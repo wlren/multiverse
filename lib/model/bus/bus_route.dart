@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'bus_api_extensions.dart';
-
 // Sample response:
 // {
 //   "Route": "A1",
@@ -29,9 +28,14 @@ class BusRoute {
   final String name;
   final String description;
   final Color color;
+  // late List<BusStop> _busStopList;
+
+  // List<BusStop> get busStopList {
+  //   return _busStopList;
+  // }
 }
 
-// TODO: Self-defined some colors for each bus route. Because this is not
+// Self-defined some colors for each bus route. Because this is not
 // provided by the API.
 Color _getRouteColor(String routeName) {
   if (routeName == 'A1' || routeName == 'A2') {

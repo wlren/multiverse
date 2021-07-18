@@ -20,7 +20,7 @@ class BusArrivalInfo {
 
   const BusArrivalInfo({required this.name, required this.buses});
 
-  factory BusArrivalInfo.fromJson(Map<String, String> json) {
+  factory BusArrivalInfo.fromJson(Map<String, dynamic> json) {
     final name = json.getStringEntry('name')!;
     final firstBusArrivalTime = json.getIntEntry('arrivalTime');
     final firstBusVehiclePlate = json.getStringEntry('arrivalTime_veh_plate');
