@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../model/bus/location_service.dart';
 import '../repository/bus_repository.dart';
 import 'bus/bus_arrival_info.dart';
 import 'bus/bus_route.dart';
@@ -28,6 +29,8 @@ class BusModel extends ChangeNotifier {
     update();
     return _nearestBusStop;
   }
+
+  LatLng get currentLocation => userLocation;
 
   void selectBusStop(BusStop? busStop) {
     selectedBusStop = busStop;
@@ -62,6 +65,16 @@ class BusModel extends ChangeNotifier {
 
   List<BusArrivalInfo>? getCachedArrivalInfo(BusStop busStop) {
     return _cachedBusArrivals[busStop];
+  }
+
+  Stream<LatLng> getLocationStream() {
+    final stream = LocationService().locationStream;
+    stream.listen((event) async {
+      userLocation = event;
+      await updateNearestBusStop();
+      notifyListeners();
+    });
+    return stream;
   }
 
   Future<void> updateNearestBusStop() async {

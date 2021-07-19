@@ -95,9 +95,10 @@ class _BusStopViewState extends State<BusStopView>
         initialData:
             context.watch<BusModel>().getCachedArrivalInfo(widget.busStop),
         stream: context.watch<BusModel>().getArrivalInfoStream(widget.busStop),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<BusArrivalInfo>> snapshot) {
-          List<BusArrivalInfo?> busArrivals = snapshot.data ?? [null, null];
+        builder: (context, snapshot) {
+          // ignore: omit_local_variable_types
+          final List<BusArrivalInfo?> busArrivals =
+              snapshot.data ?? [null, null];
           if (isExpanded) {
             return Column(
               mainAxisSize: MainAxisSize.min,
