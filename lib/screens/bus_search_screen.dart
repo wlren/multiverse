@@ -140,6 +140,7 @@ class BusSearchScreen extends StatelessWidget {
                       ),
                       child: BusStopView(
                         canExpand: true,
+                        expanded: false,
                         busStop: busStop,
                         overline: busStop
                                 .distanceTo(

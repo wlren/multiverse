@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 //Local Files
@@ -37,17 +38,17 @@ class BusRepository {
   Future<List<BusArrivalInfo>> _fetchBusArrivalInfo(BusStop busStop) async {
     final busName = busStop.id;
     try {
+      debugPrint('Fetching bus arrival info from API for $busName');
       final json = await fetchJsonAtPath('ShuttleService?busstopname=$busName');
       final shuttles =
           json['ShuttleServiceResult']['shuttles'] as List<dynamic>;
 
-      final newShuttles = <Map<String, dynamic>>[];
-      for (var i = 0; i < shuttles.length; i++) {
-        newShuttles.add(shuttles[i] as Map<String, dynamic>);
-      }
-
-      return newShuttles.map((s) => BusArrivalInfo.fromJson(s)).toList();
-    } on Exception {
+      return shuttles
+          .map((s) => BusArrivalInfo.fromJson(s as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      // return [];
       throw Exception('Failed to fetch bus information for $busName.');
     }
   }
@@ -80,19 +81,21 @@ class BusRepository {
       void startTimer() async {
         final firstArrivalInfo = await _fetchBusArrivalInfo(busStop);
         controller.add(firstArrivalInfo);
-        timer = Timer(const Duration(seconds: 60), updateBusArrival);
+        timer = Timer.periodic(const Duration(seconds: 60), (timer) {
+          updateBusArrival();
+        });
       }
 
-      void stopTimer() {
+      void onCancel() {
         timer?.cancel();
         timer = null;
+        debugPrint('Cancelling stream controller for ${busStop.id}');
       }
 
-      controller = StreamController<List<BusArrivalInfo>>(
-          onListen: startTimer,
-          onCancel: stopTimer,
-          onPause: stopTimer,
-          onResume: startTimer);
+      controller = StreamController<List<BusArrivalInfo>>.broadcast(
+        onListen: startTimer,
+        onCancel: onCancel,
+      );
       streamMap[busStop] = controller;
       return controller.stream;
     }

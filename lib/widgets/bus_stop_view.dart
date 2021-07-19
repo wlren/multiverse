@@ -1,23 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../model/bus/bus.dart';
 import '../model/bus/bus_arrival_info.dart';
 import '../model/bus/bus_route.dart';
 import '../model/bus/bus_stop.dart';
 import '../model/bus_model.dart';
-
-final List<BusArrivalInfo> allBusArrivals = [
-  const BusArrivalInfo(name: 'A1', buses: [
-    Bus(arrivalTimeMins: 9, vehiclePlate: 'A1BUS'),
-    Bus(arrivalTimeMins: 12, vehiclePlate: 'A1BUS'),
-  ]),
-  const BusArrivalInfo(name: 'A2', buses: [
-    Bus(arrivalTimeMins: 3, vehiclePlate: 'A1BUS'),
-    Bus(arrivalTimeMins: 4, vehiclePlate: 'A1BUS'),
-  ]),
-];
 
 class BusStopView extends StatefulWidget {
   const BusStopView(
@@ -41,8 +31,13 @@ class BusStopView extends StatefulWidget {
 
 class _BusStopViewState extends State<BusStopView>
     with TickerProviderStateMixin {
-  List<BusArrivalInfo> busArrivals = allBusArrivals;
   late bool isExpanded = widget.expanded;
+
+  @override
+  void initState() {
+    super.initState();
+    isExpanded = widget.expanded;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +75,7 @@ class _BusStopViewState extends State<BusStopView>
             ),
             const SizedBox(height: 16.0),
             AnimatedSize(
-              // alignment: Alignment.topLeft,
+              alignment: Alignment.centerLeft,
               vsync: this,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
@@ -96,16 +91,18 @@ class _BusStopViewState extends State<BusStopView>
   }
 
   Widget _buildDetails(BuildContext context) {
-    return StreamBuilder(
-        stream: context.watch<BusModel>().currArrivalInfoStream,
+    return StreamBuilder<List<BusArrivalInfo>>(
+        initialData:
+            context.watch<BusModel>().getCachedArrivalInfo(widget.busStop),
+        stream: context.watch<BusModel>().getArrivalInfoStream(widget.busStop),
         builder: (BuildContext context,
             AsyncSnapshot<List<BusArrivalInfo>> snapshot) {
-          busArrivals = snapshot.data!;
+          List<BusArrivalInfo?> busArrivals = snapshot.data ?? [null, null];
           if (isExpanded) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                for (BusArrivalInfo info in busArrivals)
+                for (BusArrivalInfo? info in busArrivals)
                   _buildBusArrivalInfo(context, info),
               ],
             );
@@ -114,9 +111,12 @@ class _BusStopViewState extends State<BusStopView>
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
                 children: [
-                  for (BusArrivalInfo info in busArrivals) ...{
-                    _buildRouteName(
-                        context.watch<BusModel>().getRouteWithName(info.name)!),
+                  for (BusArrivalInfo? info in busArrivals) ...{
+                    _buildRouteName(info == null
+                        ? null
+                        : context
+                            .watch<BusModel>()
+                            .getRouteWithName(info.name)!),
                     const SizedBox(width: 8.0),
                   }
                 ],
@@ -127,18 +127,19 @@ class _BusStopViewState extends State<BusStopView>
   }
 
   Widget _buildBusArrivalInfo(
-      BuildContext context, BusArrivalInfo busArrivalInfo) {
+      BuildContext context, BusArrivalInfo? busArrivalInfo) {
     return Row(
       // mainAxisAlignment: MainAxisAlignment.,
       children: [
-        _buildRouteName(
-            context.read<BusModel>().getRouteWithName(busArrivalInfo.name)!),
+        _buildRouteName(busArrivalInfo != null
+            ? context.read<BusModel>().getRouteWithName(busArrivalInfo.name)!
+            : null),
         Row(
           children: [
-            for (Bus bus in busArrivalInfo.buses) ...{
+            for (Bus? bus in busArrivalInfo?.buses ?? [null, null]) ...{
               const SizedBox(width: 32.0),
               Text(
-                '${bus.arrivalTimeMins} min',
+                '${bus?.arrivalTimeMins} min',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             },
@@ -154,7 +155,21 @@ class _BusStopViewState extends State<BusStopView>
     );
   }
 
-  Widget _buildRouteName(BusRoute route) {
+  Widget _buildRouteName(BusRoute? route) {
+    if (route == null) {
+      return Shimmer.fromColors(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Theme.of(context).cardColor,
+          ),
+          height: 32.0,
+          width: 48,
+        ),
+        baseColor: Theme.of(context).cardColor,
+        highlightColor: Theme.of(context).highlightColor,
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),

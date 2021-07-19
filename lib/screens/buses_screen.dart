@@ -335,10 +335,19 @@ class _BusesScreenState extends State<BusesScreen>
       builder: (context) => Hero(
         tag: 'busStopCard',
         child: busStop != null
-            ? BusStopView(
-                busStop: busStop,
-                expanded: isSelected,
-                overline: isSelected ? 'SELECTED BUS STOP' : 'NEAREST BUS STOP',
+            ? AnimatedSize(
+                vsync: this,
+                duration: const Duration(milliseconds: 100),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 100),
+                  child: BusStopView(
+                    key: ValueKey(busStop),
+                    busStop: busStop,
+                    expanded: isSelected,
+                    overline:
+                        isSelected ? 'SELECTED BUS STOP' : 'NEAREST BUS STOP',
+                  ),
+                ),
               )
             : Container(),
       ),

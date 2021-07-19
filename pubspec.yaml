@@ -46,6 +46,7 @@ dependencies:
   flutter_map: ^0.13.1
   auto_size_text: ^3.0.0-nullsafety.0
   location: ^4.2.0
+  shimmer: ^2.0.0
   
 dev_dependencies:
   bloc_test: ^8.0.2
