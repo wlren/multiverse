@@ -47,7 +47,8 @@ dependencies:
   auto_size_text: ^3.0.0-nullsafety.0
   location: ^4.2.0
   shimmer: ^2.0.0
-  
+  web_scraper: ^0.1.4
+
 dev_dependencies:
   bloc_test: ^8.0.2
   build_runner: ^1.11.0
