@@ -48,6 +48,7 @@ dependencies:
   location: ^4.2.0
   shimmer: ^2.0.0
   carousel_slider: ^4.0.0
+  html: ^0.15.0
 
 dev_dependencies:
   bloc_test: ^8.0.2
