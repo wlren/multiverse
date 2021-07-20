@@ -9,6 +9,7 @@ class ThemeDataMultiverse {
     primarySwatch: Colors.deepOrange,
     accentColor: Colors.blueAccent,
     appBarTheme: AppBarTheme(
+      backwardsCompatibility: false,
       backgroundColor: ThemeData.light().canvasColor,
       foregroundColor: ThemeData.light().colorScheme.onSurface,
     ),
@@ -34,6 +35,7 @@ class ThemeDataMultiverse {
     primarySwatch: Colors.orange,
     accentColor: Colors.blueAccent,
     appBarTheme: AppBarTheme(
+      backwardsCompatibility: false,
       backgroundColor: ThemeData.dark().canvasColor,
     ),
     cardTheme: CardTheme(

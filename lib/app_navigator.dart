@@ -15,6 +15,7 @@ import 'model/temperature/temperature_model.dart';
 import 'model/user_model.dart';
 import 'repository/bus_repository.dart';
 import 'repository/dining_repository.dart';
+import 'repository/news_repository.dart';
 import 'repository/user_repository.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/loading_screen.dart';
@@ -85,7 +86,9 @@ class AppNavigator extends StatelessWidget {
             create: (context) => UserRepository(user)),
         RepositoryProvider<DiningRepository>(
             create: (context) => DiningRepository(user: user)),
-        RepositoryProvider<BusRepository>(create: (context) => BusRepository())
+        RepositoryProvider<BusRepository>(create: (context) => BusRepository()),
+        RepositoryProvider<NewsRepository>(
+            create: (context) => NewsRepository()),
       ],
       child: MultiProvider(
         providers: [

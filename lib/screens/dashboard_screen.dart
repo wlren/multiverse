@@ -13,13 +13,16 @@ import '../model/auth/session_cubit.dart';
 import '../model/bus_model.dart';
 import '../model/dining/dining_model.dart';
 import '../model/dining/menu.dart';
+import '../model/news/news.dart';
 import '../model/temperature/temperature_state.dart';
 import '../model/user_model.dart';
+import '../repository/news_repository.dart';
 import '../widgets/bus_stop_view.dart';
 import 'bus_search_screen.dart';
 import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
+import 'news_article_screen.dart';
 import 'nus_card_screen.dart';
 import 'temperature_screen.dart';
 
@@ -91,13 +94,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         },
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24.0),
-                Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Hello, $userName!',
@@ -105,21 +108,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _buildTemperatureButton(),
                   ],
                 ),
-                const SizedBox(height: 16.0),
-                _buildGreenPassCard(),
-                const SizedBox(height: 8.0),
-                Row(
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: _buildGreenPassCard(),
+              ),
+              const SizedBox(height: 8.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
                   children: [
                     Flexible(child: _buildDiningCard()),
                     const SizedBox(width: 8.0),
                     Expanded(child: _buildNUSDetailsCard()),
                   ],
                 ),
-                const SizedBox(height: 8.0),
-                _buildBusStopsCard(),
-                _buildNewsList(),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: _buildBusStopsCard(),
+              ),
+              _buildNewsList(),
+            ],
           ),
         ),
       ),
@@ -460,7 +472,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          padding: const EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 16.0),
           child: Row(
             children: [
               const Icon(Icons.feed),
@@ -469,9 +481,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        const SizedBox(
-          height: 1000,
-          child: Text('This is a really tall container made to test scrolling'),
+        FutureBuilder<List<News>>(
+          future: context.read<NewsRepository>().fetchNews(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return MediaQuery.removePadding(
+                removeTop: true,
+                context: context,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, position) {
+                    final item = snapshot.data![position];
+                    return InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NewsArticleScreen(item)));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 16.0),
+                            ClipRRect(
+                              clipBehavior: Clip.antiAlias,
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: AspectRatio(
+                                aspectRatio: 3,
+                                child: Ink(
+                                  child: Image.network(
+                                    item.coverImageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  width: 500,
+                                  // height: 100,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              DateFormat('dd MMMM yyyy').format(item.date),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  ?.copyWith(
+                                      color: Theme.of(context).hintColor),
+                            ),
+                            Text(
+                              item.title,
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            const SizedBox(height: 16.0),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: snapshot.data!.length,
+                ),
+              );
+            } else {
+              return Container(height: 10);
+            }
+          },
         ),
       ],
     );

@@ -21,6 +21,8 @@ class BusRepository {
 
   Map<BusStop, StreamController<List<BusArrivalInfo>>> streamMap = {};
 
+  final http.Client client = http.Client();
+
   BusRepository();
 
   Future<List<BusStop>> fetchBusStops() async {
@@ -48,8 +50,8 @@ class BusRepository {
           .toList();
     } catch (e) {
       debugPrint(e.toString());
-      // return [];
-      throw Exception('Failed to fetch bus information for $busName.');
+      return [];
+      // throw Exception('Failed to fetch bus information for $busName.');
     }
   }
 
@@ -103,10 +105,11 @@ class BusRepository {
 
   Future<dynamic> fetchJsonAtPath(String endpointPath) async {
     final response =
-        await http.get(Uri.parse('$apiEndpoint/$endpointPath'), headers: {
+        await client.get(Uri.parse('$apiEndpoint/$endpointPath'), headers: {
       HttpHeaders.authorizationHeader: 'Basic $token',
     });
     if (response.statusCode == 200) {
+      // debugPrint(response.body);
       return jsonDecode(response.body);
     } else {
       throw Exception(response);

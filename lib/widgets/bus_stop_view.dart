@@ -140,7 +140,7 @@ class _BusStopViewState extends State<BusStopView>
             for (Bus? bus in busArrivalInfo?.buses ?? [null, null]) ...{
               const SizedBox(width: 32.0),
               Text(
-                '${bus?.arrivalTimeMins} min',
+                bus != null ? '${bus.arrivalTimeMins} min' : '-',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             },
@@ -165,7 +165,7 @@ class _BusStopViewState extends State<BusStopView>
             color: Theme.of(context).cardColor,
           ),
           height: 32.0,
-          width: 48,
+          width: 48.0,
         ),
         baseColor: Theme.of(context).cardColor,
         highlightColor: Theme.of(context).highlightColor,

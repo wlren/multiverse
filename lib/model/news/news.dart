@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
-
 class News {
   final String newsPageUrl;
-  final Image coverImage;
-  final String postDate;
+  final String coverImageUrl;
+  final DateTime date;
   final String title;
 
   const News({
     required this.newsPageUrl,
-    required this.coverImage,
-    required this.postDate,
+    required this.coverImageUrl,
+    required this.date,
     required this.title,
   });
 }
