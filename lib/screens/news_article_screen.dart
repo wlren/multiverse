@@ -70,7 +70,6 @@ class NewsArticleScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 32.0),
                             FadeInImage.memoryNetwork(
-                              height: 256,
                               placeholder: kTransparentImage,
                               image: article.imageUrl,
                             ),
@@ -81,10 +80,12 @@ class NewsArticleScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    article.imageCaption,
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
+                                  if (article.imageCaption.isNotEmpty)
+                                    Text(
+                                      article.imageCaption,
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
                                   const SizedBox(height: 32.0),
                                   for (var paragraph in article.paragraphs) ...{
                                     if (paragraph.isTitle)
