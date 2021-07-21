@@ -48,12 +48,8 @@ class NewsRepository {
 
   Future<List<News>> _fetchPressReleases() async {
     final news = <News>[];
-    final response = await client.get(
-        Uri.parse('https://news.nus.edu.sg/?h=1&t=Press%20Releases'),
-        headers: {
-          'User-Agent':
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
-        });
+    final response = await client
+        .get(Uri.parse('https://news.nus.edu.sg/?h=1&t=Press%20Releases'));
     final content = response.body;
     final items =
         parse(content).querySelectorAll('.div_allheadlines .mm_listitem');
@@ -81,9 +77,6 @@ class NewsRepository {
               .firstMatch(styleString)!
               .group(1)
               .toString());
-      debugPrint(title);
-      debugPrint(dateString);
-      debugPrint(imageUrl);
       news.add(News(
           coverImageUrl: imageUrl,
           title: title,
@@ -100,5 +93,36 @@ class NewsRepository {
     return items
         .map((imageElement) => Image.network(imageElement.attributes['src']!))
         .toList();
+  }
+
+  Future<NewsArticle> fetchArticle(String articleUrl) async {
+    final response = await client.get(Uri.parse(articleUrl));
+    final content = response.body;
+    final html = parse(content);
+    final mainContent = html.querySelector('.content_main_case')!;
+    final title =
+        mainContent.querySelector('.div_text_companyprofile h1')!.text;
+    final subtitle = mainContent.querySelector('.subtitle_case')?.text;
+    final gallery = mainContent.querySelector('.pp_gridcontainer_gallery')!;
+    final imageUrl =
+        'https:' + gallery.querySelector('img')!.attributes['src']!;
+    final imageCaption = gallery.querySelector('.pp_gallery_description')!.text;
+    final articleContent = mainContent.querySelector('.ppmodule_textblock')!;
+
+    final paragraphs = articleContent.querySelectorAll('p').map((element) {
+      if (element.querySelector('u') != null) {
+        // Is a title
+        return NewsParagraph(element.text, isTitle: true);
+      } else {
+        return NewsParagraph(element.text, isTitle: false);
+      }
+    }).toList();
+
+    return NewsArticle(
+        title: title,
+        subtitle: subtitle,
+        imageUrl: imageUrl,
+        imageCaption: imageCaption,
+        paragraphs: paragraphs);
   }
 }

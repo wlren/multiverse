@@ -864,7 +864,7 @@ packages:
     source: hosted
     version: "1.0.0"
   transparent_image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: transparent_image
       url: "https://pub.dartlang.org"

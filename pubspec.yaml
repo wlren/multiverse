@@ -49,6 +49,7 @@ dependencies:
   shimmer: ^2.0.0
   carousel_slider: ^4.0.0
   html: ^0.15.0
+  transparent_image: ^2.0.0
 
 dev_dependencies:
   bloc_test: ^8.0.2

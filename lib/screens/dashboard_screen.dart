@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 //Local Files
 import '../model/auth/session_cubit.dart';
@@ -484,21 +485,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         FutureBuilder<List<News>>(
           future: context.read<NewsRepository>().fetchNews(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return MediaQuery.removePadding(
-                removeTop: true,
-                context: context,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, position) {
-                    final item = snapshot.data![position];
-                    return InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => NewsArticleScreen(item)));
-                      },
-                      child: Padding(
+            // ignore: omit_local_variable_types
+            final List<News?> data = snapshot.data ?? [null, null, null];
+            return MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, position) {
+                  final item = data[position];
+                  final stack = Stack(
+                    children: [
+                      Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -510,41 +509,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               borderRadius: BorderRadius.circular(8.0),
                               child: AspectRatio(
                                 aspectRatio: 3,
-                                child: Ink(
-                                  child: Image.network(
-                                    item.coverImageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  width: 500,
-                                  // height: 100,
-                                ),
+                                child: item != null
+                                    ? Image.network(
+                                        item.coverImageUrl,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Container(
+                                        color: Colors.white,
+                                      ),
                               ),
                             ),
                             const SizedBox(height: 8.0),
-                            Text(
-                              DateFormat('dd MMMM yyyy').format(item.date),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2
-                                  ?.copyWith(
-                                      color: Theme.of(context).hintColor),
-                            ),
-                            Text(
-                              item.title,
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            if (item != null) ...{
+                              Text(
+                                DateFormat('dd MMMM yyyy').format(item.date),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    ?.copyWith(
+                                        color: Theme.of(context).hintColor),
+                              ),
+                            } else ...{
+                              Container(
+                                color: Colors.white,
+                                child: Text(
+                                  '12 3456 7890',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2
+                                      ?.copyWith(color: Colors.transparent),
+                                ),
+                              ),
+                            },
+                            if (item != null) ...{
+                              Text(
+                                item.title,
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            } else ...{
+                              Container(
+                                color: Colors.white,
+                                child: Text(
+                                  'Random text',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      ?.copyWith(color: Colors.transparent),
+                                ),
+                              )
+                            },
                             const SizedBox(height: 16.0),
                           ],
                         ),
                       ),
-                    );
-                  },
-                  itemCount: snapshot.data!.length,
-                ),
-              );
-            } else {
-              return Container(height: 10);
-            }
+                      if (item != null)
+                        Positioned.fill(
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        NewsArticleScreen(item)));
+                              },
+                            ),
+                          ),
+                        )
+                    ],
+                  );
+                  return item == null
+                      ? Shimmer.fromColors(
+                          baseColor: Theme.of(context).scaffoldBackgroundColor,
+                          highlightColor: Theme.of(context).highlightColor,
+                          child: stack,
+                        )
+                      : stack;
+                },
+                itemCount: data.length,
+              ),
+            );
           },
         ),
       ],
