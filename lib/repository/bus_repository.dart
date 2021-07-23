@@ -37,6 +37,17 @@ class BusRepository {
     }
   }
 
+  Future<List<String>> fetchBusStopNamesInRoute(String routeName) async {
+    try {
+      final json = await fetchJsonAtPath('PickupPoint?route_code=$routeName');
+      final busStopsRaw =
+          json['PickupPointResult']['pickuppoint'] as List<dynamic>;
+      return busStopsRaw.map((raw) => (raw['LongName'] as String)).toList();
+    } on Exception {
+      throw Exception('Failed to fetch bus stops in route $routeName.');
+    }
+  }
+
   Future<List<BusArrivalInfo>> _fetchBusArrivalInfo(BusStop busStop) async {
     final busName = busStop.id;
     try {

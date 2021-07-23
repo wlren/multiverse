@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 //Local Files
 import '../model/auth/session_cubit.dart';
@@ -24,6 +25,7 @@ import 'buses_screen.dart';
 import 'dining_screen.dart';
 import 'green_pass_screen.dart';
 import 'news_article_screen.dart';
+import 'news_images_screen.dart';
 import 'nus_card_screen.dart';
 import 'temperature_screen.dart';
 
@@ -412,11 +414,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 8.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: BusStopView(
-                      canExpand: true,
-                      expanded: false,
-                      busStop: context.watch<BusModel>().nearestBusStop!,
-                      overline: 'NEAREST BUS STOP'),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: BusStopView(
+                            canExpand: true,
+                            expanded: false,
+                            busStop: context.watch<BusModel>().nearestBusStop!,
+                            overline: 'NEAREST BUS STOP'),
+                      ),
+                    ],
+                  ),
                 ),
               }
             ],
@@ -510,8 +518,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: AspectRatio(
                                 aspectRatio: 3,
                                 child: item != null
-                                    ? Image.network(
-                                        item.coverImageUrl,
+                                    ? FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: item.coverImageUrl,
                                         fit: BoxFit.cover,
                                       )
                                     : Container(
@@ -569,8 +578,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: InkWell(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        NewsArticleScreen(item)));
+                                    builder: (context) => item.isArticle
+                                        ? NewsArticleScreen(item)
+                                        : NewsImagesScreen(item)));
                               },
                             ),
                           ),

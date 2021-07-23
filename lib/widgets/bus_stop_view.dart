@@ -8,6 +8,7 @@ import '../model/bus/bus_arrival_info.dart';
 import '../model/bus/bus_route.dart';
 import '../model/bus/bus_stop.dart';
 import '../model/bus_model.dart';
+import '../screens/bus_route_screen.dart';
 
 class BusStopView extends StatefulWidget {
   const BusStopView(
@@ -62,15 +63,27 @@ class _BusStopViewState extends State<BusStopView>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.overline != null)
-              Text(widget.overline!,
-                  style: Theme.of(context).textTheme.overline),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 128,
-              child: AutoSizeText(
-                title,
-                maxLines: 1,
-                style: Theme.of(context).textTheme.headline6,
+            InkWell(
+              onTap: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.overline != null)
+                    Text(widget.overline!,
+                        style: Theme.of(context).textTheme.overline),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 128,
+                    child: AutoSizeText(
+                      title,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16.0),
@@ -129,30 +142,41 @@ class _BusStopViewState extends State<BusStopView>
 
   Widget _buildBusArrivalInfo(
       BuildContext context, BusArrivalInfo? busArrivalInfo) {
-    return Row(
-      // mainAxisAlignment: MainAxisAlignment.,
-      children: [
-        _buildRouteName(busArrivalInfo != null
-            ? context.read<BusModel>().getRouteWithName(busArrivalInfo.name)!
-            : null),
-        Row(
-          children: [
-            for (Bus? bus in busArrivalInfo?.buses ?? [null, null]) ...{
-              const SizedBox(width: 32.0),
-              Text(
-                bus != null ? '${bus.arrivalTimeMins} min' : '-',
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-            },
-          ],
-        ),
-        const Spacer(),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          color: Theme.of(context).hintColor,
-          onPressed: () {},
-        )
-      ],
+    return InkWell(
+      onTap: busArrivalInfo != null
+          ? () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => BusRouteScreen(
+                      route: context
+                          .read<BusModel>()
+                          .getRouteWithName(busArrivalInfo.name)!)));
+            }
+          : null,
+      child: Row(
+        // mainAxisAlignment: MainAxisAlignment.,
+        children: [
+          _buildRouteName(busArrivalInfo != null
+              ? context.read<BusModel>().getRouteWithName(busArrivalInfo.name)!
+              : null),
+          Row(
+            children: [
+              for (Bus? bus in busArrivalInfo?.buses ?? [null, null]) ...{
+                const SizedBox(width: 32.0),
+                Text(
+                  bus != null ? '${bus.arrivalTimeMins} min' : '-',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+              },
+            ],
+          ),
+          const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            color: Theme.of(context).hintColor,
+            onPressed: () {},
+          )
+        ],
+      ),
     );
   }
 

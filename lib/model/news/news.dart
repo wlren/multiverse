@@ -3,12 +3,14 @@ class News {
   final String coverImageUrl;
   final DateTime date;
   final String title;
+  final bool isArticle;
 
   const News({
     required this.newsPageUrl,
     required this.coverImageUrl,
     required this.date,
     required this.title,
+    required this.isArticle,
   });
 }
 

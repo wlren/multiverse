@@ -23,7 +23,8 @@ class BusModel extends ChangeNotifier {
   List<BusStop>? busStops;
   List<BusRoute>? busRoutes;
   LatLng userLocation = yusofIshakHouseLatLng;
-  final Map<BusStop, List<BusArrivalInfo>?> _cachedBusArrivals = {};
+  final Map<BusStop, List<BusArrivalInfo>> _cachedBusArrivals = {};
+  final Map<BusRoute, List<BusStop>> _cachedBusRoutes = {};
 
   BusStop? get nearestBusStop {
     update();
@@ -44,6 +45,20 @@ class BusModel extends ChangeNotifier {
 
   BusStop? getBusWithName(String name) {
     return busStops?.firstWhere((stop) => stop.shortDisplayName == name);
+  }
+
+  Future<List<BusStop>> getBusStopsInRoute(BusRoute route) async {
+    if (_cachedBusRoutes.containsKey(route)) {
+      return _cachedBusRoutes[route]!;
+    } else {
+      final busStopNames =
+          await busRepository.fetchBusStopNamesInRoute(route.name);
+      _cachedBusRoutes[route] = busStopNames
+          .map((busStopLongName) => busStops!.firstWhere(
+              (busStop) => busStop.longDisplayName == busStopLongName))
+          .toList();
+      return _cachedBusRoutes[route]!;
+    }
   }
 
   void update() async {

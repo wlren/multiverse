@@ -16,7 +16,7 @@ import 'bus_api_extensions.dart';
 /// Contains bus timings for up to two buses of the same service.
 class BusArrivalInfo {
   final String name;
-  final List<Bus> buses;
+  final List<Bus?> buses;
 
   const BusArrivalInfo({required this.name, required this.buses});
 
@@ -29,15 +29,21 @@ class BusArrivalInfo {
     final secondBusVehiclePlate =
         json.getStringEntry('nextArrivalTime_veh_plate');
 
-    final buses = <Bus>[
-      if (firstBusArrivalTime != null)
+    final buses = <Bus?>[
+      if (firstBusArrivalTime != null) ...{
         Bus(
             arrivalTimeMins: firstBusArrivalTime,
             vehiclePlate: firstBusVehiclePlate),
-      if (secondBusArrivalTime != null)
+      } else ...{
+        null,
+      },
+      if (secondBusArrivalTime != null) ...{
         Bus(
             arrivalTimeMins: secondBusArrivalTime,
             vehiclePlate: secondBusVehiclePlate),
+      } else ...{
+        null,
+      }
     ];
 
     return BusArrivalInfo(name: name, buses: buses);

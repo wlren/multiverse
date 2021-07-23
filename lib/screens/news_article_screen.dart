@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:multiverse/repository/news_repository.dart';
-
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../model/news/news.dart';
+import '../repository/news_repository.dart';
 
 class NewsArticleScreen extends StatelessWidget {
   const NewsArticleScreen(this.news, {Key? key}) : super(key: key);

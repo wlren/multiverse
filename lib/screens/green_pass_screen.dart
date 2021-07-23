@@ -27,26 +27,22 @@ class _GreenPassScreenState extends State<GreenPassScreen> {
       builder: (context, snapshot) {
         final secondsLeft = snapshot.data!;
         return Scaffold(
+          backgroundColor: context.getBackgroundColor(secondsLeft),
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
             backwardsCompatibility: false,
             backgroundColor: context.getBackgroundColor(secondsLeft),
             elevation: 0,
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              color: context.getBackgroundColor(secondsLeft),
-              child: Center(
-                child: Column(
-                  children: [
-                    _buildIcon(context, secondsLeft),
-                    Text(
-                      '$secondsLeft',
-                      style: Theme.of(context).textTheme.headline3,
-                    ),
-                  ],
-                ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildIcon(context, secondsLeft),
+              Text(
+                '$secondsLeft',
+                style: Theme.of(context).textTheme.headline3,
               ),
-            ),
+            ],
           ),
         );
       },

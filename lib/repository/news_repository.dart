@@ -7,13 +7,32 @@ import '../model/news/news.dart';
 
 class NewsRepository {
   static final DateFormat dateFormat = DateFormat('dd MMMM yyyy');
+  static final DateFormat dateFormat1 = DateFormat('MMMM dd yyyy');
+  static final DateFormat dateFormat2 = DateFormat('MMMM dd, yyyy');
 
   final Client client = Client();
+
+  DateTime parseDate(String dateString) {
+    try {
+      return dateFormat.parse(dateString);
+    } on FormatException {
+      try {
+        return dateFormat1.parse(dateString);
+      } on FormatException {
+        try {
+          return dateFormat2.parse(dateString);
+        } on FormatException {
+          return DateTime.now();
+        }
+      }
+    }
+  }
 
   Future<List<News>> fetchNews() async {
     final news = <News>[];
     news.addAll(await _fetchAnnouncements());
     news.addAll(await _fetchPressReleases());
+    news.sort((news1, news2) => -news1.date.compareTo(news2.date));
     return news;
   }
 
@@ -38,10 +57,12 @@ class NewsRepository {
       final url = item.querySelector('a')!.attributes['href']!.trim();
       final imageUrl = item.querySelector('img')!.attributes['src']!;
       news.add(News(
-          newsPageUrl: url,
-          date: dateFormat.parse(date),
-          title: title,
-          coverImageUrl: imageUrl));
+        newsPageUrl: url,
+        date: parseDate(date),
+        title: title,
+        coverImageUrl: imageUrl,
+        isArticle: false,
+      ));
     }
     return news;
   }
@@ -78,10 +99,12 @@ class NewsRepository {
               .group(1)
               .toString());
       news.add(News(
-          coverImageUrl: imageUrl,
-          title: title,
-          date: dateFormat.parse(dateString),
-          newsPageUrl: newsUrl));
+        coverImageUrl: imageUrl,
+        title: title,
+        date: parseDate(dateString),
+        newsPageUrl: newsUrl,
+        isArticle: true,
+      ));
     }
     return news;
   }
