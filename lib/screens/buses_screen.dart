@@ -237,97 +237,107 @@ class _BusesScreenState extends State<BusesScreen>
   Widget _buildMap(BuildContext context) {
     final selectedBusStop = context.watch<BusModel>().selectedBusStop;
     final nearestBusStop = context.watch<BusModel>().nearestBusStop;
-    return FlutterMap(
-      key: ValueKey(MediaQuery.of(context).orientation),
-      mapController: _mapController,
-      options: MapOptions(
-          center: context.read<BusModel>().userLocation,
-          zoom: 17.0,
-          onTap: (latlng) {
-            context.read<BusModel>().selectBusStop(null);
-          }),
-      children: [
-        Container(
-          height: 100,
-          width: 100,
-          color: Colors.green,
-        ),
-      ],
-      layers: [
-        TileLayerOptions(
-            urlTemplate: Theme.of(context).brightness == Brightness.light
-                ? 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
-                : 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c']),
-        MarkerLayerOptions(
-          rotate: true,
-          markers: [
-            for (BusStop stop in context.watch<BusModel>().busStops ?? []) ...{
-              Marker(
-                anchorPos: AnchorPos.align(AnchorAlign.top),
-                // rotateAlignment: Alignment.center,
-                // rotateOrigin: ,
-                rotateAlignment: Alignment.bottomCenter,
-                width: 160.0,
-                height: 64.0,
-                point: LatLng(stop.latitude, stop.longitude),
-                builder: (ctx) => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Material(
-                      elevation: 4.0,
-                      color: Color.alphaBlend(
-                          (selectedBusStop == stop
-                                  ? Theme.of(context).colorScheme.secondary
-                                  : selectedBusStop == null &&
-                                          nearestBusStop == stop
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.transparent)
-                              .withOpacity(0.25),
-                          Theme.of(context).cardColor),
-                      type: MaterialType.card,
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(8.0),
-                        onTap: () {
-                          context.read<BusModel>().selectBusStop(stop);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(stop.shortDisplayName),
-                        ),
+    return StreamBuilder<LatLng>(
+        stream: context.watch<BusModel>().getLocationStream(),
+        builder: (context, snapshot) {
+          return FlutterMap(
+            key: ValueKey(MediaQuery.of(context).orientation),
+            mapController: _mapController,
+            options: MapOptions(
+                center: context.read<BusModel>().userLocation,
+                zoom: 17.0,
+                onTap: (latlng) {
+                  context.read<BusModel>().selectBusStop(null);
+                }),
+            children: [
+              Container(
+                height: 100,
+                width: 100,
+                color: Colors.green,
+              ),
+            ],
+            layers: [
+              TileLayerOptions(
+                  urlTemplate: Theme.of(context).brightness == Brightness.light
+                      ? 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
+                      : 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+                  subdomains: ['a', 'b', 'c']),
+              MarkerLayerOptions(
+                rotate: true,
+                markers: [
+                  for (BusStop stop
+                      in context.watch<BusModel>().busStops ?? []) ...{
+                    Marker(
+                      anchorPos: AnchorPos.align(AnchorAlign.top),
+                      // rotateAlignment: Alignment.center,
+                      // rotateOrigin: ,
+                      rotateAlignment: Alignment.bottomCenter,
+                      width: 160.0,
+                      height: 64.0,
+                      point: LatLng(stop.latitude, stop.longitude),
+                      builder: (ctx) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Material(
+                            elevation: 4.0,
+                            color: Color.alphaBlend(
+                                (selectedBusStop == stop
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                        : selectedBusStop == null &&
+                                                nearestBusStop == stop
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : Colors.transparent)
+                                    .withOpacity(0.25),
+                                Theme.of(context).cardColor),
+                            type: MaterialType.card,
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8.0),
+                              onTap: () {
+                                context.read<BusModel>().selectBusStop(stop);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(stop.shortDisplayName),
+                              ),
+                            ),
+                          ),
+                          Material(
+                            type: MaterialType.transparency,
+                            // color: Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8.0),
+                              onTap: () {
+                                context.read<BusModel>().selectBusStop(stop);
+                              },
+                              child: const Icon(Icons.place_rounded),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Material(
-                      type: MaterialType.transparency,
-                      // color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(8.0),
-                        onTap: () {
-                          context.read<BusModel>().selectBusStop(stop);
-                        },
-                        child: const Icon(Icons.place_rounded),
-                      ),
+                  },
+                  Marker(
+                    width: 16.0,
+                    height: 16.0,
+                    point: snapshot.data ??
+                        context.watch<BusModel>().currentLocation!,
+                    builder: (ctx) => Material(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(16.0),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            },
-            Marker(
-              width: 32.0,
-              height: 32.0,
-              point: context.watch<BusModel>().userLocation,
-              builder: (ctx) => Material(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
+            ],
+          );
+        });
   }
 
   Widget _buildBusStop(

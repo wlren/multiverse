@@ -200,8 +200,9 @@ class _BusSearchScreenState extends State<BusSearchScreen> {
                           expanded: false,
                           busStop: busStop,
                           overline: busStop
-                                  .distanceTo(
-                                      context.watch<BusModel>().userLocation)
+                                  .distanceTo(context
+                                      .watch<BusModel>()
+                                      .currentLocation!)
                                   .toStringAsFixed(0) +
                               'm away',
                         ),

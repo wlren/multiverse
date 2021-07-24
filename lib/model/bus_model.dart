@@ -13,16 +13,18 @@ final yusofIshakHouseLatLng = LatLng(1.298775, 103.774605);
 // login screen.
 class BusModel extends ChangeNotifier {
   BusModel(this.busRepository) {
+    _locationService = LocationService();
     update();
   }
 
   final BusRepository busRepository;
+  LocationService? _locationService;
 
   BusStop? selectedBusStop;
   BusStop? _nearestBusStop;
   List<BusStop>? busStops;
   List<BusRoute>? busRoutes;
-  LatLng userLocation = yusofIshakHouseLatLng;
+  LatLng? userLocation;
   final Map<BusStop, List<BusArrivalInfo>> _cachedBusArrivals = {};
   final Map<BusRoute, List<BusStop>> _cachedBusRoutes = {};
 
@@ -31,11 +33,10 @@ class BusModel extends ChangeNotifier {
     return _nearestBusStop;
   }
 
-  LatLng get currentLocation => userLocation;
+  LatLng? get currentLocation => userLocation;
 
   void selectBusStop(BusStop? busStop) {
     selectedBusStop = busStop;
-    //currArrivalInfoStream = getArrivalInfoStream(selectedBusStop!);
     update();
   }
 
@@ -66,7 +67,6 @@ class BusModel extends ChangeNotifier {
     busRoutes ??= await busRepository.fetchBusRoutes();
 
     await updateNearestBusStop();
-
     notifyListeners();
   }
 
@@ -83,20 +83,22 @@ class BusModel extends ChangeNotifier {
   }
 
   Stream<LatLng> getLocationStream() {
-    final stream = LocationService().locationStream;
-    stream.listen((event) async {
+    final stream = _locationService!.locationStream;
+    stream.listen((event) {
       userLocation = event;
-      await updateNearestBusStop();
-      notifyListeners();
+      update();
     });
     return stream;
   }
 
   Future<void> updateNearestBusStop() async {
+    userLocation = await _locationService?.getLocation();
+
     // Sort bus stops by distance from user.
     await Future<void>(() => busStops!.sort((busStop1, busStop2) => busStop1
-        .distanceTo(userLocation)
-        .compareTo(busStop2.distanceTo(userLocation))));
+        .distanceTo(userLocation ?? yusofIshakHouseLatLng)
+        .compareTo(
+            busStop2.distanceTo(userLocation ?? yusofIshakHouseLatLng))));
     _nearestBusStop = busStops!.first;
   }
 }
