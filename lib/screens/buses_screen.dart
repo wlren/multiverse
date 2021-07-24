@@ -42,6 +42,7 @@ class _BusesScreenState extends State<BusesScreen>
       floatingActionButton: FloatingActionButton(
         mini: true,
         child: const Icon(Icons.arrow_back),
+        foregroundColor: Colors.black,
         backgroundColor: Theme.of(context).cardColor,
         onPressed: () {
           Navigator.of(context).pop();
@@ -343,6 +344,7 @@ class _BusesScreenState extends State<BusesScreen>
                   child: BusStopView(
                     key: ValueKey(busStop),
                     busStop: busStop,
+                    canExpand: true,
                     expanded: isSelected,
                     overline:
                         isSelected ? 'SELECTED BUS STOP' : 'NEAREST BUS STOP',
