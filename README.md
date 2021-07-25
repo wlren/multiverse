@@ -7,13 +7,15 @@
 [![lint](https://github.com/wlren/multiverse/actions/workflows/lint.yml/badge.svg)](https://github.com/wlren/multiverse/actions/workflows/lint.yml)
 [![Coverage Status](https://coveralls.io/repos/github/wlren/multiverse/badge.svg?branch=main)](https://coveralls.io/github/wlren/multiverse?branch=main)
 
-A mobile application powered by Flutter and AWS Amplify which provides a
+A mobile application powered by Flutter and Firebase which provides a
 one-stop solution to all campus needs.
 
 [View on Github Pages](https://wlren.github.io/multiverse/)
 
 ## Motivation
+
 In NUS, there are mainly 3/4 apps that student and staff use:
+
 - uNivUS
 - NUS NextBus
 - NUS Dining
@@ -21,6 +23,7 @@ In NUS, there are mainly 3/4 apps that student and staff use:
 
 We have identified the following features that a user should have as top  
 priority:
+
 - Temperature/health declaration
 - Temperature declaration reminders
 - View past temperature declarations
@@ -29,6 +32,7 @@ priority:
 - Scanning and using meal credits
 
 The following features are also important, but are not top priority:
+
 - School map
 - NUS Card QR Code
 - Crowd Insight
@@ -40,7 +44,7 @@ to separate apps to go about their daily lives in Uni. Why is there not
 a good central app where it encapsulates all the features a student
 needs to go about their daily lives?
 
-# Build
+## Build
 
 ## Android
 

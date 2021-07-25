@@ -37,7 +37,7 @@ class LocationService {
       final userLocation = await location.getLocation();
       currentLocation = LatLng(userLocation.latitude!, userLocation.longitude!);
     } catch (e) {
-      print('Could not get the location $e');
+      throw ('Could not get the location $e');
     }
 
     return currentLocation;
