@@ -443,7 +443,7 @@ class TemperatureScreenState extends State<TemperatureScreen>
     } else {
       showDialog(
           context: context,
-          builder: (context) {
+          builder: (_) {
             return AlertDialog(
               title: const Text('Are you sure?'),
               content: Column(
@@ -467,13 +467,13 @@ class TemperatureScreenState extends State<TemperatureScreen>
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.of(context, rootNavigator: true).pop();
                   },
                   child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.of(context, rootNavigator: true).pop();
                     _declareTemperature(context, temperature);
                   },
                   child: const Text('Yes'),

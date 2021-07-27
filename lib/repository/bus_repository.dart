@@ -120,7 +120,6 @@ class BusRepository {
       HttpHeaders.authorizationHeader: 'Basic $token',
     });
     if (response.statusCode == 200) {
-      // debugPrint(response.body);
       return jsonDecode(response.body);
     } else {
       throw Exception(response);
