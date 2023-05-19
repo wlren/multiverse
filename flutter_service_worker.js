@@ -3,29 +3,29 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"main.dart.js": "d192b35b0486f8e1fcb3852dd10db62a",
-"index.html": "9786d08f359a1d3f2bf469c2869a4ba4",
-"/": "9786d08f359a1d3f2bf469c2869a4ba4",
-"manifest.json": "fee3dc949c372e397cb581d854bbee5a",
-"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"assets/NOTICES": "aa10c13e35afc072df38292436ba52d2",
-"assets/FontManifest.json": "ac6a01254335b920f062ce55dd8fc838",
-"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
-"assets/assets/images/nus-logo.jpg": "b538b0343054cd814bbca16ecf02877c",
-"assets/assets/logo.svg": "819566a3f2ca10ebfb942d43a1566125",
-"assets/assets/fonts/Spartan-ExtraBold.ttf": "94468be5b10313c7c3b7f7d0af5a8435",
-"assets/assets/fonts/Spartan-Light.ttf": "9db064d86ea78b3a32b5c9d326739e15",
-"assets/assets/fonts/Spartan-Medium.ttf": "7bc456708901ba828fe5ee9803962ce5",
-"assets/assets/fonts/Spartan-Thin.ttf": "f73c0eed7364f951dabf8b9059eabed4",
-"assets/assets/fonts/Spartan-ExtraLight.ttf": "9d9d3e87960af91e1a7bc2fdf649825c",
-"assets/assets/fonts/Spartan-Regular.ttf": "940184baadcd8debdbd01951870c0ec9",
-"assets/assets/fonts/Spartan-SemiBold.ttf": "685afe2283f2d6006cfe243a161972d1",
+  "assets/assets/fonts/Spartan-ExtraLight.ttf": "9d9d3e87960af91e1a7bc2fdf649825c",
 "assets/assets/fonts/Spartan-Bold.ttf": "a3b8dba87c8a969c604cab9f4267e628",
+"assets/assets/fonts/Spartan-ExtraBold.ttf": "94468be5b10313c7c3b7f7d0af5a8435",
+"assets/assets/fonts/Spartan-Thin.ttf": "f73c0eed7364f951dabf8b9059eabed4",
+"assets/assets/fonts/Spartan-Regular.ttf": "940184baadcd8debdbd01951870c0ec9",
+"assets/assets/fonts/Spartan-Medium.ttf": "7bc456708901ba828fe5ee9803962ce5",
+"assets/assets/fonts/Spartan-SemiBold.ttf": "685afe2283f2d6006cfe243a161972d1",
+"assets/assets/fonts/Spartan-Light.ttf": "9db064d86ea78b3a32b5c9d326739e15",
+"assets/assets/logo.svg": "819566a3f2ca10ebfb942d43a1566125",
+"assets/assets/images/nus-logo.jpg": "b538b0343054cd814bbca16ecf02877c",
+"assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
+"assets/NOTICES": "aa10c13e35afc072df38292436ba52d2",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
+"assets/FontManifest.json": "ac6a01254335b920f062ce55dd8fc838",
 "assets/AssetManifest.json": "41a28a560df67cf2a5c9e2830244196c",
+"index.html": "c6713c887700385199fb6fca004ac7a6",
+"/": "c6713c887700385199fb6fca004ac7a6",
+"favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "version.json": "80ad6e13435a18fa79da65d7c5e7d564",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1"
+"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
+"main.dart.js": "d192b35b0486f8e1fcb3852dd10db62a",
+"manifest.json": "fee3dc949c372e397cb581d854bbee5a"
 };
 
 // The application shell files that are downloaded before a service worker can
